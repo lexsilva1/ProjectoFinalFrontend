@@ -1,0 +1,16 @@
+.header{
+    display: grid;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--dark-color);
+    background-color: var(--contrast-color);
+}
+.button{
+    --bs-btn-color: var(--contrast-color);
+    --bs-btn-bg: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

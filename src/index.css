@@ -1,3 +1,11 @@
+:root {
+--primary-color: #dee5e5;
+--secondary-color: #9dc5bb;
+--contrast-color: #17b890;
+--dark-color: #5e807f;
+--details-color: #082d0f;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +13,41 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+;background-color: var(--primary-color);
+color: var(--dark-color);
+}
+body.contrast{
+  --primary-color: #e6eed6;
+  --secondary-color: #dde2c6;
+  --contrast-color: #a72608;
+  --dark-color: #090c02;
+  --details-color: #bbc5aa;
+}
+body.light{
+  --primary-color: #c5e0d8;
+  --secondary-color: #b5ffe9;
+  --contrast-color: #ceabb1;
+  --dark-color: #444545;
+  --details-color: #c9c9c9;
+}
+body.dark{
+  --primary-color: #2e3138;
+  --secondary-color: #6c6f7d;
+  --contrast-color: #60463b;
+  --dark-color: #ccc9e7;
+  --details-color: #856a5d;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.btn-primary{
+  --bs-btn-color: var(--contrast-color);
+  --bs-btn-bg: var(--primary-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
