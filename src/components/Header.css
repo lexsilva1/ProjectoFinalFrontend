@@ -9,8 +9,28 @@
 .button{
     --bs-btn-color: var(--contrast-color);
     --bs-btn-bg: var(--primary-color);
+    --bs-btn-bg-hover: var(--secondary-color);
+    --bs-btn-color-hover: color-mix(in srgb, var(--contrast-color), black 25%);
     border: none;
-    padding: 10px 20px;
+    margin-inline:1rem;
     border-radius: 5px;
     cursor: pointer;
+}
+.button2{
+    --bs-btn-color: var(--primary-color);
+    --bs-btn-bg: var(--contrast-color);
+    --bs-btn-bg-hover: var(--secondary-color);
+    --bs-btn-color-hover: color-mix(in srgb, var(--contrast-color), black 25%);
+    border: none;
+    margin-inline:1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button2:hover{
+    background-color: var(--secondary-color);
+    color: color-mix(in srgb, var(--contrast-color), black 25%);
+}
+.button:hover{
+    background-color: var(--secondary-color);
+    color: color-mix(in srgb, var(--contrast-color), black 25%);
 }

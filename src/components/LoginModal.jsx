@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import userStore from '../stores/userStore';
+import './LoginModal.css';
 
 const LoginModal = () => {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const show = userStore((state) => state.showLogin);
+    const setShowLogin = userStore((state) => state.setShowLogin);
+    const handleClose = () => setShowLogin(false);
+   
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,13 +16,9 @@ const LoginModal = () => {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Login
-            </Button>
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Login</Modal.Title>
+                    <Modal.Title className='modal-title'>Get started by logging in to your account</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>

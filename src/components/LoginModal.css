@@ -1,0 +1,19 @@
+.modal-title {
+    font-size: smaller;
+    font-weight: bold;
+    color: var(--dark-color);
+}
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--secondary-color);
+}
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--secondary-color);
+}

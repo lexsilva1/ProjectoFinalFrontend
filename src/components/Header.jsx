@@ -1,8 +1,14 @@
+import './Header.css';
+import userStore from '../stores/userStore';
 import React from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
-import './Header.css';
+
 
 const Header = () => {
+    const setShowLogin = userStore((state) => state.setShowLogin);
+    const setShowRegister = userStore((state) => state.setShowRegister);
+    const handleShow = () => setShowLogin(true);
+    const handleShowRegister = () => setShowRegister(true);
     return (
         <Navbar bg="light" expand="lg" >
             <Navbar.Brand href="#">
@@ -11,8 +17,8 @@ const Header = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                 <Nav className='justify-content-end'>
-                    <Button className='button' >Login</Button>
-                    <Button className='button' >Sign Up</Button>
+                    <Button className='button' onClick={handleShow} >Login</Button>
+                    <Button className='button2' onClick={handleShowRegister} >Sign Up</Button>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
