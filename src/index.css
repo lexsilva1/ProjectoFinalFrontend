@@ -13,8 +13,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-;background-color: var(--primary-color);
-color: var(--dark-color);
+  background-color: var(--primary-color);
+  color: var(--dark-color);
+  --bs-primary: var(--contrast-color);
+  --bs-primary-rgb: var(--contrast-color);
+  --bs-btn-color: var(--primary-color);
+  --bs-btn-bg: var(--contrast-color);
 }
 body.contrast{
   --primary-color: #e6eed6;
@@ -43,11 +47,39 @@ code {
     monospace;
 }
 
-.btn-primary{
+.btn-primary {
   --bs-btn-color: var(--contrast-color);
   --bs-btn-bg: var(--primary-color);
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn {
+  --bs-btn-color: var(--contrast-color);
+  --bs-btn-bg: var(--primary-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.modal-title {
+  font-size: smaller;
+  font-weight: bold;
+  color: var(--dark-color);
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--secondary-color);
+}
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--secondary-color);
 }

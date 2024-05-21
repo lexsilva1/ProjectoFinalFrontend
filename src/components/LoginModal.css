@@ -1,19 +1,14 @@
-.modal-title {
-    font-size: smaller;
-    font-weight: bold;
-    color: var(--dark-color);
+.button{
+    --bs-btn-color: var(--contrast-color);
+    --bs-btn-bg: var(--primary-color);
+    --bs-btn-bg-hover: var(--secondary-color);
+    --bs-btn-color-hover: color-mix(in srgb, var(--contrast-color), black 25%);
+    border: none;
+    margin-inline:1rem;
+    border-radius: 5px;
+    cursor: pointer;
 }
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+.button:hover{
     background-color: var(--secondary-color);
-}
-.modal-footer {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    background-color: var(--secondary-color);
+    color: color-mix(in srgb, var(--contrast-color), black 25%);
 }
