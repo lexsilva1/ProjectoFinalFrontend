@@ -1,8 +1,8 @@
-import './Header.css';
+
 import userStore from '../stores/userStore';
 import React from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
-
+import './Header.css';
 
 
 const Header = () => {
@@ -10,6 +10,7 @@ const Header = () => {
     const setShowRegister = userStore((state) => state.setShowRegister);
     const handleShow = () => setShowLogin(true);
     const handleShowRegister = () => setShowRegister(true);
+    console.log('Header');
     return (
         <Navbar bg="light" expand="lg" >
             <Navbar.Brand href="#">
