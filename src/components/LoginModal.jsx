@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import React from 'react';
+import { Modal, Form } from 'react-bootstrap';
 import userStore from '../stores/userStore';
-import './LoginModal.css';
+import './RegisterModal.css'; // Import your custom CSS file
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 
 const LoginModal = () => {
-    const show = userStore((state) => state.showLogin);
-    const setShowLogin = userStore((state) => state.setShowLogin);
-    const handleClose = () => setShowLogin(false);
-   
+    const { t } = useTranslation(); // Use useTranslation hook to get t function
+    const showLogin = userStore((state) => state.showLogin);
+    const setShow = userStore((state) => state.setShowLogin);
+    const handleClose = () => setShow(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,30 +16,30 @@ const LoginModal = () => {
     };
 
     return (
-        <>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title className='modal-title'>Get started by logging in to your account</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" />
-                        </Form.Group>
+        <Modal show={showLogin} onHide={handleClose} centered className="custom-modal">
+            <Modal.Header closeButton>
+                <div className="w-100 d-flex justify-content-center">
+                    <Modal.Title className='modal-title'>{t('Get started by logging in to your account')}</Modal.Title>
+                </div>
+            </Modal.Header>
+            <Modal.Body>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="formBasicEmail" className="mb-4">
+                        <Form.Label>{t('Email address')}</Form.Label>
+                        <Form.Control type="email" placeholder={t('Enter email')} />
+                    </Form.Group>
 
-                        <Form.Group controlId="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Enter password" />
-                        </Form.Group>
+                    <Form.Group controlId="formBasicPassword" className="mb-4">
+                        <Form.Label>{t('Password')}</Form.Label>
+                        <Form.Control type="password" placeholder={t('Password')} />
+                    </Form.Group>
 
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-        </>
+                    <button type="submit" className="custom-button">
+                        {t('Login')}
+                    </button>
+                </Form>
+            </Modal.Body>
+        </Modal>
     );
 };
 
