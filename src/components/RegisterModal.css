@@ -1,0 +1,43 @@
+.custom-modal .modal-dialog {
+    max-width: 500px;
+}
+
+.modal-content {
+    border: 30px solid white; 
+    min-height: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); 
+}
+
+.custom-modal .modal-content {
+    border-radius: 15px;
+    min-height: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); 
+}
+
+.custom-modal .modal-content .modal-header {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: var(--primary-color);
+}
+.custom-modal .modal-content .modal-body:last-child {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.custom-button {
+    background-color: #39394f ; 
+    border: none ; 
+    padding: 8px 80px ; 
+    border-radius: 5px ; 
+    color: white ; 
+    display: block ; 
+    margin: 0 auto ; 
+    transition: box-shadow 0.3s ; 
+}
+
+.info-text {
+    font-size: 0.75rem; 
+}
+.modal-title {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+}

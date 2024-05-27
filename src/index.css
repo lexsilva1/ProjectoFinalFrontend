@@ -68,6 +68,8 @@ code {
   font-size: smaller;
   font-weight: bold;
   color: var(--dark-color);
+  font-family: Arial, sans-serif;
+  
 }
 .modal-body {
   display: flex;
