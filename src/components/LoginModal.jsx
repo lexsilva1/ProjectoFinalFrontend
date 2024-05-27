@@ -1,18 +1,22 @@
 import React from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import userStore from '../stores/userStore';
-import './RegisterModal.css'; // Import your custom CSS file
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import './RegisterModal.css'; 
+import { useTranslation } from 'react-i18next'; 
+import { login } from '../services/userServices';
 
 const LoginModal = () => {
-    const { t } = useTranslation(); // Use useTranslation hook to get t function
+    const { t } = useTranslation(); 
     const showLogin = userStore((state) => state.showLogin);
     const setShow = userStore((state) => state.setShowLogin);
     const handleClose = () => setShow(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your login logic here
+        const email = e.target[0].value;
+        const password = e.target[1].value;
+        login(email, password);
+        
     };
 
     return (
