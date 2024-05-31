@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import registerImage from "../multimedia/Images/registerImage.jpg";
 import './Confirmation.css';
 import { useParams } from 'react-router-dom';
+import Avatar from '../multimedia/Images/Avatar.jpg';
+import { getLabs } from '../services/labServices';
 
 const Confirmation = () => {
     const [firstName, setFirstName] = useState('');
@@ -13,6 +15,24 @@ const Confirmation = () => {
     const [bio, setBio] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const { token } = useParams();
+    const [avatar, setAvatar] = useState(Avatar);
+    const [labs, setLabs] = useState([]);
+
+    useEffect(() => {
+        getLabs(token)
+            .then(labs => setLabs(labs))
+            .catch(error => console.error(error));
+    }, [token]);
+
+    const handleImageUpload = (e) => {
+        setImage(e.target.files[0]);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setAvatar(reader.result);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -23,9 +43,6 @@ const Confirmation = () => {
         }
     };
 
-    const handleImageUpload = (e) => {
-        setImage(e.target.files[0]);
-    };
 
     return (
         <div className="register-container" style={{backgroundColor: 'var(--primary-color)'}}>
@@ -55,10 +72,20 @@ const Confirmation = () => {
                     </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formWorkPlace">
-                        <Form.Label><span className="required">*</span>Usual Work Place</Form.Label>
-                        <Form.Control type="text" placeholder="Enter usual work place" onChange={e => setWorkPlace(e.target.value)} />
-                        {submitted && !workPlace && <div className="error">Usual Work Place is required</div>}
-                    </Form.Group>
+    <Form.Label><span className="required">*</span>Usual Work Place</Form.Label>
+    <Form.Control 
+    style={{ height: 'auto', fontSize: '1em', fontWeight: 'normal' }} 
+    as="select" 
+    placeholder="Enter usual work place" 
+    onChange={e => setWorkPlace(e.target.value)}
+>
+    <option value="">Select a lab</option>
+    {labs.map((lab, index) => (
+        <option key={index} value={lab.name}>{lab.name}</option>
+    ))}
+</Form.Control>
+    {submitted && !workPlace && <div className="error">Usual Work Place is required</div>}
+</Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formNickname">
                         <Form.Label>Nickname</Form.Label>
@@ -66,9 +93,11 @@ const Confirmation = () => {
                     </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formImage">
-                        <Form.Label>Image</Form.Label>
-                        <Form.Control type="file" onChange={handleImageUpload} />
-                    </Form.Group>
+    <Form.Label>Image</Form.Label>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Form.Control type="file" onChange={handleImageUpload} style={{ marginRight: '10px' }} />
+        <img src={avatar} alt="Avatar" style={{ borderRadius: '50%', width: '100px', height: '100px' }} />    </div>
+</Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formBio">
                         <Form.Label>Bio</Form.Label>
