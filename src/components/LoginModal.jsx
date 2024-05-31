@@ -11,12 +11,14 @@ const LoginModal = () => {
     const setShow = userStore((state) => state.setShowLogin);
     const handleClose = () => setShow(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const email = e.target[0].value;
         const password = e.target[1].value;
-        login(email, password);
-        
+        const loginSuccessful = await login(email, password);
+        if (loginSuccessful) {
+            handleClose(); 
+        }
     };
 
     return (

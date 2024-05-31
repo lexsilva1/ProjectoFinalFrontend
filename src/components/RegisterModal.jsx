@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import userStore from '../stores/userStore';
-import './RegisterModal.css'; // Import your custom CSS file
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import './RegisterModal.css'; 
+import { useTranslation } from 'react-i18next'; 
+import { registerUser } from '../services/userServices';
 
 const RegisterModal = () => {
     const { t } = useTranslation(); // Use useTranslation hook to get t function
@@ -10,9 +11,17 @@ const RegisterModal = () => {
     const setShow = userStore((state) => state.setShowRegister);
     const handleClose = () => setShow(false);
 
-    const handleSubmit = (e) => {
+    const [email, setEmail] = useState(''); // Add this line
+    const [password, setPassword] = useState(''); // Add this line
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Add your registration logic here
+        try {
+            const data = await registerUser(email, password); // Update this line
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -26,12 +35,12 @@ const RegisterModal = () => {
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail" className="mb-4">
                         <Form.Label>{t('Email address')}</Form.Label>
-                        <Form.Control type="email" placeholder={t('Enter email')} />
+                        <Form.Control type="email" placeholder={t('Enter email')} onChange={e => setEmail(e.target.value)} /> {/* Update this line */}
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword" className="mb-4">
                         <Form.Label>{t('Password')}</Form.Label>
-                        <Form.Control type="password" placeholder={t('Password')} />
+                        <Form.Control type="password" placeholder={t('Password')} onChange={e => setPassword(e.target.value)} /> {/* Update this line */}
                     </Form.Group>
 
                     <Form.Group controlId="formBasicConfirmPassword" className="mb-4">

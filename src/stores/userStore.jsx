@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import Cookies from 'js-cookie';
 
 const userStore = create((set) => ({
     showLogin: false,
@@ -9,6 +10,8 @@ const userStore = create((set) => ({
     addUser: (user) => set((state) => ({ users: [...state.users, user] })),
     removeUser: (userId) =>
         set((state) => ({ users: state.users.filter((user) => user.id !== userId) })),
+    isLoggedIn: Cookies.get('authToken') ? true : false, 
+    setIsLoggedIn: (loggedIn) => set({ isLoggedIn: loggedIn }),
 }));
 
 export default userStore;
