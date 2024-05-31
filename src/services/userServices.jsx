@@ -73,3 +73,23 @@ export const registerUser = async (email, password) => {
         throw new Error('Error during registration');
     }
 }
+
+export const confirmUser = async (token, userConfirmation) => {
+    const response = await fetch(usersURL + '/confirm', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(userConfirmation)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseText = await response.text();
+    console.log('Response text from server:', responseText);
+
+    return responseText; // Return the response text directly
+}

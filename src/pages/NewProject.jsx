@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import Sidebar from '../components/SideBar';
 import Header from '../components/Header';
+import { getLabs } from '../services/labServices';
+import Cookies from 'js-cookie';
+import avatarProject from '../multimedia/Images/avatarProject.png';
 
 const NewProject = () => {
   const [inputs, setInputs] = useState({
@@ -13,6 +16,27 @@ const NewProject = () => {
     keywords: [''],
     materials: [''],
   });
+  const [labs, setLabs] = useState([]);
+  const token = Cookies.get('authToken');
+  const [image, setImage] = useState(null);
+  const [avatar, setAvatar] = useState(avatarProject);
+
+  const handleImageUpload = (e) => {
+    setImage(e.target.files[0]);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setAvatar(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+
+  useEffect(() => {
+    getLabs(token)
+        .then(labs => setLabs(labs))
+        .catch(error => console.error(error));
+}, [token]);
 
   const handleInputChange = (event) => {
     setInputs({ ...inputs, [event.target.name]: event.target.value });
@@ -42,11 +66,14 @@ const NewProject = () => {
                   <Input type="text" name="name" id="name" onChange={handleInputChange} />
                 </FormGroup>
                 <FormGroup>
-                  <Label for="location">Location</Label>
-                  <Input type="select" name="location" id="location" onChange={handleInputChange}>
-                    {/* Options */}
-                  </Input>
-                </FormGroup>
+  <Label for="location">Location</Label>
+  <Input type="select" name="location" id="location" onChange={handleInputChange}>
+    <option value="">Select a lab</option>
+    {labs.map((lab, index) => (
+      <option key={index} value={lab.location}>{lab.location}</option>
+    ))}
+  </Input>
+</FormGroup>
                 {/* Add other form groups for the left column here */}
               </Col>
               <Col md={6}>

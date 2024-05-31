@@ -1,5 +1,7 @@
+import baseURL from './baseURL';
+
 export const getLabs = async (token) => {
-    const response = await fetch('/labs', {
+    const response = await fetch( baseURL + 'labs', {
         headers: {
             'token': token
         }

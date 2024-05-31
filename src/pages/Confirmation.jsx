@@ -5,6 +5,10 @@ import './Confirmation.css';
 import { useParams } from 'react-router-dom';
 import Avatar from '../multimedia/Images/Avatar.jpg';
 import { getLabs } from '../services/labServices';
+import { confirmUser } from '../services/userServices';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
+import userStore from '../stores/userStore';
 
 const Confirmation = () => {
     const [firstName, setFirstName] = useState('');
@@ -17,6 +21,7 @@ const Confirmation = () => {
     const { token } = useParams();
     const [avatar, setAvatar] = useState(Avatar);
     const [labs, setLabs] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getLabs(token)
@@ -37,12 +42,27 @@ const Confirmation = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (firstName && lastName && workPlace) {
-            
+            const userConfirmation = {
+                firstName,
+                lastName,
+                labLocation: workPlace,
+                nickname,
+                userPhoto: image || Avatar, 
+                bio
+            };
+            confirmUser(token, userConfirmation)
+                .then((response) => { 
+                    Cookies.set('authToken', response); 
+                    userStore.setState({ isLoggedIn: true });
+                    navigate('/');
+                })
+                .catch(error => {
+                    console.error('Error from confirmUser:', error);
+                });
         } else {
             setSubmitted(true);
         }
     };
-
 
     return (
         <div className="register-container" style={{backgroundColor: 'var(--primary-color)'}}>
@@ -72,20 +92,20 @@ const Confirmation = () => {
                     </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formWorkPlace">
-    <Form.Label><span className="required">*</span>Usual Work Place</Form.Label>
-    <Form.Control 
-    style={{ height: 'auto', fontSize: '1em', fontWeight: 'normal' }} 
-    as="select" 
-    placeholder="Enter usual work place" 
-    onChange={e => setWorkPlace(e.target.value)}
->
-    <option value="">Select a lab</option>
-    {labs.map((lab, index) => (
-        <option key={index} value={lab.name}>{lab.name}</option>
-    ))}
-</Form.Control>
-    {submitted && !workPlace && <div className="error">Usual Work Place is required</div>}
-</Form.Group>
+                        <Form.Label><span className="required">*</span>Usual Work Place</Form.Label>
+                        <Form.Control 
+                            style={{ height: 'auto', fontSize: '1em', fontWeight: 'normal' }} 
+                            as="select" 
+                            placeholder="Enter usual work place" 
+                            onChange={e => setWorkPlace(e.target.value)}
+                        >
+                            <option value="">Select a lab</option>
+                            {labs.map((lab, index) => (
+                                <option key={index} value={lab.location}>{lab.location}</option>
+                            ))}
+                        </Form.Control>
+                        {submitted && !workPlace && <div className="error">Usual Work Place is required</div>}
+                    </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formNickname">
                         <Form.Label>Nickname</Form.Label>
@@ -93,11 +113,12 @@ const Confirmation = () => {
                     </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formImage">
-    <Form.Label>Image</Form.Label>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Form.Control type="file" onChange={handleImageUpload} style={{ marginRight: '10px' }} />
-        <img src={avatar} alt="Avatar" style={{ borderRadius: '50%', width: '100px', height: '100px' }} />    </div>
-</Form.Group>
+                        <Form.Label>Image</Form.Label>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Form.Control type="file" onChange={handleImageUpload} style={{ marginRight: '10px' }} />
+                            <img src={avatar} alt="Avatar" style={{ borderRadius: '50%', width: '100px', height: '100px' }} />    
+                        </div>
+                    </Form.Group>
 
                     <Form.Group className="custom-form-group" controlId="formBio">
                         <Form.Label>Bio</Form.Label>
@@ -105,10 +126,10 @@ const Confirmation = () => {
                     </Form.Group>
 
                     <div style={{display: 'flex', justifyContent: 'center'}}>
-                    <Button variant="primary" type="create" style={{backgroundColor: 'rgb(0, 0, 0)', width: '60%', marginTop: '20px'}}>
-                    Create
-                    </Button>
-                   </div>
+                        <Button variant="primary" type="submit" style={{backgroundColor: 'rgb(0, 0, 0)', width: '60%', marginTop: '20px'}}>
+                            Create
+                        </Button>
+                    </div>
                 </Form>
             </div>
         </div>
