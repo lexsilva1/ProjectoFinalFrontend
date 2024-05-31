@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import NewProject from './pages/NewProject';
 import Users from './pages/Users';
 import Cookies from 'js-cookie';
+import Confirmation from './pages/Confirmation';
 
 function App() {
 
