@@ -9,6 +9,7 @@ import { confirmUser } from '../services/userServices';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import userStore from '../stores/userStore';
+import { uploadFile } from '../services/fileUpload';
 
 const Confirmation = () => {
     const [firstName, setFirstName] = useState('');
@@ -22,6 +23,7 @@ const Confirmation = () => {
     const [avatar, setAvatar] = useState(Avatar);
     const [labs, setLabs] = useState([]);
     const navigate = useNavigate();
+    const [imageURL, setImageURL] = useState(''); 
 
     useEffect(() => {
         getLabs(token)
@@ -41,13 +43,22 @@ const Confirmation = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (image !== null){
+            uploadFile(image, token)
+                .then((response) => {
+                    setImageURL(response);
+                })
+                .catch(error => {
+                    console.error('Error from uploadFile:', error);
+                });
+        }
         if (firstName && lastName && workPlace) {
             const userConfirmation = {
                 firstName,
                 lastName,
                 labLocation: workPlace,
                 nickname,
-                userPhoto: image || Avatar, 
+                userPhoto: imageURL || Avatar, 
                 bio
             };
             confirmUser(token, userConfirmation)
