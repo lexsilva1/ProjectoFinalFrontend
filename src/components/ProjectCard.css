@@ -1,0 +1,16 @@
+.card {
+    margin: 1rem;
+}
+
+.card-title {
+    font-size: 1rem;
+}
+
+.card-text {
+    font-size: 0.8rem;
+}
+
+.badge-pill {
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}

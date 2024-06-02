@@ -7,31 +7,56 @@ import Banner2 from "../components/Banner2";
 import Banner3 from "../components/Banner3";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
+import { getProjects } from '../services/projectServices'; 
+import ProjectCard from '../components/ProjectCard'; 
+import { FaSearch } from 'react-icons/fa';
+import InfoBox from "../components/InfoBox";
 
 const Home = () => {
     const [isOpen, setIsOpen] = useState(false);
     const isLoggedIn = userStore(state => state.isLoggedIn);
-    const [banner, setBanner] = useState(1); // Altere o estado inicial para 1
+    const [banner, setBanner] = useState(1); 
+    const [projects, setProjects] = useState([]); 
+    const [hasFetchedProjects, setHasFetchedProjects] = useState(false);
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setBanner(prevBanner => prevBanner === 3 ? 1 : prevBanner + 1); // Altere para o próximo banner ou volte para o primeiro
+            setBanner(prevBanner => prevBanner === 3 ? 1 : prevBanner + 1); 
         }, 10000);
-
+    
         return () => clearInterval(timer);
+    }, []);
+    
+    useEffect(() => {
+        getProjects()
+            .then(setProjects)
+            .catch(console.error);
     }, []);
 
     return (
         <>
-            <Header />
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                {isLoggedIn && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-                <div className="content" style={{ flexGrow: 1 }}>
-                    <div className={`banner${banner}`}> 
-                        {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
-                    </div>
-                    <LoginModal />
-                    <RegisterModal />
+              <Header />
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {!isLoggedIn ? <InfoBox /> : <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
+            <div className="content" style={{ flexGrow: 1 }}>
+                <div className={`banner${banner}`}> 
+                    {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
+                </div>
+<div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
+        <FaSearch /> 
+        <input type="search" placeholder="Search..." style={{ border: 'none', marginLeft: '0.5rem', height: '100%' }} />
+    </div>
+    <select style={{ borderRadius: '10px', height: '2rem', width: '10rem' }}>
+        <option value="">Sort by...</option>
+        {/* Add your sorting options here */}
+    </select>
+</div>
+{projects.map(project => (
+    <ProjectCard key={project.name} project={project} isLoggedIn={isLoggedIn} />
+))}
+<LoginModal />
+<RegisterModal />
                 </div>
             </div>
         </>
