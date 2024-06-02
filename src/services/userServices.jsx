@@ -93,3 +93,20 @@ export const confirmUser = async (token, userConfirmation) => {
 
     return responseText; // Return the response text directly
 }
+
+export const findAllUsers = async (token) => {
+    const response = await fetch(usersURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token, 
+      },
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    const users = await response.json(); 
+    return users;
+  };
