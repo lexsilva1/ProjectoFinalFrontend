@@ -16,25 +16,18 @@ export const getProjects = async () => {
         }
     }
 };
-
-export const getAllLabs = async () => {
-    const response = await fetch(projectsURL + 'projectLab');
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    } else {
-        const labs = await response.json();
-        return labs;
-    }
-};
-
-export const getAllSkills = async () => {
-    const response = await fetch(projectsURL + 'skills');
+export const getAllStatus = async () => {
+    const response = await fetch(projectsURL + '/status');
 
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`HTTP error! status: ${response.status}`);
     } else {
-        const labs = await response.json();
-        return labs;
+        const data = await response.text();
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            throw new Error(`Invalid JSON: ${data}`);
+        }
     }
-};
+}
+

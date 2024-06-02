@@ -5,6 +5,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
     return (
         <div className="card shadow-lg" style={{ width: '22rem', margin: '1rem' }}>
             <div className="card-body">
+                <img src={project.image} alt={project.name} style={{ width: '100%', height: 'auto' }} /> {/* Adiciona a imagem do projeto */}
                 <h5 className="card-title" style={{ fontSize: '1rem', fontWeight: 'bold' }}>Name: {project.name}</h5>
                 <p className="card-text" style={{ fontSize: '0.8rem' }}>
                     <span style={{ fontWeight: 'bold' }}>Status:</span> {project.status}
@@ -22,9 +23,9 @@ const ProjectCard = ({ project, isLoggedIn }) => {
                     ))}
                 </p>
                 <p className="card-text" style={{ fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-    <span style={{ fontWeight: 'bold' }}>Description:</span> 
-    {project.description}
-</p>
+                    <span style={{ fontWeight: 'bold' }}>Description:</span> 
+                    {project.description}
+                </p>
                 {isLoggedIn && (
                     <button className="btn btn-primary">Open Project</button>
                 )}
