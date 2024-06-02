@@ -1,0 +1,18 @@
+.new-project {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .new-project .content {
+    flex-grow: 1;
+    margin-top: 60px;
+    padding-top: 60px;
+  }
+  
+  .new-project .submit-button {
+    margin-top: 20px;
+  }

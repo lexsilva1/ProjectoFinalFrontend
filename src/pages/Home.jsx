@@ -42,21 +42,31 @@ const Home = () => {
                 <div className={`banner${banner}`}> 
                     {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
                 </div>
-<div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
-    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
-        <FaSearch /> 
-        <input type="search" placeholder="Search..." style={{ border: 'none', marginLeft: '0.5rem', height: '100%' }} />
-    </div>
-    <select style={{ borderRadius: '10px', height: '2rem', width: '10rem' }}>
-        <option value="">Sort by...</option>
-        {/* Add your sorting options here */}
-    </select>
-</div>
-{projects.map(project => (
-    <ProjectCard key={project.name} project={project} isLoggedIn={isLoggedIn} />
-))}
-<LoginModal />
-<RegisterModal />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
+                <FaSearch /> 
+                <input 
+    type="search" 
+    placeholder="Search..." 
+    style={{
+        border: 'none', 
+        marginLeft: '0.5rem', 
+        height: '150%', 
+        outline: 'none', 
+        WebkitAppearance: 'none'
+    }} 
+/>
+                </div>
+                <select style={{ borderRadius: '10px', height: '2rem', width: '10rem' }}>
+                <option value="">Sort by...</option>
+                 {/* Add your sorting options here */}
+                </select>
+               </div>
+           {projects.map(project => (
+              <ProjectCard key={project.name} project={project} isLoggedIn={isLoggedIn} />
+               ))}
+            <LoginModal />
+            <RegisterModal />
                 </div>
             </div>
         </>

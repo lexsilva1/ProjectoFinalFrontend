@@ -31,12 +31,11 @@ const NewProject = () => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
-
   useEffect(() => {
     getLabs(token)
         .then(labs => setLabs(labs))
         .catch(error => console.error(error));
-}, [token]);
+  }, [token]);
 
   const handleInputChange = (event) => {
     setInputs({ ...inputs, [event.target.name]: event.target.value });
@@ -54,64 +53,67 @@ const NewProject = () => {
 
   return (
     <>
-      <Header style={{ position: 'fixed', top: 0, zIndex: 1000 }} />
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <Sidebar style={{ position: 'fixed'}} />
-        <Container className="content" style={{ flexGrow: 1, marginTop: '60px', paddingTop: '60px' }}>
-          <Form>
+      <Header style={{ position: 'fixed', top: 0, width: '100%', height: '60px', zIndex: 1000 }} />
+      <div className="new-project" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f8f9fa' }}>        
+      <Sidebar style={{ position: 'fixed' }}/>
+      <Container className="content" style={{ marginTop: '60px', padding: '40px', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)' }}>          <Form>
             <Row form>
               <Col md={6}>
-                <FormGroup>
-                  <Label for="name">Project Name</Label>
-                  <Input type="text" name="name" id="name" onChange={handleInputChange} />
+                <FormGroup style={{ marginBottom: '20px' }}>
+                  <Label for="name" style={{ fontSize: '0.8rem' }}>Project Name</Label>
+                  <Input type="text" name="name" id="name" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
                 </FormGroup>
-                <FormGroup>
-  <Label for="location">Location</Label>
-  <Input type="select" name="location" id="location" onChange={handleInputChange}>
-    <option value="">Select a lab</option>
-    {labs.map((lab, index) => (
-      <option key={index} value={lab.location}>{lab.location}</option>
-    ))}
-  </Input>
-</FormGroup>
-                {/* Add other form groups for the left column here */}
+                <FormGroup style={{ marginBottom: '20px' }}>
+                  <Label for="location" style={{ fontSize: '0.8rem' }}>Location</Label>
+                  <Input type="select" name="location" id="location" onChange={handleInputChange} style={{ fontSize: '0.8rem' }}>
+                    <option value="">Select a lab</option>
+                    {labs.map((lab, index) => (
+                      <option key={index} value={lab.location}>{lab.location}</option>
+                    ))}
+                  </Input>
+                </FormGroup>
               </Col>
               <Col md={6}>
-                <FormGroup>
-                  <Label for="description">Description</Label>
-                  <Input type="textarea" name="description" id="description" onChange={handleInputChange} />
+                <FormGroup style={{ marginBottom: '20px' }}>
+                  <Label for="description" style={{ fontSize: '0.8rem' }}>Description</Label>
+                  <Input type="textarea" name="description" id="description" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
                 </FormGroup>
-                <FormGroup>
-                  <Label for="slots">Number of Slots</Label>
-                  <Input type="number" name="slots" id="slots" onChange={handleInputChange} />
+                <FormGroup style={{ marginBottom: '20px' }}>
+                  <Label for="slots" style={{ fontSize: '0.8rem' }}>Number of Slots</Label>
+                  <Input type="number" name="slots" id="slots" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
                 </FormGroup>
-                {/* Add other form groups for the right column here */}
               </Col>
             </Row>
-            {['skills', 'keywords', 'materials'].map((field) =>
-              <Row form>
+            {['skills', 'keywords', 'materials'].map((field) => (
+              <React.Fragment key={field}>
                 {inputs[field].map((value, index) => (
-                  <Col md={6}>
-                    <FormGroup key={`${field}-${index}`}>
-                      <Label for={`${field}-${index}`}>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
-                      <Input
-                        type="text"
-                        name={`${field}-${index}`}
-                        id={`${field}-${index}`}
-                        value={value}
-                        onChange={(event) => handleArrayChange(event, index, field)}
-                      />
-                    </FormGroup>
-                  </Col>
+                  <Row form key={`${field}-${index}`} style={{ marginBottom: '20px' }}>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label for={`${field}-${index}`} style={{ fontSize: '0.8rem' }}>{index === 0 ? field.charAt(0).toUpperCase() + field.slice(1) : ''}</Label>
+                        <Input
+                          type="text"
+                          name={`${field}-${index}`}
+                          id={`${field}-${index}`}
+                          value={value}
+                          onChange={(event) => handleArrayChange(event, index, field)}
+                          placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                          style={{ fontSize: '0.8rem' }}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
                 ))}
-                <Col md={12}>
-                  <Button onClick={() => addField(field)}>
-                    Add {field}
-                  </Button>
-                </Col>
-              </Row>
-            )}
-            <Button type="submit" color="primary" style={{ marginTop: '20px' }}>Submit</Button>
+                <Row form>
+                  <Col md={6}>
+                    <Button onClick={() => addField(field)}>
+                      Add {field}
+                    </Button>
+                  </Col>
+                </Row>
+              </React.Fragment>
+            ))}
+            <Button type="submit" color="primary" className="submit-button">Submit</Button>
           </Form>
         </Container>
       </div>

@@ -2,7 +2,7 @@
     position: sticky; 
     top: 0;
     max-width: 200px;
-    height: calc(100vh - 60px); 
+    height: calc(110vh - 60px); 
     background-color: var(--bs-body-color);
     flex-grow: 1;
     overflow: auto;

@@ -16,3 +16,25 @@ export const getProjects = async () => {
         }
     }
 };
+
+export const getAllLabs = async () => {
+    const response = await fetch(projectsURL + 'projectLab');
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    } else {
+        const labs = await response.json();
+        return labs;
+    }
+};
+
+export const getAllSkills = async () => {
+    const response = await fetch(projectsURL + 'skills');
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    } else {
+        const labs = await response.json();
+        return labs;
+    }
+};

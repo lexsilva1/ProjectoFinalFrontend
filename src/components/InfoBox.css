@@ -1,5 +1,4 @@
 .infoBox {
-    position: sticky;
     top: 0;
     max-width: 200px;
     height: 60vh;
@@ -15,20 +14,20 @@
 
 .title {
     font-size: 1.5em;
-    font-weight: 300; /* Makes the text thinner */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adds a shadow */
+    font-weight: 300; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
 }
 
 .text {
     font-size: 0.7em;
     margin: 0;
-    font-weight: 300; /* Makes the text thinner */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adds a shadow */
+    font-weight: 300;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
 }
 
 .ending {
     font-size: 1em;
     margin-top: 20px;
-    font-weight: 300; /* Makes the text thinner */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Adds a shadow */
+    font-weight: 300; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
 }
