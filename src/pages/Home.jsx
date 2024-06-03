@@ -11,6 +11,7 @@ import { getProjects } from '../services/projectServices';
 import ProjectCard from '../components/ProjectCard'; 
 import { FaSearch } from 'react-icons/fa';
 import InfoBox from "../components/InfoBox";
+import Footer from "../components/Footer";
 
 const Home = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -69,6 +70,7 @@ const Home = () => {
             <RegisterModal />
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

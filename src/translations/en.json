@@ -8,6 +8,12 @@
     "Create an account": "Create an account",
     "Confirm Password": "Confirm Password",
     "By clicking continue, you will need to check your email to confirm your account.": "By clicking continue, you will need to check your email to confirm your account.",
-    "Register": "Register"
-    
+    "Register": "Register",
+    "Home": "Home",
+    "New Project": "New Project",
+    "Profile": "Profile",
+    "Messages": "Messages",
+    "Users": "Users",
+    "Inventory": "Inventory",
+    "Dashboard": "Dashboard"
   }

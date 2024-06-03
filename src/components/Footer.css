@@ -1,0 +1,25 @@
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0; /* Reduzir o padding para diminuir a altura do rodapé */
+}
+
+.footer h5 {
+    font-size: 0.8em; /* Ajustar o tamanho da fonte para os títulos */
+    margin-bottom: 10px;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer ul li {
+    font-size: 0.5em; /* Ajustar o tamanho da fonte para os itens da lista */
+    margin-bottom: 5px;
+}
+
+.footer p {
+    font-size: 0.5em; /* Ajustar o tamanho da fonte para os parágrafos */
+    margin-bottom: 5px;
+}
