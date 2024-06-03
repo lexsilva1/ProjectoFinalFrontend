@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import userStore from '../stores/userStore';
 import { uploadFile } from '../services/fileUpload';
+import { uploadUserPhoto } from '../services/userServices';
 
 const Confirmation = () => {
     const [firstName, setFirstName] = useState('');
@@ -24,6 +25,8 @@ const Confirmation = () => {
     const [labs, setLabs] = useState([]);
     const navigate = useNavigate();
     const [imageURL, setImageURL] = useState(''); 
+   
+    
 
     useEffect(() => {
         getLabs(token)
@@ -41,16 +44,17 @@ const Confirmation = () => {
         reader.readAsDataURL(e.target.files[0]);
     };
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (image !== null){
-            uploadFile(image, token)
-                .then((response) => {
-                    setImageURL(response);
-                })
-                .catch(error => {
-                    console.error('Error from uploadFile:', error);
-                });
+            try {
+                const response = await uploadUserPhoto(image, token);
+                console.log('Upload successful:', response);
+                setImageURL(response);
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
         }
         if (firstName && lastName && workPlace) {
             const userConfirmation = {

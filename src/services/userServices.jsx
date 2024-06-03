@@ -126,3 +126,24 @@ export const findUserById = async (token, id) => {
         console.error('Error:', error);
     }
 };
+
+export const uploadUserPhoto = async (file, token) => {
+    const formData = new FormData();
+    formData.append('input', file);
+
+    const response = await fetch(baseURL + 'upload/userPhoto', {
+        method: 'POST',
+        headers: {
+            'token': token
+        },  
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }else {
+        const data = await response.text();
+        return data;
+    }
+}
+
