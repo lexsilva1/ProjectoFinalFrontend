@@ -17,7 +17,7 @@ const userStore = create(persist(
     user: null,
   }),
   {
-    name: 'user-storage', // unique name
+    name: 'user-storage', 
   }
 ));
 

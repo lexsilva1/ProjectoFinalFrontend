@@ -110,3 +110,19 @@ export const findAllUsers = async (token) => {
     const users = await response.json(); 
     return users;
   };
+
+export const findUserById = async (token, id) => {
+    try {
+        const response = await fetch(usersURL + `/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': token
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};

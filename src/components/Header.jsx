@@ -47,7 +47,7 @@ const Header = () => {
                         </>
                     )}
                     {isLoggedIn && user && (
-                        console.log(user),
+                    
   <>
     <div className="user-info">
     <img src={user.userPhoto ? user.userPhoto : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />

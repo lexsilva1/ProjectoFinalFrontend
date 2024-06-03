@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import avatarProject from '../multimedia/Images/avatarProject.png';
+import './ProjectCard.css';
 
 const ProjectCard = ({ project, isLoggedIn }) => {
     return (
@@ -8,7 +9,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
             <div className="card shadow-lg">
                 <img src={project.image ? project.image : avatarProject} alt={project.name} className="card-img-top" /> 
                 <div className="card-body">
-                    <h5 className="card-title">Name: {project.name}</h5>
+                    <h5 className="card-title"> {project.name}</h5>
                     <p className="card-text">
                         <strong>Status:</strong> {project.status}
                     </p>
@@ -24,10 +25,10 @@ const ProjectCard = ({ project, isLoggedIn }) => {
                             <span key={`${project.id}-skill-${index}`} className="badge badge-light mr-2 mb-2">{skill}</span>
                         ))}
                     </p>
-                    <p className="card-text text-truncate">
-                        <strong>Description:</strong> 
-                        {project.description}
-                    </p>
+                    <p className="card-text">
+    <strong>Description:</strong> 
+    {project.description}
+</p>
                     {isLoggedIn && (
                         <button className="btn btn-primary">Open Project</button>
                     )}

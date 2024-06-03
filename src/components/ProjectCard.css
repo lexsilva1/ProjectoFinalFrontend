@@ -1,16 +1,28 @@
 .card {
-    margin: 1rem;
+    margin: 2rem;
+    width: 300px; 
+    height: 500px; 
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
 }
 
 .card-title {
-    font-size: 1rem;
+    font-size: 1.2rem; 
 }
 
 .card-text {
     font-size: 0.8rem;
 }
 
-.badge-pill {
+.badge-dark, .badge-light {
     margin-right: 0.3rem;
     margin-bottom: 0.3rem;
+    color: black; 
+    background-color: white; 
+    border: 0.2px solid rgb(209, 209, 209);
+}
+
+.card-img-top {
+    max-height: 100px; 
+    object-fit: cover;
 }

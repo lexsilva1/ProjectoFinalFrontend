@@ -58,7 +58,7 @@ const Home = () => {
     }} 
 />
                 </div>
-                <select style={{ borderRadius: '10px', height: '2rem', width: '10rem' }}>
+                <select style={{ borderRadius: '10px', height: '2rem', width: '10rem', margin: '2rem' }}>
                 <option value="">Sort by...</option>
                  {/* Add your sorting options here */}
                 </select>
