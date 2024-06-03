@@ -6,6 +6,8 @@ import './Header.css';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom'; 
 import { logout } from '../services/userServices';
+import Avatar from '../multimedia/Images/Avatar.jpg';
+import logo2 from '../multimedia/Images/logo2.png';
 
 const Header = () => {
     const { t, i18n } = useTranslation();
@@ -14,6 +16,7 @@ const Header = () => {
     const setShowLogin = userStore((state) => state.setShowLogin);
     const setShowRegister = userStore((state) => state.setShowRegister);
     const navigate = useNavigate(); 
+    const user = userStore((state) => state.user);
 
     const handleShow = () => setShowLogin(true);
     const handleShowRegister = () => setShowRegister(true);
@@ -31,9 +34,9 @@ const Header = () => {
 
     return (
         <Navbar expand="lg" className="header">
-            <Navbar.Brand href="#">
-                <img src="/favicon.ico" alt="Logo" width="30" height="30" className="d-inline-block align-top" />
-            </Navbar.Brand>
+           <Navbar.Brand href="#">
+    {isLoggedIn && <img src={logo2} alt="Logo" width="145" height="40" className="d-inline-block align-top" style={{ marginLeft: '20px' }} />}
+</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                 <Nav className='justify-content-end'>
@@ -43,9 +46,16 @@ const Header = () => {
                             <Button variant="outline" className='button2' onClick={handleShowRegister} >{t('Sign Up')}</Button>
                         </>
                     )}
-                    {isLoggedIn && (
-                        <Button variant="outline" className='button' onClick={handleLogout} >{t('Logout')}</Button>
-                    )}
+                    {isLoggedIn && user && (
+                        console.log(user),
+  <>
+    <div className="user-info">
+    <img src={user.userPhoto ? user.userPhoto : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />
+      <span className="user-name">{`${user.firstName} ${user.lastName}`}</span>
+    </div>
+    <Button variant="outline" className='button' onClick={handleLogout} >{t('Logout')}</Button>
+  </>
+)}
                     <div className="language-buttons">
                         <Button variant="outline" className='language-button' onClick={() => changeLanguage('pt')} >PT</Button>
                         <Button variant="outline" className='language-button' onClick={() => changeLanguage('en')} >EN</Button>

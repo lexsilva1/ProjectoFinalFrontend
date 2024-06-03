@@ -14,11 +14,11 @@ export const login = async (email, password) => {
                 'password': password
             },
         });
-        const text = await response.text();
-        console.log(text);
+        const data = await response.json();
+        console.log(data);
         if (response.ok) {
-            Cookies.set('authToken', text);
-            userStore.setState({ isLoggedIn: true }); 
+            Cookies.set('authToken', data.token);
+            userStore.setState({ isLoggedIn: true, user: data }); 
             return true; 
         }
         return false; 

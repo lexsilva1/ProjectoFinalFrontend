@@ -1,11 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import avatarProject from '../multimedia/Images/avatarProject.png';
 
 const ProjectCard = ({ project, isLoggedIn }) => {
     return (
         <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
             <div className="card shadow-lg">
-                <img src={project.image} alt={project.name} className="card-img-top" /> 
+                <img src={project.image ? project.image : avatarProject} alt={project.name} className="card-img-top" /> 
                 <div className="card-body">
                     <h5 className="card-title">Name: {project.name}</h5>
                     <p className="card-text">

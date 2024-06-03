@@ -1,11 +1,11 @@
 .footer {
     background-color: #333;
     color: #fff;
-    padding: 10px 0; /* Reduzir o padding para diminuir a altura do rodapé */
+    padding: 10px 0; 
 }
 
 .footer h5 {
-    font-size: 0.8em; /* Ajustar o tamanho da fonte para os títulos */
+    font-size: 0.8em; 
     margin-bottom: 10px;
 }
 
@@ -15,11 +15,11 @@
 }
 
 .footer ul li {
-    font-size: 0.5em; /* Ajustar o tamanho da fonte para os itens da lista */
+    font-size: 0.5em; 
     margin-bottom: 5px;
 }
 
 .footer p {
-    font-size: 0.5em; /* Ajustar o tamanho da fonte para os parágrafos */
+    font-size: 0.5em; 
     margin-bottom: 5px;
 }

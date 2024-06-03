@@ -1,7 +1,9 @@
-import {create} from 'zustand';
+import create from 'zustand';
+import { persist } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
-const userStore = create((set) => ({
+const userStore = create(persist(
+  (set) => ({
     showLogin: false,
     setShowLogin: (show) => set({ showLogin: show }),
     showRegister: false,
@@ -9,9 +11,14 @@ const userStore = create((set) => ({
     users: [],
     addUser: (user) => set((state) => ({ users: [...state.users, user] })),
     removeUser: (userId) =>
-        set((state) => ({ users: state.users.filter((user) => user.id !== userId) })),
-    isLoggedIn: Cookies.get('authToken') ? true : false, 
+      set((state) => ({ users: state.users.filter((user) => user.id !== userId) })),
+    isLoggedIn: Cookies.get('authToken') ? true : false,
     setIsLoggedIn: (loggedIn) => set({ isLoggedIn: loggedIn }),
-}));
+    user: null,
+  }),
+  {
+    name: 'user-storage', // unique name
+  }
+));
 
 export default userStore;

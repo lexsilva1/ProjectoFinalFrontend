@@ -1,9 +1,11 @@
 import React from 'react';
 import './InfoBox.css';
+import logo3 from '../multimedia/Images/logo3.png';
 
 const InfoBox = () => {
     return (
         <div className="infoBox">
+            <img src={logo3} alt="Logo" width="80" height="80" className="d-inline-block align-top" />
             <p className="title">Welcome to ForgeXperimental Projects</p>
             <p className="text">Your solution for managing</p>
             <p className="text">innovative tech projects.</p>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import registerImage from "../multimedia/Images/registerImage.jpg";
 import './Confirmation.css';
 import { useParams } from 'react-router-dom';
