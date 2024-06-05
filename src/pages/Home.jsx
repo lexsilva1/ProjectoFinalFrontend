@@ -36,13 +36,14 @@ const Home = () => {
 
     return (
         <>
-                   <Header />
-            <div style={{ display: 'flex' }}>
-                {!isLoggedIn ? <InfoBox /> : <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-                <div className={`banner${banner}`} style={{ width: '86%' }}> 
-                    {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
-                </div>
-            </div>
+            <Header />
+            <div style={{ display: 'flex', flexDirection: isLoggedIn ? 'row' : 'column' }}>
+    {isLoggedIn && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
+    <div className={`banner${banner}`} style={{ width: '86%' }}> 
+        {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
+    </div>
+    {!isLoggedIn && <InfoBox />} 
+</div>
             <div className="content" style={{ flexGrow: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>

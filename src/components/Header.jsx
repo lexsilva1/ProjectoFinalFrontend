@@ -9,6 +9,7 @@ import { logout } from '../services/userServices';
 import Avatar from '../multimedia/Images/Avatar.jpg';
 import logo2 from '../multimedia/Images/logo2.png';
 
+
 const Header = () => {
     const { t, i18n } = useTranslation();
     const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -17,6 +18,7 @@ const Header = () => {
     const setShowRegister = userStore((state) => state.setShowRegister);
     const navigate = useNavigate(); 
     const user = userStore((state) => state.user);
+    const authToken = Cookies.get('authToken');
 
     const handleShow = () => setShowLogin(true);
     const handleShowRegister = () => setShowRegister(true);
@@ -39,23 +41,22 @@ const Header = () => {
 </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-                <Nav className='justify-content-end'>
-                    {!isLoggedIn && (
-                        <>
-                            <Button variant="outline" className='button' onClick={handleShow} >{t('Login')}</Button>
-                            <Button variant="outline" className='button2' onClick={handleShowRegister} >{t('Sign Up')}</Button>
-                        </>
-                    )}
-                    {isLoggedIn && user && (
-                    
-  <>
-<div className="user-info">
-    <img src={user.image ? user.image : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />
-    <span className="user-name">{`${user.firstName} ${user.lastName}`}</span>
-</div>
-    <Button variant="outline" className='button' onClick={handleLogout} >{t('Logout')}</Button>
-  </>
-)}
+            <Nav className='justify-content-end'>
+                {!authToken && (
+                    <>
+                        <Button variant="outline" className='button' onClick={handleShow} >{t('Login')}</Button>
+                        <Button variant="outline" className='button2' onClick={handleShowRegister} >{t('Sign Up')}</Button>
+                    </>
+                )}
+                {authToken && user && (
+                    <>
+                        <div className="user-info">
+                            <img src={user.image ? user.image : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />
+                            <span className="user-name">{`${user.firstName} ${user.lastName}`}</span>
+                        </div>
+                        <Button variant="outline" className='button' onClick={handleLogout} >{t('Logout')}</Button>
+                    </>
+                )}
                     <div className="language-buttons">
                         <Button variant="outline" className='language-button' onClick={() => changeLanguage('pt')} >PT</Button>
                         <Button variant="outline" className='language-button' onClick={() => changeLanguage('en')} >EN</Button>
