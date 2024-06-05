@@ -4,6 +4,7 @@
     align-items: center;
     padding: 20px 0;
     background-color: var(--primary-color);
+    position: fixed;
 }
 .button, .button2, .language-button{
     border: none;

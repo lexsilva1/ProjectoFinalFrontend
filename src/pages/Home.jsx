@@ -19,6 +19,12 @@ const Home = () => {
     const [banner, setBanner] = useState(1); 
     const [projects, setProjects] = useState([]); 
     const [hasFetchedProjects, setHasFetchedProjects] = useState(false);
+    const FixedPosition = ({ children }) => (
+        <div style={{ position: 'fixed', width: '100%', zIndex: 1000 }}>
+          {children}
+        </div>
+      );
+      
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -36,15 +42,20 @@ const Home = () => {
 
     return (
         <>
-            <Header />
-            <div style={{ display: 'flex', flexDirection: isLoggedIn ? 'row' : 'column' }}>
-    {isLoggedIn && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-    <div className={`banner${banner}`} style={{ width: isLoggedIn ? '86%' : '100%' }}> 
-    {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
-</div>
-    {!isLoggedIn && <InfoBox />} 
-</div>
-            <div className="content" style={{ flexGrow: 1 }}>
+            <FixedPosition>
+                <Header />
+            </FixedPosition>
+            {isLoggedIn && (
+            <div style={{ paddingTop: '66px', position: 'fixed', width: '100%' }}>
+                <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+            </div>
+        )}
+            <div style={{ marginLeft: isLoggedIn ? '200px' : '0px' }}>
+                <div className={`banner${banner}`} style={{ width: '100%' }}> 
+                    {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
+                </div>
+                {!isLoggedIn && <InfoBox />}
+                <div className="content" style={{ flexGrow: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
                         <FaSearch /> 
@@ -72,6 +83,8 @@ const Home = () => {
                 <RegisterModal />
             </div>
             <Footer />
+        </div>
+
         </>
     );
 };
