@@ -44,29 +44,35 @@ const Confirmation = () => {
         reader.readAsDataURL(e.target.files[0]);
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let finalImageURL = Avatar; // default image
+        console.log('image:', image);
         if (image !== null){
             try {
                 const response = await uploadUserPhoto(image, token);
                 console.log('Upload successful:', response);
-                setImageURL(response);
+                finalImageURL = response;
+                console.log('finalImageURL:', finalImageURL);
             } catch (error) {
                 console.error('Error uploading image:', error);
             }
         }
+    
         if (firstName && lastName && workPlace) {
             const userConfirmation = {
                 firstName,
                 lastName,
                 labLocation: workPlace,
                 nickname,
-                userPhoto: imageURL || Avatar, 
+                userPhoto: finalImageURL, 
                 bio
             };
-            confirmUser(token, userConfirmation)
+    
+            await confirmUser(token, userConfirmation)
+            
                 .then((response) => { 
+                    console.log('userConfirmation:', userConfirmation);
                     Cookies.set('authToken', response); 
                     userStore.setState({ isLoggedIn: true });
                     navigate('/');

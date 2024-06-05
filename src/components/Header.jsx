@@ -49,10 +49,10 @@ const Header = () => {
                     {isLoggedIn && user && (
                     
   <>
-    <div className="user-info">
-    <img src={user.userPhoto ? user.userPhoto : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />
-      <span className="user-name">{`${user.firstName} ${user.lastName}`}</span>
-    </div>
+<div className="user-info">
+    <img src={user.image ? user.image : Avatar } alt={`${user.firstName} ${user.lastName}`} className="userImageHeader" />
+    <span className="user-name">{`${user.firstName} ${user.lastName}`}</span>
+</div>
     <Button variant="outline" className='button' onClick={handleLogout} >{t('Logout')}</Button>
   </>
 )}

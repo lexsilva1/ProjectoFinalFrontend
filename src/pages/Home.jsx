@@ -36,39 +36,39 @@ const Home = () => {
 
     return (
         <>
-              <Header />
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-            {!isLoggedIn ? <InfoBox /> : <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-            <div className="content" style={{ flexGrow: 1 }}>
-                <div className={`banner${banner}`}> 
+                   <Header />
+            <div style={{ display: 'flex' }}>
+                {!isLoggedIn ? <InfoBox /> : <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
+                <div className={`banner${banner}`} style={{ width: '86%' }}> 
                     {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
                 </div>
+            </div>
+            <div className="content" style={{ flexGrow: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1rem 0', justifyContent: 'flex-start', paddingLeft: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
-                <FaSearch /> 
-                <input 
-    type="search" 
-    placeholder="Search..." 
-    style={{
-        border: 'none', 
-        marginLeft: '0.5rem', 
-        height: '150%', 
-        outline: 'none', 
-        WebkitAppearance: 'none'
-    }} 
-/>
+                    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid', padding: '0.5rem', borderRadius: '10px', height: '2rem' }}>
+                        <FaSearch /> 
+                        <input 
+                            type="search" 
+                            placeholder="Search..." 
+                            style={{
+                                border: 'none', 
+                                marginLeft: '0.5rem', 
+                                height: '150%', 
+                                outline: 'none', 
+                                WebkitAppearance: 'none'
+                            }} 
+                        />
+                    </div>
+                    <select style={{ borderRadius: '10px', height: '2rem', width: '10rem', margin: '2rem' }}>
+                        <option value="">Sort by...</option>
+                        {/* Add your sorting options here */}
+                    </select>
                 </div>
-                <select style={{ borderRadius: '10px', height: '2rem', width: '10rem', margin: '2rem' }}>
-                <option value="">Sort by...</option>
-                 {/* Add your sorting options here */}
-                </select>
-               </div>
-           {projects.map(project => (
-              <ProjectCard key={project.name} project={project} isLoggedIn={isLoggedIn} />
-               ))}
-            <LoginModal />
-            <RegisterModal />
-                </div>
+                {projects.map(project => (
+                    <ProjectCard key={project.name} project={project} isLoggedIn={isLoggedIn} />
+                ))}
+                <LoginModal />
+                <RegisterModal />
             </div>
             <Footer />
         </>

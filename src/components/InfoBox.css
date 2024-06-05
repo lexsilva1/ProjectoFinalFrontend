@@ -1,8 +1,7 @@
 .infoBox {
     position: sticky;
     top: 0;
-    max-width: 200px;
-    height: 100vh;
+    height: 200px;
     background-color: var(--bs-body-color);
     overflow: auto;
     color: white;

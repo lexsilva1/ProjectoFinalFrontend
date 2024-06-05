@@ -4,14 +4,12 @@ import logo3 from '../multimedia/Images/logo3.png';
 
 const InfoBox = () => {
     return (
-        <div className="infoBox">
-            <img src={logo3} alt="Logo" width="70" height="70" className="d-inline-block align-top" />
-            <p className="title">Welcome to ForgeXperimental Projects</p>
-            <p className="text">Your solution for managing</p>
-            <p className="text">innovative tech projects.</p>
-            <p className="text">Collaborate, track progress,</p>
-            <p className="text">and optimize resources</p>
-            <p className="text">from start to finish.</p>
+        <div className="infoBox" style={{ width: '100%', position: 'relative' }}>
+            <p className="title">Welcome to Forge<span><img src={logo3} alt="Logo" style={{width: '1.5em', height: '1.5em', verticalAlign: 'middle'}} /></span>perimental Projects</p>
+            <p className="text">Your solution for managing innovative tech projects.</p>
+            <p className="text">Collaborate, track progress, and optimize resources from start to finish.</p>
+            <p className="text"></p>
+            <p className="text"></p>
             <p className="ending">Forge the future with us.</p>
         </div>
     );
