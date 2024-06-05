@@ -39,9 +39,9 @@ const Home = () => {
             <Header />
             <div style={{ display: 'flex', flexDirection: isLoggedIn ? 'row' : 'column' }}>
     {isLoggedIn && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-    <div className={`banner${banner}`} style={{ width: '86%' }}> 
-        {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
-    </div>
+    <div className={`banner${banner}`} style={{ width: isLoggedIn ? '86%' : '100%' }}> 
+    {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
+</div>
     {!isLoggedIn && <InfoBox />} 
 </div>
             <div className="content" style={{ flexGrow: 1 }}>

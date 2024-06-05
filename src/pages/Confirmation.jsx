@@ -26,7 +26,6 @@ const Confirmation = () => {
     const navigate = useNavigate();
     const [imageURL, setImageURL] = useState(''); 
    
-    
 
     useEffect(() => {
         getLabs(token)
@@ -46,7 +45,7 @@ const Confirmation = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let finalImageURL = Avatar; // default image
+        let finalImageURL = Avatar;
         console.log('image:', image);
         if (image !== null){
             try {
