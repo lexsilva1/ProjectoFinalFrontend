@@ -1,0 +1,62 @@
+.container {
+    margin: 3rem;
+}
+
+.card {
+    width: 90%; 
+    height: auto;
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.card-title {
+    font-size: 2rem; 
+    margin: 40px;
+    text-align: center;
+
+}
+
+.card-text-project {
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+.badge-dark, .badge-light {
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+    color: black; 
+    background-color: white; 
+    border: 0.2px solid rgb(209, 209, 209);
+}
+
+.card-img-top {
+    max-height: 200px; 
+    object-fit: cover;
+}
+
+.app-container {
+    display: flex;
+}
+
+.project-container {
+    flex-grow: 1;
+}
+
+.project-team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 10px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.project-team-member-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -147,3 +147,21 @@ export const uploadUserPhoto = async (file, token) => {
     }
 }
 
+export const updateUser = async (id, userDto, token) => {
+    const response = await fetch(usersURL + `/{id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(userDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        const data = await response.text();
+        return data;
+    }
+}
+

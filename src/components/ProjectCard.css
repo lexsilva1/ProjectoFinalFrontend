@@ -1,20 +1,22 @@
-.card {
+.project-card-card {
     margin: 3rem;
-    width: 300px; 
-    height: 500px; 
+    width: 500px; 
+    height: 600px; 
     background-color: var(--primary-color);
     border: 1px solid var(--primary-color);
 }
 
-.card-title {
-    font-size: 1.2rem; 
+.project-card-card-title {
+    font-size: 1.5rem; 
+    margin: 20px;
+    text-align: center;
 }
 
-.card-text {
+.project-card-card-text {
     font-size: 0.8rem;
 }
 
-.badge-dark, .badge-light {
+.project-card-badge-dark, .project-card-badge-light {
     margin-right: 0.3rem;
     margin-bottom: 0.3rem;
     color: black; 
@@ -22,7 +24,8 @@
     border: 0.2px solid rgb(209, 209, 209);
 }
 
-.card-img-top {
-    max-height: 100px; 
+.project-card-card-img-top {
+    max-height: 150px; 
+    width: 100%;
     object-fit: cover;
 }

@@ -7,6 +7,7 @@ import { findUserById, uploadUserPhoto } from "../services/userServices";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
 import { PencilSquare } from "react-bootstrap-icons";
+import { getLabs } from "../services/labServices";
 import "./Profile.css";
 import { FiLock, FiUnlock } from "react-icons/fi";
 
@@ -16,6 +17,7 @@ const Profile = () => {
   const { user } = userStore.getState();
   const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
+  const [labs, setLabs] = useState([]);
 
   const handleImageUpload = (e) => {
     setImage(e.target.files[0]);
@@ -51,6 +53,12 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    getLabs(token)
+      .then((labs) => setLabs(labs))
+      .catch((error) => console.error(error));
+  }, [token]);
+
+  useEffect(() => {
     if (user && user.id) {
       findUserById(token, user.id)
         .then((userFromServer) => {
@@ -79,7 +87,7 @@ const Profile = () => {
                   />
                   <Card.Header className="profile-card-header">
                     <Card.Img
-                      className="profile-card-img"
+                      className="profile-card-img user-image"
                       src={user?.image ? user.image : Avatar}
                     />
                     <div className="profile-nameedit">
@@ -133,11 +141,15 @@ const Profile = () => {
                               </Form.Group>
                               <Form.Group>
                                 <Form.Label>Usual Work Place:</Form.Label>
-                                <Form.Control
-                                  type="text"
-                                  placeholder="Usual Work Place"
+                                <Form.Select
                                   defaultValue={profile?.labLocation}
-                                />
+                                >
+                                  {labs.map((lab, index) => (
+                                    <option key={index} value={lab.location}>
+                                      {lab.location}
+                                    </option>
+                                  ))}
+                                </Form.Select>
                               </Form.Group>
                               <Form.Group>
                                 <Form.Label>Bio:</Form.Label>

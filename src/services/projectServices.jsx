@@ -31,3 +31,24 @@ export const getAllStatus = async () => {
     }
 }
 
+export const getProjectByName = async (token, projectName) => {
+    const response = await fetch( projectsURL + `/${projectName}`, {
+        headers: {
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        const data = await response.text();
+        try {
+            return JSON.parse(data);
+        } catch (error) {
+            throw new Error(`Invalid JSON: ${data}`);
+        }
+    }
+};
+
+
+
