@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import avatarProject from "../multimedia/Images/avatarProject.png";
 import "./ProjectCard.css";
 import { Link } from 'react-router-dom';
+import { Badge } from "react-bootstrap";
 
 const ProjectCard = ({ project, isLoggedIn }) => {
   return (
@@ -14,38 +15,43 @@ const ProjectCard = ({ project, isLoggedIn }) => {
           className="project-card-card-img-top"
         />
         <div className="project-card-card-body">
+        <div className="project-content-container">
           <h5 className="project-card-card-title"> {project.name}</h5>
           <p className="project-card-card-text">
-            <strong>Status:</strong> {project.status}
+            <strong>Status: </strong> {project.status}
           </p>
+          
           <p className="project-card-card-text">
             <strong>Keywords:</strong>
             {project.interests &&
               project.interests.map((interest, index) => (
-                <span
+                <Badge
                   key={`${project.id}-keyword-${index}`}
-                  className="project-card-badge project-card-badge-dark mr-2 mb-2"
+                  className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2"
                 >
                   {interest}
-                </span>
+                </Badge>
               ))}
           </p>
+          
           <p className="project-card-card-text">
             <strong>Skills:</strong>
             {project.skills &&
               project.skills.map((skill, index) => (
-                <span
+                <Badge
                   key={`${project.id}-skill-${index}`}
-                  className="project-card-badge project-card-badge-light mr-2 mb-2"
+                  className="project-card-badge project-card-badge-light mr-2 mb-2 px-2"
                 >
                   {skill}
-                </span>
+                </Badge>
               ))}
           </p>
           <p className="project-card-card-text">
-            <strong>Description:</strong>
+            <strong>Description: </strong>
             {project.description}
           </p>
+          
+          </div>
           {isLoggedIn && (
             <Link to={`/project/${project.name}`} className="project-card-btn project-card-btn-primary">Open Project</Link>
           )}

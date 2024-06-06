@@ -46,10 +46,10 @@ const Home = () => {
                 <Header />
             </FixedPosition>
             {isLoggedIn && (
-            <div style={{ paddingTop: '66px', position: 'fixed', width: '100%' }}>
-                <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-            </div>
-        )}
+    <div style={{ paddingTop: '66px', position: 'fixed', width: '100%'}}>
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+    </div>
+)}
             <div style={{ marginLeft: isLoggedIn ? '200px' : '0px' }}>
                 <div className={`banner${banner}`} style={{ width: '100%' }}> 
                     {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />} 
