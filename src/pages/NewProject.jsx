@@ -6,6 +6,8 @@ import { getLabs } from '../services/labServices';
 import Cookies from 'js-cookie';
 import avatarProject from '../multimedia/Images/avatarProject.png';
 import './NewProject.css';
+import UsersModal from '../components/UsersModal';
+import userStore from '../stores/userStore';
 
 const NewProject = () => {
   const [inputs, setInputs] = useState({
@@ -21,6 +23,8 @@ const NewProject = () => {
   const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
   const [avatar, setAvatar] = useState(avatarProject);
+  const [showUsersModal, setShowUsersModal] = useState(false);
+  const currentUser = userStore((state) => state.user);
 
   const handleImageUpload = (e) => {
     setImage(e.target.files[0]);
@@ -53,14 +57,24 @@ const NewProject = () => {
       setInputs({ ...inputs, [field]: [...inputs[field], ""] });
     }
   };
+  
   const handleDelete = (index, field) => {
     const newValues = [...inputs[field]];
     newValues.splice(index, 1);
     setInputs({ ...inputs, [field]: newValues });
   };
 
+  const handleOpenUserModal = () => {
+    setShowUsersModal(true);
+  };
+
+  const handleCloseUsersModal = () => {
+    setShowUsersModal(false);
+  };
+
   return (
     <>
+      <UsersModal show={showUsersModal} handleClose={handleCloseUsersModal} currentUser={currentUser} />
       <Header className="header" />
       <div className="new-project">
         <Sidebar className="sidebar" />
@@ -68,7 +82,7 @@ const NewProject = () => {
           <Container className="content-new-project">
             <h2 className="centered-title">Create New Project</h2>
             <Form>
-              <Row form>
+              <Row>
                 <Col md={6}>
                   <FormGroup className="my-form-group">
                     <Label for="name">Project Name:</Label>
@@ -118,6 +132,10 @@ const NewProject = () => {
                     />
                     <img src={avatar} alt="Project Avatar" className="avatar" />
                   </FormGroup>
+                  <div>
+                    <label>Team:</label>
+                    <Button onClick={handleOpenUserModal}>Add</Button>
+                  </div>
                 </Col>
                 <Col md={6}>
                   <FormGroup className="my-form-group">
@@ -133,7 +151,7 @@ const NewProject = () => {
                   {["skills", "keywords"].map((field) => (
                     <React.Fragment key={field}>
                       {inputs[field].map((value, index) => (
-                        <Row form key={`${field}-${index}`}>
+                        <Row key={`${field}-${index}`}>
                           <Col md={6}>
                             <FormGroup className="my-form-group">
                               <Label for={`${field}-${index}`}>
@@ -174,7 +192,7 @@ const NewProject = () => {
                         </Row>
                       ))}
                       {inputs[field][inputs[field].length - 1] !== "" && (
-                        <Row form>
+                        <Row>
                           <Col md={6}>
                             <Button onClick={() => addField(field)}>Add</Button>
                           </Col>
@@ -185,30 +203,45 @@ const NewProject = () => {
 
                   <React.Fragment>
                     {inputs["materials"].map((value, index) => (
-                      <Row form key={`materials-${index}`}>
+                      <Row key={`materials-${index}`}>
                         <Col md={12}>
                           <FormGroup className="my-form-group">
                             <Label for={`materials-${index}`}>
                               {index === 0 ? "Materials" : ""}
                             </Label>
-                            <Input
-                              type="text"
-                              name={`materials-${index}`}
-                              id={`materials-${index}`}
-                              value={value}
-                              onChange={(event) =>
-                                handleArrayChange(event, index, "materials")
-                              }
-                              placeholder="Materials"
-                              className="short-input"
-                            />
+                            {index < inputs["materials"].length - 1 ? (
+                              <div>
+                                {value}
+                                <Button
+                                  style={{
+                                    marginLeft: "20px",
+                                    padding: "2px",
+                                    fontSize: "15px",
+                                  }}
+                                  onClick={() => handleDelete(index, "materials")}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            ) : (
+                              <Input
+                                type="text"
+                                name={`materials-${index}`}
+                                id={`materials-${index}`}
+                                value={value}
+                                onChange={(event) =>
+                                  handleArrayChange(event, index, "materials")
+                                }
+                                placeholder="Materials"
+                                className="short-input"
+                              />
+                            )}
                           </FormGroup>
                         </Col>
                       </Row>
                     ))}
-                    {inputs["materials"][inputs["materials"].length - 1] !==
-                      "" && (
-                      <Row form>
+                    {inputs["materials"][inputs["materials"].length - 1] !== "" && (
+                      <Row>
                         <Col md={12}>
                           <Button onClick={() => addField("materials")}>
                             Add
