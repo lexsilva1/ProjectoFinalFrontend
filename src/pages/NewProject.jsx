@@ -49,7 +49,14 @@ const NewProject = () => {
   };
 
   const addField = (field) => {
-    setInputs({ ...inputs, [field]: [...inputs[field], ""] });
+    if (inputs[field][inputs[field].length - 1] !== "") {
+      setInputs({ ...inputs, [field]: [...inputs[field], ""] });
+    }
+  };
+  const handleDelete = (index, field) => {
+    const newValues = [...inputs[field]];
+    newValues.splice(index, 1);
+    setInputs({ ...inputs, [field]: newValues });
   };
 
   return (
@@ -136,32 +143,46 @@ const NewProject = () => {
                                     ":"
                                   : ""}
                               </Label>
-                              <Input
-                                type="text"
-                                name={`${field}-${index}`}
-                                id={`${field}-${index}`}
-                                value={value}
-                                onChange={(event) =>
-                                  handleArrayChange(event, index, field)
-                                }
-                                placeholder={
-                                  field.charAt(0).toUpperCase() + field.slice(1)
-                                }
-                                className="short-input"
-                              />
+                              {index < inputs[field].length - 1 ? (
+                                <div>
+                                  {value}
+                                  <Button
+                                    style={{
+                                      marginLeft: "20px",
+                                      padding: "2px",
+                                      fontSize: "15px",
+                                    }}
+                                    onClick={() => handleDelete(index, field)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Input
+                                  type="text"
+                                  name={`${field}-${index}`}
+                                  id={`${field}-${index}`}
+                                  value={value}
+                                  onChange={(e) =>
+                                    handleArrayChange(e, index, field)
+                                  }
+                                  className="short-input"
+                                />
+                              )}
                             </FormGroup>
                           </Col>
                         </Row>
                       ))}
-                      <Row form>
-                        <Col md={6}>
-                          <Button onClick={() => addField(field)}>
-                            Add {field}
-                          </Button>
-                        </Col>
-                      </Row>
+                      {inputs[field][inputs[field].length - 1] !== "" && (
+                        <Row form>
+                          <Col md={6}>
+                            <Button onClick={() => addField(field)}>Add</Button>
+                          </Col>
+                        </Row>
+                      )}
                     </React.Fragment>
                   ))}
+
                   <React.Fragment>
                     {inputs["materials"].map((value, index) => (
                       <Row form key={`materials-${index}`}>
@@ -185,13 +206,16 @@ const NewProject = () => {
                         </Col>
                       </Row>
                     ))}
-                    <Row form>
-                      <Col md={12}>
-                        <Button onClick={() => addField("materials")}>
-                          Add Materials
-                        </Button>
-                      </Col>
-                    </Row>
+                    {inputs["materials"][inputs["materials"].length - 1] !==
+                      "" && (
+                      <Row form>
+                        <Col md={12}>
+                          <Button onClick={() => addField("materials")}>
+                            Add
+                          </Button>
+                        </Col>
+                      </Row>
+                    )}
                   </React.Fragment>
                 </Col>
               </Row>
