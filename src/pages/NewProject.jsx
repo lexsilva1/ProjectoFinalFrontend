@@ -5,19 +5,20 @@ import Header from '../components/Header';
 import { getLabs } from '../services/labServices';
 import Cookies from 'js-cookie';
 import avatarProject from '../multimedia/Images/avatarProject.png';
+import './NewProject.css';
 
 const NewProject = () => {
   const [inputs, setInputs] = useState({
-    name: '',
-    location: '',
-    description: '',
-    slots: '',
-    skills: [''],
-    keywords: [''],
-    materials: [''],
+    name: "",
+    location: "",
+    description: "",
+    slots: "",
+    skills: [""],
+    keywords: [""],
+    materials: [""],
   });
   const [labs, setLabs] = useState([]);
-  const token = Cookies.get('authToken');
+  const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
   const [avatar, setAvatar] = useState(avatarProject);
 
@@ -26,15 +27,15 @@ const NewProject = () => {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-        setAvatar(reader.result);
+      setAvatar(reader.result);
     };
     reader.readAsDataURL(e.target.files[0]);
   };
 
   useEffect(() => {
     getLabs(token)
-        .then(labs => setLabs(labs))
-        .catch(error => console.error(error));
+      .then((labs) => setLabs(labs))
+      .catch((error) => console.error(error));
   }, [token]);
 
   const handleInputChange = (event) => {
@@ -48,74 +49,158 @@ const NewProject = () => {
   };
 
   const addField = (field) => {
-    setInputs({ ...inputs, [field]: [...inputs[field], ''] });
+    setInputs({ ...inputs, [field]: [...inputs[field], ""] });
   };
 
   return (
     <>
-      <Header style={{ position: 'fixed', top: 0, width: '100%', height: '60px', zIndex: 1000 }} />
-      <div className="new-project" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f8f9fa' }}>        
-      <Sidebar style={{ position: 'fixed' }}/>
-      <Container className="content" style={{ marginTop: '60px', padding: '40px', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)' }}>          <Form>
-            <Row form>
-              <Col md={6}>
-                <FormGroup style={{ marginBottom: '20px' }}>
-                  <Label for="name" style={{ fontSize: '0.8rem' }}>Project Name</Label>
-                  <Input type="text" name="name" id="name" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
-                </FormGroup>
-                <FormGroup style={{ marginBottom: '20px' }}>
-                  <Label for="location" style={{ fontSize: '0.8rem' }}>Location</Label>
-                  <Input type="select" name="location" id="location" onChange={handleInputChange} style={{ fontSize: '0.8rem' }}>
-                    <option value="">Select a lab</option>
-                    {labs.map((lab, index) => (
-                      <option key={index} value={lab.location}>{lab.location}</option>
+      <Header className="header" />
+      <div className="new-project">
+        <Sidebar className="sidebar" />
+        <div className="content-wrapper">
+          <Container className="content-new-project">
+            <h2 className="centered-title">Create New Project</h2>
+            <Form>
+              <Row form>
+                <Col md={6}>
+                  <FormGroup className="my-form-group">
+                    <Label for="name">Project Name:</Label>
+                    <Input
+                      type="text"
+                      name="name"
+                      id="name"
+                      onChange={handleInputChange}
+                      className="short-input"
+                    />
+                  </FormGroup>
+                  <FormGroup className="my-form-group">
+                    <Label for="location">Location:</Label>
+                    <Input
+                      type="select"
+                      name="location"
+                      id="location"
+                      onChange={handleInputChange}
+                      className="short-input"
+                    >
+                      <option value="">Select a laboratory:</option>
+                      {labs.map((lab, index) => (
+                        <option key={index} value={lab.location}>
+                          {lab.location}
+                        </option>
+                      ))}
+                    </Input>
+                  </FormGroup>
+                  <FormGroup className="my-form-group">
+                    <Label for="description">Description:</Label>
+                    <Input
+                      type="textarea"
+                      name="description"
+                      id="description"
+                      onChange={handleInputChange}
+                      className="short-input textarea-input"
+                    />{" "}
+                  </FormGroup>
+                  <FormGroup className="my-form-group">
+                    <Label for="imageUpload">Project Image</Label>
+                    <Input
+                      type="file"
+                      name="imageUpload"
+                      id="imageUpload"
+                      onChange={handleImageUpload}
+                      className="short-input"
+                    />
+                    <img src={avatar} alt="Project Avatar" className="avatar" />
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup className="my-form-group">
+                    <Label for="slots">Number of Slots:</Label>
+                    <Input
+                      type="number"
+                      name="slots"
+                      id="slots"
+                      onChange={handleInputChange}
+                      className="short-input"
+                    />
+                  </FormGroup>
+                  {["skills", "keywords"].map((field) => (
+                    <React.Fragment key={field}>
+                      {inputs[field].map((value, index) => (
+                        <Row form key={`${field}-${index}`}>
+                          <Col md={6}>
+                            <FormGroup className="my-form-group">
+                              <Label for={`${field}-${index}`}>
+                                {index === 0
+                                  ? field.charAt(0).toUpperCase() +
+                                    field.slice(1) +
+                                    ":"
+                                  : ""}
+                              </Label>
+                              <Input
+                                type="text"
+                                name={`${field}-${index}`}
+                                id={`${field}-${index}`}
+                                value={value}
+                                onChange={(event) =>
+                                  handleArrayChange(event, index, field)
+                                }
+                                placeholder={
+                                  field.charAt(0).toUpperCase() + field.slice(1)
+                                }
+                                className="short-input"
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      ))}
+                      <Row form>
+                        <Col md={6}>
+                          <Button onClick={() => addField(field)}>
+                            Add {field}
+                          </Button>
+                        </Col>
+                      </Row>
+                    </React.Fragment>
+                  ))}
+                  <React.Fragment>
+                    {inputs["materials"].map((value, index) => (
+                      <Row form key={`materials-${index}`}>
+                        <Col md={12}>
+                          <FormGroup className="my-form-group">
+                            <Label for={`materials-${index}`}>
+                              {index === 0 ? "Materials" : ""}
+                            </Label>
+                            <Input
+                              type="text"
+                              name={`materials-${index}`}
+                              id={`materials-${index}`}
+                              value={value}
+                              onChange={(event) =>
+                                handleArrayChange(event, index, "materials")
+                              }
+                              placeholder="Materials"
+                              className="short-input"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
                     ))}
-                  </Input>
-                </FormGroup>
-              </Col>
-              <Col md={6}>
-                <FormGroup style={{ marginBottom: '20px' }}>
-                  <Label for="description" style={{ fontSize: '0.8rem' }}>Description</Label>
-                  <Input type="textarea" name="description" id="description" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
-                </FormGroup>
-                <FormGroup style={{ marginBottom: '20px' }}>
-                  <Label for="slots" style={{ fontSize: '0.8rem' }}>Number of Slots</Label>
-                  <Input type="number" name="slots" id="slots" onChange={handleInputChange} style={{ fontSize: '0.8rem' }} />
-                </FormGroup>
-              </Col>
-            </Row>
-            {['skills', 'keywords', 'materials'].map((field) => (
-              <React.Fragment key={field}>
-                {inputs[field].map((value, index) => (
-                  <Row form key={`${field}-${index}`} style={{ marginBottom: '20px' }}>
-                    <Col md={6}>
-                      <FormGroup>
-                        <Label for={`${field}-${index}`} style={{ fontSize: '0.8rem' }}>{index === 0 ? field.charAt(0).toUpperCase() + field.slice(1) : ''}</Label>
-                        <Input
-                          type="text"
-                          name={`${field}-${index}`}
-                          id={`${field}-${index}`}
-                          value={value}
-                          onChange={(event) => handleArrayChange(event, index, field)}
-                          placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                          style={{ fontSize: '0.8rem' }}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                ))}
-                <Row form>
-                  <Col md={6}>
-                    <Button onClick={() => addField(field)}>
-                      Add {field}
-                    </Button>
-                  </Col>
-                </Row>
-              </React.Fragment>
-            ))}
-            <Button type="submit" color="primary" className="submit-button">Submit</Button>
-          </Form>
-        </Container>
+                    <Row form>
+                      <Col md={12}>
+                        <Button onClick={() => addField("materials")}>
+                          Add Materials
+                        </Button>
+                      </Col>
+                    </Row>
+                  </React.Fragment>
+                </Col>
+              </Row>
+              <Button type="submit" color="primary" className="submit-button">
+                Submit
+              </Button>
+            </Form>
+          </Container>
+        </div>
       </div>
     </>
   );
