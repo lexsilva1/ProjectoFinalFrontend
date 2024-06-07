@@ -3,19 +3,21 @@ import { Modal, Button, Form, FormControl } from 'react-bootstrap';
 import { findAllUsers } from '../services/userServices';
 import Cookies from 'js-cookie';
 import Avatar from '../multimedia/Images/Avatar.jpg';
+import userStore from '../stores/userStore';
 import './UsersModal.css';
 
-const UsersModal = ({ show, handleClose, currentUser }) => {
-  const [users, setUsers] = useState([]);
-  const [search, setSearch] = useState('');
-  const token = Cookies.get('authToken');
-
-  useEffect(() => {
-    findAllUsers(token).then((allUsers) => {
-      const otherUsers = allUsers.filter(user => user.id !== currentUser.id);
-      setUsers(otherUsers);
-    });
-  }, [currentUser]);
+const UsersModal = ({ show, handleClose, user }) => {
+    const [users, setUsers] = useState([]);
+    const [search, setSearch] = useState('');
+    const token = Cookies.get('authToken');
+    const currentUser = userStore(state => state.user);
+  
+    useEffect(() => {
+      findAllUsers(token).then((allUsers) => {
+        const otherUsers = allUsers.filter(user => user.id !== currentUser.id);
+        setUsers(otherUsers);
+      });
+    }, [currentUser]);
 
   const filteredUsers = users.filter(user => 
     `${user.firstName} ${user.lastName}`.toLowerCase().includes(search.toLowerCase())

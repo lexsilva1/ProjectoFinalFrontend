@@ -2,11 +2,15 @@
     max-width: 600px; 
     max-height: 800px;
     border-radius: 15px;
-  }
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); 
+    background-color: white; 
+}
   
-  .users-modal-search {
+.users-modal-search {
     margin: 0 15px 15px;
-  }
+    order: -1; 
+    max-width: 400px;
+}
   
   .users-modal-user {
     display: flex;
@@ -25,3 +29,4 @@
   .users-modal-name {
     flex-grow: 1;
   }
+

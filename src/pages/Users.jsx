@@ -20,18 +20,21 @@ const Users = () => {
         };
         fetchUsers();
     }, [token]);
-
     return (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
             <Header />
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                {isLoggedIn && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />} 
-                <div className="content" style={{ flexGrow: 1 }}>
+            <div style={{ display: 'flex', flex: '1' }}>
+                <Sidebar />
+                <div style={{ flex: '1', overflow: 'auto' }}>
                     <BannerUsers />
-                    {users.map(user => <UserCard key={user.id} user={user} />)}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', padding: '20px' }}>
+                        {users.map(user => (
+                            <UserCard key={user.id} user={user} />
+                        ))}
+                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -71,14 +71,14 @@ code {
   font-family: Arial, sans-serif;
   
 }
-.modal-body {
+/*.modal-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
   background-color: var(--secondary-color);
-}
+}*/
 .modal-footer {
   display: flex;
   justify-content: center;
