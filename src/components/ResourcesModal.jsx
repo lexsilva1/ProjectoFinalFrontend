@@ -3,43 +3,44 @@ import { Modal, Button, Form, Row, Col, FormControl } from 'react-bootstrap';
 import { getResources } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 
-const ResourcesModal = ({show, handleClose }) => {
+const ResourcesModal = ({ show, handleClose, handleSelect }) => {
   const [resources, setResources] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [quantities, setQuantities] = useState({});
   const token = Cookies.get('authToken');
-  const [name,setName] = useState(null);
-  const [type,setType] = useState(null);
-  const [identifier , setIdentifier] = useState(null);
-  const [supplier, setSupplier] = useState(null);
-
-
 
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const params = {};
-        if (name) params.resourceName = name;
-        if (type) params.resourceType = type;
-        if (identifier) params.resourceIdentifier = identifier;
-        if (supplier) params.supplier = supplier;
-  
-        const resources = await getResources(token, params);
+        const resources = await getResources(token);
         setResources(resources);
       } catch (error) {
         console.error(error);
       }
-      
     };
-  
+
     fetchResources();
   }, [token]);
 
-  const handleQuantityChange = (resourceName, quantity) => {
-    setQuantities({ ...quantities, [resourceName]: quantity });
+  const handleQuantityChange = (resource, quantity) => {
+    setQuantities({ ...quantities, [resource.name]: quantity });
+
+    const updatedMaterials = selectedMaterials.map((material) =>
+      material.id === resource.id ? { ...material, quantity } : material
+    );
+    setSelectedMaterials(updatedMaterials);
   };
 
-  const handleAddResource = (resourceName) => {
-    console.log(`Added ${quantities[resourceName]} of ${resourceName}`);
+  const handleAddResource = (resource) => {
+    const quantity = quantities[resource.name] || 1;
+    const updatedMaterials = [
+      ...selectedMaterials,
+      { ...resource, quantity },
+    ];
+    setSelectedMaterials(updatedMaterials);
+
+    handleSelect(updatedMaterials); // Enviar materiais selecionados ao componente pai
+    handleClose(); // Fechar o modal após adicionar um material
   };
 
   return (
@@ -48,29 +49,25 @@ const ResourcesModal = ({show, handleClose }) => {
         <Modal.Title>Resources</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-      {resources.map((resource, index) => (
-  <Row key={index}>
-    <Col>
-      <p>{resource.name}</p>
-    </Col>
-    <Col>
-      <FormControl
-        type="number"
-        min="0"
-        onChange={(e) => handleQuantityChange(resource.name, e.target.value)}
-      />
-    </Col>
-    <Col>
-      <Button onClick={() => handleAddResource(resource)}>Add</Button>
-    </Col>
-  </Row>
-))}
+        {resources.map((resource, index) => (
+          <Row key={index} className="align-items-center">
+            <Col>
+              <p>{resource.name}</p>
+            </Col>
+            <Col>
+              <FormControl
+                type="number"
+                min="1"
+                value={quantities[resource.name] || 1}
+                onChange={(e) => handleQuantityChange(resource, e.target.value)}
+              />
+            </Col>
+            <Col>
+              <Button onClick={() => handleAddResource(resource)}>Add</Button>
+            </Col>
+          </Row>
+        ))}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };
