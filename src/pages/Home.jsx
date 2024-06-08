@@ -38,7 +38,7 @@ const Home = () => {
                 <Header />
             </div>
             {isLoggedIn && (
-                <div style={{ paddingTop: "66px", position: "absolute", width: "100%" }}>
+                <div style={{ paddingTop: "70px", position: "absolute", width: "100%" }}>
                     <div style={{ position: "fixed" }}>
                         <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
                     </div>

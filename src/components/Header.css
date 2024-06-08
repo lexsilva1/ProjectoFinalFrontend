@@ -5,6 +5,9 @@
     padding: 20px 0;
     background-color: var(--primary-color);
     position: fixed;
+    height: 70px;
+    min-height: 70px;
+    max-height: 70px;
 }
 .button, .button2, .language-button{
     border: none;

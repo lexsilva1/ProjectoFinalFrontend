@@ -2,15 +2,9 @@ import baseURL from "./baseURL";
 
 const resourcesURL = baseURL + 'resources';
 
-export const getResources = async (token, resourceName, resourceType, resourceIdentifier, supplier) => {
-    const params = new URLSearchParams({
-        resourceName,
-        resourceType,
-        resourceIdentifier,
-        supplier
-    });
+export const getResources = async (token) => {
 
-    const response = await fetch(`${resourcesURL}?${params.toString()}`, {
+    const response = await fetch(resourcesURL, {
         headers: {
             'token': token
         }
