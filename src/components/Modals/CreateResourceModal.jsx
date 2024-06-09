@@ -53,11 +53,11 @@ const CreateResourceModal = (props) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+  
     try {
       const response = await createResource(token, formData);
       console.log("Response from createResource:", response);
-      props.toggle(); // Close the modal on success
+      props.toggle(); // fecha o modal após a criação do recurso
     } catch (error) {
       console.error('An error occurred:', error);
     }
