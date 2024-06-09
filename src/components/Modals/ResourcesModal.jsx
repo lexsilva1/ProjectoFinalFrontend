@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, FormControl } from 'react-bootstrap';
-import { getResources } from '../services/resourcesServices';
+import { getResources } from '../../services/resourcesServices';
 import Cookies from 'js-cookie';
 
 const ResourcesModal = ({ show, handleClose, handleSelect }) => {

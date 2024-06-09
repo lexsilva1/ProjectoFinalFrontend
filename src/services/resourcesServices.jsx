@@ -15,6 +15,23 @@ export const getResources = async (token) => {
     } else {
         return await response.json();
     }
+}
+
+export const createResource = async (token, resourceDto) => {
+    const response = await fetch(resourcesURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(resourceDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.json();
+    }
 };
 
      

@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import Confirmation from './pages/Confirmation';
 import Profile from './pages/Profile';
 import Project from './pages/Project';
+import Inventory from './pages/Inventory';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/confirmation/:token" element={<Confirmation />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/project/:projectName" element={<Project />} />
+        <Route path="/inventory" element={<Inventory />} />
       </Routes>
     </>
   );

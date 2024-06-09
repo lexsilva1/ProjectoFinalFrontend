@@ -66,7 +66,26 @@ export const getProjectByName = async (token, projectName) => {
             throw new Error(`Invalid JSON: ${data}`);
         }
     }
-};
+}
+
+export const createProject = async (token, projectDto) => {
+    const response = await fetch(projectsURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token
+      },
+      body: JSON.stringify(projectDto)
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    return response.json();
+  };
+
+
 
 
 
