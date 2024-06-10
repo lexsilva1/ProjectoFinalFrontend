@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
 import Avatar from "../multimedia/Images/Avatar.jpg";
-import { findUserById, uploadUserPhoto } from "../services/userServices";
+import { findUserById, uploadUserPhoto, updateUser } from "../services/userServices";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
 import { PencilSquare } from "react-bootstrap-icons";
@@ -17,39 +17,81 @@ const Profile = () => {
   const { user } = userStore.getState();
   const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [labs, setLabs] = useState([]);
+  const [formValues, setFormValues] = useState({
+    firstName: '',
+    lastName: '',
+    nickname: '',
+    labLocation: '',
+    bio: '',
+    
+  });
+
+  useEffect(() => {
+    setFormValues({
+      firstName: profile?.firstName || '',
+      lastName: profile?.lastName || '',
+      nickname: profile?.nickname || '',
+      labLocation: profile?.labLocation || '',
+      bio: profile?.bio || '',
+    });
+  }, [profile]);
 
   const handleImageUpload = (e) => {
-    setImage(e.target.files[0]);
+    const uploadedImage = e.target.files[0];
+    setImage(uploadedImage);
 
     const reader = new FileReader();
-
-    reader.readAsDataURL(e.target.files[0]);
-
-    reader.onloadend = function (e) {
-      const imagePreview = document.querySelector(".user-image");
-      imagePreview.src = reader.result;
+    reader.readAsDataURL(uploadedImage);
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
     };
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
+    let finalImageURL = user.image; // Assuming user.image holds the current image URL
+  
+    if (image !== null) {
+      try {
+        const response = await uploadUserPhoto(image, token);
+        console.log("Upload successful:", response);
+        finalImageURL = response // Assuming the response contains the new image URL in data.image
+        console.log("finalImageURL:", finalImageURL);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  
+    if (formValues.firstName && formValues.lastName && formValues.labLocation) {
+      const userUpdate = {
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        labLocation: formValues.labLocation,
+        nickname: formValues.nickname,
+        userPhoto: finalImageURL,
+        bio: formValues.bio,
+      };
+  
+      await updateUser(user.id, userUpdate, token)
+        .then((response) => {
+          console.log("userUpdate:", userUpdate);
+          
+          setEditMode(false);
+        })
+        .catch((error) => {
+          console.error("Error from updateUser:", error);
+        });
+    }
+  };
 
-    const formData = new FormData();
-    formData.append("image", image);
-
-    uploadUserPhoto(image, token)
-      .then((response) => {
-        console.log(response);
-        if (response.data) {
-          userStore.update({ ...user, image: response.data.image });
-        } else {
-          console.error("Error uploading image:", response);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
@@ -62,7 +104,6 @@ const Profile = () => {
     if (user && user.id) {
       findUserById(token, user.id)
         .then((userFromServer) => {
-          console.log(userFromServer);
           setProfile(userFromServer);
         })
         .catch((error) => console.error(error));
@@ -71,28 +112,37 @@ const Profile = () => {
 
   return (
     <>
-      <Header className="profile-header" />
-      <div className="profile-flex-container">
-        <div className="profile-sidebar">
-          <Sidebar />
-        </div>
-        <div className="profile-main-content">
-          <Container fluid>
-            <Row>
-              <Col md={12}>
-                <Card className="profile-card">
-                  <Card.Img
-                    className="profile-card-img"
-                    src={user?.image ? user.image : Avatar}
-                  />
-                  <Card.Header className="profile-card-header">
-                    <Card.Img
-                      className="profile-card-img user-image"
-                      src={user?.image ? user.image : Avatar}
+      <Header />
+      <Container fluid className="profile-container">
+        <Row className="profile-row">
+          <Col md={3} className="profile-sidebar">
+            <Sidebar />
+          </Col>
+          <Col md={9} className="profile-main-content">
+            <Card className="profile-card">
+              <Card.Body>
+                <Row>
+                  <Col md={4} className="text-center mb-3">
+                    <img
+                      src={imagePreview || user?.image || Avatar}
+                      alt="Profile"
+                      className="profile-image"
                     />
-                    <div className="profile-nameedit">
-                      {`${user?.firstName} ${user?.lastName}`}
-
+                    {editMode && (
+                      <div className="mt-3">
+                        <Form.Group>
+                          <Form.Label>Choose Image:</Form.Label>
+                          <Form.Control
+                            type="file"
+                            onChange={handleImageUpload}
+                          />
+                        </Form.Group>
+                      </div>
+                    )}
+                  </Col>
+                  <Col md={8}>
+                    <h2 className="profile-name">
+                      {user?.firstName} {user?.lastName}
                       <Button
                         variant="outline-secondary"
                         onClick={() => setEditMode(!editMode)}
@@ -100,129 +150,124 @@ const Profile = () => {
                       >
                         <PencilSquare />
                       </Button>
-                    </div>
-                  </Card.Header>
-                  <Row className="g-0">
-                    <Col md={4}>
-                      {editMode && (
-                        <>
-                          <input type="file" onChange={handleImageUpload} />
-                        </>
-                      )}
-                    </Col>
-                    <Col md={8}>
-                      <Card.Body>
+                    </h2>
+                    <hr />
+                    <div>
+                      {editMode ? (
+                        <Form>
+                          <Form.Group>
+                            <Form.Label>First Name:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="firstName"
+                              value={formValues.firstName}
+                              onChange={handleChange}
+                            />
+                          </Form.Group>
+                          <Form.Group>
+                            <Form.Label>Last Name:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="lastName"
+                              value={formValues.lastName}
+                              onChange={handleChange}
+                            />
+                          </Form.Group>
+                          <Form.Group>
+                            <Form.Label>Nickname:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              name="nickname"
+                              value={formValues.nickname}
+                              onChange={handleChange}
+                            />
+                          </Form.Group>
+                          <Form.Group>
+                            <Form.Label>Usual Work Place:</Form.Label>
+                            <Form.Control
+                              as="select"
+                              name="labLocation"
+                              value={formValues.labLocation}
+                              onChange={handleChange}
+                            >
+                              {labs.map((lab, index) => (
+                                <option key={index} value={lab.location}>
+                                  {lab.location}
+                                </option>
+                              ))}
+                            </Form.Control>
+                          </Form.Group>
+                          <Form.Group>
+                            <Form.Label>Bio:</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={3}
+                              name="bio"
+                              value={formValues.bio}
+                              onChange={handleChange}
+                            />
+                          </Form.Group>
+                          <Button
+                            variant="primary"
+                            type="button"
+                            onClick={handleSave}
+                          >
+                            Save
+                          </Button>
+                        </Form>
+                      ) : (
                         <div>
-                          {editMode ? (
-                            <Form>
-                              <Form.Group>
-                                <Form.Label>First Name:</Form.Label>
-                                <Form.Control
-                                  type="text"
-                                  placeholder="First Name"
-                                  defaultValue={profile?.firstName}
-                                />
-                              </Form.Group>
-                              <Form.Group>
-                                <Form.Label>Last Name:</Form.Label>
-                                <Form.Control
-                                  type="text"
-                                  placeholder="Last Name"
-                                  defaultValue={profile?.lastName}
-                                />
-                              </Form.Group>
-                              <Form.Group>
-                                <Form.Label>Nickname:</Form.Label>
-                                <Form.Control
-                                  type="text"
-                                  placeholder="Nickname"
-                                  defaultValue={profile?.nickname}
-                                />
-                              </Form.Group>
-                              <Form.Group>
-                                <Form.Label>Usual Work Place:</Form.Label>
-                                <Form.Select
-                                  defaultValue={profile?.labLocation}
-                                >
-                                  {labs.map((lab, index) => (
-                                    <option key={index} value={lab.location}>
-                                      {lab.location}
-                                    </option>
-                                  ))}
-                                </Form.Select>
-                              </Form.Group>
-                              <Form.Group>
-                                <Form.Label>Bio:</Form.Label>
-                                <Form.Control
-                                  type="text"
-                                  placeholder="Bio"
-                                  defaultValue={profile?.bio}
-                                />
-                              </Form.Group>
-                              <Button
-                                variant="primary"
-                                type="button"
-                                onClick={handleSave}
-                              >
-                                Save
-                              </Button>
-                            </Form>
-                          ) : (
-                            <>
-                              <Card.Text className="profile-info-text">
-                                <strong>First Name:</strong>{" "}
-                                {profile?.firstName || ""}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Last Name:</strong>{" "}
-                                {profile?.lastName || ""}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Nickname:</strong>{" "}
-                                {profile?.nickname || ""}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Usual Work Place:</strong>{" "}
-                                {profile?.labLocation || ""}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Bio:</strong> {profile?.bio || ""}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Skills:</strong>{" "}
-                                {profile?.skills.length > 0
-                                  ? profile.skills.join(", ")
-                                  : "No skills added"}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Interests:</strong>{" "}
-                                {profile?.interests.length > 0
-                                  ? profile.interests.join(", ")
-                                  : "No interests added"}
-                              </Card.Text>
-                              <Card.Text className="profile-info-text">
-                                <strong>Projects:</strong>{" "}
-                                {profile?.projects.length > 0
-                                  ? profile.projects.map((project, index) => (
-                                      <div key={index}>
-                                        <strong>{project.name}</strong>
-                                        <p>{project.description}</p>
-                                      </div>
-                                    ))
-                                  : "No projects added"}
-                              </Card.Text>
-                            </>
-                          )}
+                          <p>
+                            <strong>First Name:</strong> {profile?.firstName}
+                          </p>
+                          <p>
+                            <strong>Last Name:</strong> {profile?.lastName}
+                          </p>
+                          <p>
+                            <strong>Nickname:</strong> {profile?.nickname}
+                          </p>
+                          <p>
+                            <strong>Usual Work Place:</strong>{" "}
+                            {profile?.labLocation}
+                          </p>
+                          <p>
+                            <strong>Bio:</strong> {profile?.bio}
+                          </p>
+                          <p>
+                            <strong>Skills:</strong>{" "}
+                            {profile?.skills?.length > 0
+                              ? profile.skills.join(", ")
+                              : "No skills added"}
+                          </p>
+                          <p>
+                            <strong>Interests:</strong>{" "}
+                            {profile?.interests?.length > 0
+                              ? profile.interests.join(", ")
+                              : "No interests added"}
+                          </p>
+                          <p>
+                            <strong>Projects:</strong>{" "}
+                            {profile?.projects?.length > 0 ? (
+                              profile.projects.map((project, index) => (
+                                <div key={index}>
+                                  <strong>{project.name}</strong>
+                                  <p>{project.description}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <p>No projects added</p>
+                            )}
+                          </p>
                         </div>
-                      </Card.Body>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </div>
+                      )}
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

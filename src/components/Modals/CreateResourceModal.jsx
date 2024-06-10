@@ -26,7 +26,6 @@ const CreateResourceModal = (props) => {
     type: '',
     supplier: '',
     stock: '',
-    identifier: '',
     brand: '',
     supplierContact: '',
     observations: ''
@@ -45,7 +44,6 @@ const CreateResourceModal = (props) => {
     if (!formData.name) newErrors.name = "This field is required";
     if (!formData.type) newErrors.type = "Please select a type";
     if (!formData.stock || formData.stock < 0) newErrors.stock = "This field is required and should be a positive number";
-    if (!formData.identifier) newErrors.identifier = "This field is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -72,6 +70,7 @@ const CreateResourceModal = (props) => {
         <ModalHeader toggle={props.toggle}>Create Resource</ModalHeader>
         <ModalBody>
           <Form onSubmit={onSubmit}>
+          <FormGroup>
             <Row form>
               <Col md={6}>
                 <FormGroup>
@@ -129,16 +128,7 @@ const CreateResourceModal = (props) => {
                 </FormGroup>
               </Col>
               <Col md={6}>
-                <FormGroup>
-                  <Label for="identifier">Identifier</Label>
-                  <Input
-                    name="identifier"
-                    value={formData.identifier}
-                    onChange={onChange}
-                    invalid={!!errors.identifier}
-                  />
-                  <FormFeedback>{errors.identifier}</FormFeedback>
-                </FormGroup>
+               
                 <FormGroup>
                   <Label for="brand">Brand</Label>
                   <Input
@@ -166,6 +156,7 @@ const CreateResourceModal = (props) => {
                 </FormGroup>
               </Col>
             </Row>
+          </FormGroup>
             <Button color="primary" type="submit">Submit</Button>
           </Form>
         </ModalBody>

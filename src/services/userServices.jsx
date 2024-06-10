@@ -148,7 +148,7 @@ export const uploadUserPhoto = async (file, token) => {
 }
 
 export const updateUser = async (id, userDto, token) => {
-    const response = await fetch(usersURL + `/{id}`, {
+    const response = await fetch(usersURL + '/' + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
