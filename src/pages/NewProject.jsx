@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Container,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  CardHeader,
-} from "reactstrap";
+import {Button, Form, FormGroup, Label, Input, Container, Row, Col, Card, CardBody, CardHeader,} from "reactstrap";
+import { Typeahead } from "react-bootstrap-typeahead"; 
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
 import { getLabs } from "../services/labServices";
@@ -23,6 +12,8 @@ import userStore from "../stores/userStore";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import "./NewProject.css";
 import { createProject } from "../services/projectServices";
+import { getSkills } from "../services/skillServices";
+import { getInterests } from "../services/interestServices";
 
 const NewProject = () => {
   const [inputs, setInputs] = useState({
@@ -35,6 +26,8 @@ const NewProject = () => {
     materials: [],
   });
   const [labs, setLabs] = useState([]);
+  const [skillSuggestions, setSkillSuggestions] = useState([]);
+  const [keywordSuggestions, setKeywordSuggestions] = useState([]);
   const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
   const [avatar, setAvatar] = useState(avatarProject);
@@ -48,6 +41,14 @@ const NewProject = () => {
   useEffect(() => {
     getLabs(token)
       .then((labs) => setLabs(labs))
+      .catch((error) => console.error(error));
+
+    getSkills(token)
+      .then((skills) => setSkillSuggestions(skills))
+      .catch((error) => console.error(error));
+
+    getInterests(token)
+      .then((interests) => setKeywordSuggestions(interests))
       .catch((error) => console.error(error));
   }, [token]);
 
@@ -63,17 +64,11 @@ const NewProject = () => {
   const handleInputChange = (event) => {
     setInputs({ ...inputs, [event.target.name]: event.target.value });
   };
-
-  const handleArrayChange = (event, index, field) => {
-    const newValues = [...inputs[field]];
-    newValues[index] = event.target.value;
-    setInputs({ ...inputs, [field]: newValues });
-  };
-
   const addField = (field) => {
-    if (inputs[field][inputs[field].length - 1] !== "") {
-      setInputs({ ...inputs, [field]: [...inputs[field], ""] });
-    }
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      [field]: [...prevInputs[field], ""], // Adiciona uma string vazia ao array
+    }));
   };
 
   const handleDelete = (index, field) => {
@@ -131,6 +126,7 @@ const NewProject = () => {
   const prevStep = () => {
     setStep(step - 1);
   };
+
   const handleKeyPress = (event) => {
     const keyCode = event.keyCode || event.which;
     const keyValue = String.fromCharCode(keyCode);
@@ -148,8 +144,10 @@ const NewProject = () => {
       location: inputs.location,
       image: image,
       slots: inputs.slots,
-      skills: inputs.skills,
-      keywords: inputs.keywords,
+      skills: Array.isArray(inputs.skills) ? inputs.skills : [inputs.skills],
+      keywords: Array.isArray(inputs.keywords)
+        ? inputs.keywords
+        : [inputs.keywords],
       teamMembers: teamMembers.map((member) => member.id),
       materials: inputs.materials,
     };
@@ -162,6 +160,12 @@ const NewProject = () => {
     }
   };
 
+  const handleArrayChange = (selected, index, field) => {
+    const newValues = [...inputs[field]];
+    newValues[index] = selected.length > 0 ? selected[0].name : ""; // Apenas passa o nome da habilidade para o estado inputs
+    setInputs({ ...inputs, [field]: newValues });
+  };
+
   return (
     <>
       <UsersModal
@@ -172,7 +176,7 @@ const NewProject = () => {
       <ResourcesModal
         show={showResourcesModal}
         handleClose={handleCloseResourcesModal}
-        handleSelect={handleResourcesSelect} // Adicione esta linha
+        handleSelect={handleResourcesSelect}
       />
       <Header className="header" />
       <div className="new-project">
@@ -261,7 +265,7 @@ const NewProject = () => {
                         <Col md={6}>
                           {["skills", "keywords"].map((field) => (
                             <React.Fragment key={field}>
-                              {inputs[field].map((value, index) => (
+                              {[...inputs[field]].map((value, index) => (
                                 <Row key={`${field}-${index}`}>
                                   <Col md={12}>
                                     <FormGroup className="my-form-group">
@@ -286,16 +290,33 @@ const NewProject = () => {
                                           </Button>
                                         </div>
                                       ) : (
-                                        <Input
-                                          type="text"
-                                          name={`${field}-${index}`}
-                                          id={`${field}-${index}`}
-                                          value={value}
-                                          onChange={(e) =>
-                                            handleArrayChange(e, index, field)
-                                          }
-                                          className="short-input"
-                                        />
+                                        <div className="array-field">
+                                          {" "}
+                                          {/* Ajuste */}
+                                          <Typeahead
+                                            id={`${field}-${index}`}
+                                            labelKey="name"
+                                            options={
+                                              field === "skills"
+                                                ? skillSuggestions
+                                                : keywordSuggestions
+                                            }
+                                            placeholder={`Enter ${field}`}
+                                            onChange={(selected) =>
+                                              handleArrayChange(
+                                                selected,
+                                                index,
+                                                field
+                                              )
+                                            }
+                                            className="short-input"
+                                          />
+                                          <Button // Adiciona o botão "Add" aqui
+                                            onClick={() => addField(field)}
+                                          >
+                                            Add
+                                          </Button>
+                                        </div>
                                       )}
                                     </FormGroup>
                                   </Col>
@@ -322,7 +343,7 @@ const NewProject = () => {
                               name="slots"
                               id="slots"
                               onChange={handleInputChange}
-                              onKeyPress={handleKeyPress} // Adicione esta linha
+                              onKeyPress={handleKeyPress}
                               className="short-input"
                               min="0"
                             />
@@ -426,7 +447,6 @@ const NewProject = () => {
                       </Row>
                     </>
                   )}
-
                   {step === 3 && (
                     <>
                       <Row>
