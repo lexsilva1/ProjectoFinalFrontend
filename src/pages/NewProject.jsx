@@ -12,8 +12,9 @@ import userStore from "../stores/userStore";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import "./NewProject.css";
 import { createProject } from "../services/projectServices";
-import { getSkills } from "../services/skillServices";
-import { getInterests } from "../services/interestServices";
+import { getSkills, createSkill } from "../services/skillServices";
+import { getInterests,  } from "../services/interestServices";
+
 
 const NewProject = () => {
   const [inputs, setInputs] = useState({
