@@ -12,6 +12,7 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const setShow = userStore((state) => state.setShowLogin);
   const handleClose = () => setShow(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [loginError, setLoginError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,10 +21,11 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
     const loginSuccessful = await login(email, password);
     if (loginSuccessful) {
       handleClose();
+      setLoginError(false);
+    } else {
+      setLoginError(true);
     }
   };
-
-
 
   return (
     <>
@@ -50,7 +52,22 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
             <Form.Group controlId="formBasicPassword" className="mb-4">
               <Form.Label>{t("Password")}</Form.Label>
               <Form.Control type="password" placeholder={t("Password")} />
-              <a href="#" onClick={(e) => { e.preventDefault(); handleClose(); handleOpenResetPasswordModal(); }} className="text-info">Forgot your password?</a>
+              {loginError && (
+                <p className="text-danger">
+                  {t("Invalid login credentials. Please try again.")}
+                </p>
+              )}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleClose();
+                  handleOpenResetPasswordModal();
+                }}
+                className="text-info"
+              >
+                Forgot your password?
+              </a>
             </Form.Group>
 
             <button type="submit" className="custom-button">
@@ -59,7 +76,10 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
           </Form>
         </Modal.Body>
       </Modal>
-      <ResetPasswordModal show={showResetPasswordModal} onHide={() => setShowResetPasswordModal(false)} />
+      <ResetPasswordModal
+        show={showResetPasswordModal}
+        onHide={() => setShowResetPasswordModal(false)}
+      />
     </>
   );
 };

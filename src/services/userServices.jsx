@@ -71,7 +71,9 @@ export const registerUser = async (email, password) => {
         const data = await response.json();
         return data;
     } else {
-        throw new Error('Error during registration');
+        const error = new Error('Error during registration');
+        error.status = response.status; 
+        throw error;
     }
 }
 
