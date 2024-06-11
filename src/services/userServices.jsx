@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import baseURL from './baseURL';
 import userStore from '../stores/userStore';
 
+
 const usersURL = baseURL + 'users';
 
 export const login = async (email, password) => {
@@ -164,4 +165,37 @@ export const updateUser = async (id, userDto, token) => {
         return data;
     }
 }
+
+export const resetPassword = async (email) => {
+    const response = await fetch(usersURL + '/resetPassword', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'email': email
+      },
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    return response.json();
+  }
+
+  export const confirmPasswordReset = async (token, passwordDto) => {
+    const response = await fetch(usersURL + '/confirmPasswordReset/' + token, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(passwordDto),
+    });
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      const data = await response.text();
+      return data;
+    }
+};
 

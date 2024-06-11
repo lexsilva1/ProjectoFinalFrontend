@@ -12,6 +12,9 @@ import ProjectCard from "../components/Cards/ProjectCard";
 import { FaSearch } from "react-icons/fa";
 import InfoBox from "../components/InfoBox";
 import Footer from "../components/Footer";
+import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
+import SetPasswordModal from "../components/Modals/SetPasswordModal";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +22,21 @@ const Home = () => {
   const [banner, setBanner] = useState(1);
   const [projects, setProjects] = useState([]);
   const [hasFetchedProjects, setHasFetchedProjects] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = location.pathname.split("/")[2];
+    if (location.pathname.startsWith('/PasswordReset/') && token) {
+      setShowSetPasswordModal(true);
+    }
+  }, [location]);
+
+  const handleCloseSetPasswordModal = () => {
+    setShowSetPasswordModal(false);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,6 +49,23 @@ const Home = () => {
   useEffect(() => {
     getProjects().then(setProjects).catch(console.error);
   }, []);
+
+  const handleOpenResetPasswordModal = () => {
+    setShowLoginModal(false);
+    setShowResetPasswordModal(true);
+  };
+
+  const handleCloseResetPasswordModal = () => {
+    setShowResetPasswordModal(false);
+  };
+
+  const handleOpenLoginModal = () => {
+    setShowLoginModal(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
 
   return (
     <>
@@ -104,8 +139,10 @@ const Home = () => {
               isLoggedIn={isLoggedIn}
             />
           ))}
-          <LoginModal />
-          <RegisterModal />
+<LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />      
+      <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
+      <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
+        <RegisterModal />
         </div>
         <Footer />
       </div>
