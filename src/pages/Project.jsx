@@ -103,13 +103,16 @@ const Project = () => {
   {project && project.teamMembers && project.maxTeamMembers &&
     `${project.maxTeamMembers - project.teamMembers.length}/${project.maxTeamMembers}`}
 </p>
-                {project &&
-                  project.teamMembers &&
-                  project.maxTeamMembers &&
-                  project.maxTeamMembers > project.teamMembers.length &&
-                  !project.teamMembers.some(
-                    (member) => member.userId === currentUser.id
-                  ) && <button className="btn btn-primary">Apply</button>}
+{project &&
+  project.teamMembers &&
+  project.maxTeamMembers &&
+  project.maxTeamMembers > project.teamMembers.length ? (
+    !project.teamMembers.some((member) => member.userId === currentUser.id) ? (
+      <button className="btn btn-primary">Apply</button>
+    ) : (
+      <button className="btn btn-primary">Open Project</button>
+    )
+  ) : null}
               </div>
             </div>
           </div>

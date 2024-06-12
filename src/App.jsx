@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Project from './pages/Project';
 import Inventory from './pages/Inventory';
 
+
 function App() {
 
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/project/:projectName" element={<Project />} />
         <Route path="/inventory" element={<Inventory />} />
+        <Route path="/PasswordReset/:token" element={<Home />} />
       </Routes>
     </>
   );
