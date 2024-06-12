@@ -23,6 +23,7 @@ const Project = () => {
       const encodedProjectName = encodeURIComponent(projectName);
       console.log(encodedProjectName);
       const projectData = await getProjectByName(token, encodedProjectName);
+      console.log(projectData);
       setProject(projectData);
     };
 

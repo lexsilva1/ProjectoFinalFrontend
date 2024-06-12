@@ -2,13 +2,12 @@ import userStore from "../stores/userStore";
 import Cookies from 'js-cookie';
 
 export function startWebSocket() {
-  const websocketURL = 'ws://localhost:8080/projectoFinalBackend/websocket/notifications';
-  const socket = new WebSocket(websocketURL);
+  const websocketURL = 'ws://localhost:8080/projectoFinalBackend/websocket/notifications/';
+  const socket = new WebSocket(websocketURL+`${Cookies.get('authToken')}`);
 
   // Definição do manipulador de mensagens
   socket.onmessage = function(event) {
     const message = event.data;
-
     if (message === 'You have been logged out due to inactivity.') {
       // Limpeza dos cookies
       Cookies.remove('authToken');

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/userServices';
 import Avatar from '../multimedia/Images/Avatar.jpg';
 import logo2 from '../multimedia/Images/logo2.png';
+import { FaBell } from 'react-icons/fa';
 
 
 const Header = () => {
@@ -24,6 +25,7 @@ const Header = () => {
   const handleShowRegister = () => setShowRegister(true);
 
   const handleLogout = () => {
+    logout();
     Cookies.remove("authToken");
     Cookies.remove("i18nextLng");
     userStore.setState({ user: null });
@@ -55,20 +57,21 @@ const Header = () => {
         <Nav className="justify-content-end">
           {!authToken && (
             <>
-              <Button variant="outline" className="button" onClick={handleShow}>
-                {t("Login")}
-              </Button>
-              <Button
+             <Button
                 variant="outline"
                 className="button2"
                 onClick={handleShowRegister}
               >
                 {t("Sign Up")}
               </Button>
+              <Button variant="outline" className="button" onClick={handleShow}>
+                {t("Login")}
+              </Button>
             </>
           )}
           {authToken && user && (
             <>
+            <FaBell className="notification-icon" /> 
               <div className="user-info">
                 <img
                   src={user.image ? user.image : Avatar}
