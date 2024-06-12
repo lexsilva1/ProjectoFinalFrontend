@@ -41,7 +41,6 @@ export const  logout = async () => {
             },
         });
         const text = await response.text();
-        Cookies.remove('authToken'); 
         if (response.ok) {
             userStore.setState({ isLoggedIn: false });
             return true;
@@ -68,12 +67,13 @@ export const registerUser = async (email, password) => {
     });
 
     if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        const error = new Error('Error during registration');
-        error.status = response.status; 
-        throw error;
+        const text = await response.text();
+        try {
+            const data = JSON.parse(text);
+            // Continue processing data
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 }
 

@@ -13,7 +13,8 @@ import Avatar from "../multimedia/Images/Avatar.jpg";
 import "./NewProject.css";
 import { createProject } from "../services/projectServices";
 import { getSkills, createSkill } from "../services/skillServices";
-import { getInterests,  } from "../services/interestServices";
+import { getInterests, createInterest } from "../services/interestServices";
+
 
 
 const NewProject = () => {
@@ -66,10 +67,16 @@ const NewProject = () => {
     setInputs({ ...inputs, [event.target.name]: event.target.value });
   };
   const addField = (field) => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      [field]: [...prevInputs[field], ""], // Adiciona uma string vazia ao array
-    }));
+    // Verifica se já existe um campo vazio
+    const hasEmptyField = inputs[field].some((value) => value === "");
+    
+    // Se não existir, adiciona um novo campo
+    if (!hasEmptyField) {
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        [field]: [...prevInputs[field], ""],
+      }));
+    }
   };
 
   const handleDelete = (index, field) => {
@@ -163,7 +170,7 @@ const NewProject = () => {
 
   const handleArrayChange = (selected, index, field) => {
     const newValues = [...inputs[field]];
-    newValues[index] = selected.length > 0 ? selected[0].name : ""; // Apenas passa o nome da habilidade para o estado inputs
+    newValues[index] = selected.length > 0 ? selected[0].name : ""; 
     setInputs({ ...inputs, [field]: newValues });
   };
 
@@ -264,77 +271,52 @@ const NewProject = () => {
                     <>
                       <Row>
                         <Col md={6}>
-                          {["skills", "keywords"].map((field) => (
-                            <React.Fragment key={field}>
-                              {[...inputs[field]].map((value, index) => (
-                                <Row key={`${field}-${index}`}>
-                                  <Col md={12}>
-                                    <FormGroup className="my-form-group">
-                                      <Label for={`${field}-${index}`}>
-                                        {index === 0
-                                          ? field.charAt(0).toUpperCase() +
-                                            field.slice(1)
-                                          : ""}
-                                      </Label>
-                                      {index < inputs[field].length - 1 ? (
-                                        <div className="array-field">
-                                          {value}
-                                          <Button
-                                            onClick={() =>
-                                              handleDelete(index, field)
-                                            }
-                                            color="danger"
-                                            size="sm"
-                                            className="array-remove-button"
-                                          >
-                                            Remove
-                                          </Button>
-                                        </div>
-                                      ) : (
-                                        <div className="array-field">
-                                          {" "}
-                                          {/* Ajuste */}
-                                          <Typeahead
-                                            id={`${field}-${index}`}
-                                            labelKey="name"
-                                            options={
-                                              field === "skills"
-                                                ? skillSuggestions
-                                                : keywordSuggestions
-                                            }
-                                            placeholder={`Enter ${field}`}
-                                            onChange={(selected) =>
-                                              handleArrayChange(
-                                                selected,
-                                                index,
-                                                field
-                                              )
-                                            }
-                                            className="short-input"
-                                          />
-                                          <Button // Adiciona o botão "Add" aqui
-                                            onClick={() => addField(field)}
-                                          >
-                                            Add
-                                          </Button>
-                                        </div>
-                                      )}
-                                    </FormGroup>
-                                  </Col>
-                                </Row>
-                              ))}
-                              {inputs[field][inputs[field].length - 1] !==
-                                "" && (
-                                <Row>
-                                  <Col md={12}>
-                                    <Button onClick={() => addField(field)}>
-                                      Add
-                                    </Button>
-                                  </Col>
-                                </Row>
-                              )}
-                            </React.Fragment>
-                          ))}
+                        {["skills", "keywords"].map((field) => (
+  <React.Fragment key={field}>
+    {[...inputs[field]].map((value, index) => (
+      <Row key={`${field}-${index}`}>
+        <Col md={12}>
+          <FormGroup className="my-form-group">
+            <Label for={`${field}-${index}`}>
+              {index === 0 ? field.charAt(0).toUpperCase() + field.slice(1) : ""}
+            </Label>
+            {index < inputs[field].length - 1 ? (
+              <div className="array-field">
+                {value}
+                <Button
+                  onClick={() => handleDelete(index, field)}
+                  color="danger"
+                  size="sm"
+                  className="array-remove-button"
+                >
+                  Remove
+                </Button>
+              </div>
+            ) : (
+              <div className="array-field">
+                <Typeahead
+                  id={`${field}-${index}`}
+                  labelKey="name"
+                  options={
+                    field === "skills" ? skillSuggestions : keywordSuggestions
+                  }
+                  placeholder={`Enter ${field}`}
+                  onChange={(selected) => handleArrayChange(selected, index, field)}
+                  className="short-input"
+                />
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+      </Row>
+    ))}
+    <Row>
+      <Col md={12}>
+        <Button onClick={() => addField(field)}>Add</Button>
+      </Col>
+    </Row>
+  </React.Fragment>
+))}
                         </Col>
                         <Col md={6}>
                           <FormGroup className="my-form-group">

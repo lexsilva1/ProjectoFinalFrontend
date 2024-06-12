@@ -20,6 +20,7 @@ const Users = () => {
     };
     fetchUsers();
   }, [token]);
+  
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Header />
@@ -36,7 +37,7 @@ const Users = () => {
             }}
           >
             {users.map((user) => (
-              <UserCard key={user.id} user={user} />
+              <UserCard key={user.userId} user={user} />
             ))}
           </div>
         </div>
