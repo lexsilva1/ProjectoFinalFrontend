@@ -37,61 +37,79 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (profile) {
-      setFormValues({
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        nickname: profile.nickname || '',
-        labLocation: profile.labLocation || '',
-        bio: profile.bio || '',
-      });
-      setSelectedSkills(profile.skills || []);
-      setSelectedInterests(profile.interests || []);
+    const fetchData = async () => {
+      try {
+        if (user && user.id) {
+              
+          await findUserById(token, user.id)
+            .then((userFromServer) => {
+              setProfile(userFromServer);
+            })
+            .catch((error) => console.error(error));
+        }
+        
+        if (profile) {
+          setFormValues({
+            firstName: profile.firstName || '',
+            lastName: profile.lastName || '',
+            nickname: profile.nickname || '',
+            labLocation: profile.labLocation || '',
+            bio: profile.bio || '',
+          });
+          setSelectedSkills(profile.skills || []);
+          setSelectedInterests(profile.interests || []);
+          
+        }
+  
+        if(profile ){
+          
+          await getSkills(token)
+          .then((allSkills) => {
+            if(profile.skills.length === 0) return setSkills(allSkills);
+            const filteredSkills = allSkills.filter(
+              (skill) => !profile.skills.includes(skill)
+            );
+            setSkills(filteredSkills);
+            console.log(filteredSkills);
+            
+          })
+          .catch((error) => console.error(error));
+           await  getSkillTypes()
+            .then((types) => setSkillTypes(types))
+            .catch((error) => console.error(error));
       
-    }
-  }, [profile]);
-
-  useEffect(() => {
-    getSkills(token)
-    .then((allSkills) => {
-      const filteredSkills = allSkills.filter(
-        (skill) => !profile.skills.includes(skill)
-      );
-      setSkills(filteredSkills);
-    })
-    .catch((error) => console.error(error));
-      getSkillTypes()
-      .then((types) => setSkillTypes(types))
-      .catch((error) => console.error(error));
-
-    getInterests(token)
-      .then((allInterests) => {
-        const filteredInterests = allInterests.filter(
-          (interest) => !profile.interests.includes(interest)
-        );
-        setInterests(filteredInterests);
-      })
-      .catch((error) => console.error(error));
-    getInterestTypes()
-      .then((types) => setInterestTypes(types))
-      .catch((error) => console.error(error));
+          await getInterests(token)
+            .then((allInterests) => {
+              if(profile.interests.length === 0) return setInterests(allInterests);
+              const filteredInterests = allInterests.filter(
+                (interest) => !profile.interests.includes(interest)
+              );
+              setInterests(filteredInterests);
+            })
+            .catch((error) => console.error(error));
+         await getInterestTypes()
+            .then((types) => setInterestTypes(types))
+            .catch((error) => console.error(error));
+          }
+         await getLabs(token)
+          .then((labs) => setLabs(labs))
+          .catch((error) => console.error(error));
+      }
+      catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  
+    fetchData();
   }, [token]);
 
-  useEffect(() => {
-    getLabs(token)
-      .then((labs) => setLabs(labs))
-      .catch((error) => console.error(error));
-  }, [token]);
 
-  useEffect(() => {
-    if (user && user.id) {
-      findUserById(token, user.id)
-        .then((userFromServer) => {
-          setProfile(userFromServer);
-        })
-        .catch((error) => console.error(error));
-    }
-  }, [token, user]);
+
+
+
+
+
+
 
   const handleImageUpload = (e) => {
     const uploadedImage = e.target.files[0];
@@ -145,50 +163,52 @@ const Profile = () => {
   };
 
   const handleSkillsChange = async (selected) => {
-    const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
-    
-    for (const skill of selected) {
-    
-      try {
-        await createSkill(skill, token);
-      } catch (error) {
-        console.error("Error creating skill:", error);
-      }
+    if (selected.length > selectedSkills.length) {
+        // If the selected array has more skills, create new skills
+        const newSkills = selected.filter(skill => !selectedSkills.some(s => s.name === skill.name));
+        for (const skill of newSkills) {
+            try {
+                await createSkill(token, skill);
+            } catch (error) {
+                console.error("Error creating skill:", error);
+            }
+        }
+    } else if (selected.length < selectedSkills.length) {
+        // If the selected array has less skills, delete skills
+        const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
+        for (const skill of removedSkills) {
+            try {
+                await deleteSkill(token, skill);
+            } catch (error) {
+                console.error("Error deleting skill:", error);
+            }
+        }
     }
-  
-    for (const skill of removedSkills) {
-      try {
-        await deleteSkill(skill, token);
-      } catch (error) {
-        console.error("Error deleting skill:", error);
-      }
-    }
-  
+
     setSelectedSkills(selected);
-  };
+};
   
   const handleInterestsChange = async (selected) => {
+if(selected.length > selectedInterests.length){
+  const newInterests = selected.filter(interest => !selectedInterests.some(i => i.name === interest.name));
+  for (const interest of newInterests) {
+      try {
+          await createInterest(token, interest);
+      } catch (error) {
+          console.error("Error creating interest:", error);
+      }
+  }
+} else if (selected.length < selectedInterests.length) {
     const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
-  
-    for (const interest of selected) {
-      const interestDto = {
-        name: interest.name,
-        type: interest.type,
-      };
-      console.log(interest.name, interest.type);
-      try {
-        await createInterest(interestDto, token);
-      } catch (error) {
-        console.error("Error creating interest:", error);
-      }
-    }
-  
     for (const interest of removedInterests) {
-      try {
-        await deleteInterest(interest, token);
-      } catch (error) {
-        console.error("Error deleting interest:", error);
+        try {
+            await deleteInterest(token, interest);
+        } catch (error) {
+            console.error("Error deleting interest:", error);
+        }
+
       }
+
     }
   
     setSelectedInterests(selected);

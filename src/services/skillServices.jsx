@@ -9,6 +9,7 @@ export const getSkills = async () => {
     }
 
     const skills = await response.json();
+    console.log(skills);
     return skills;
 };
 export const getSkillTypes = async () => {
@@ -23,15 +24,15 @@ export const getSkillTypes = async () => {
     return types;
 };
 
-export const createSkill = async (token, skillDto) => {
-    console.log(skillDto);
+export const createSkill = async (token, skill) => {
+    console.log(skill);
     const response = await fetch(baseURL + 'skills', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'token': token
         },
-        body: JSON.stringify(skillDto)
+        body: JSON.stringify(skill)
     });
 
     if (!response.ok) {
@@ -42,7 +43,7 @@ export const createSkill = async (token, skillDto) => {
     return result;
 }
 export const deleteSkill = async (token, skillDto) => {
-    const response = await fetch(baseURL + 'skills', {
+    const response = await fetch(baseURL + 'skills/removeSkill', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
