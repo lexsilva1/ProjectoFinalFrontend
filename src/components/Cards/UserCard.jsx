@@ -1,10 +1,12 @@
-import React from 'react';
 import { Button } from 'react-bootstrap'; 
 import './UserCard.css'; 
 import Avatar from '../../multimedia/Images/Avatar.jpg';
 
 const UserCard = ({ user }) => {
   const { firstName, lastName, userPhoto } = user;
+  const isPrivate = Boolean(user['private']);
+
+  console.log(user);
 
   return (
     <div className="user-card" style={{ display: 'flex', flexDirection: 'row' }}>
@@ -14,7 +16,7 @@ const UserCard = ({ user }) => {
       </div>
       <div className="user-actions">
         <Button variant="primary">Send Message</Button>
-        <Button variant="secondary">View Profile</Button>
+        {!isPrivate && <Button variant="secondary">View Profile</Button>}
       </div>
     </div>
   );

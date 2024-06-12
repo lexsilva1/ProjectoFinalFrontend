@@ -9,12 +9,14 @@ import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import userStore from "../stores/userStore";
+import { useNavigate } from "react-router-dom";
 
 const Project = () => {
   const [project, setProject] = useState({});
   const { projectName } = useParams();
   const token = Cookies.get("authToken");
   const currentUser = userStore((state) => state.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -77,42 +79,44 @@ const Project = () => {
                     ))}
                 </p>
                 <p className="card-text-project">
-  <strong>Team Members:</strong>
-</p>
-{project.teamMembers &&
-  [...new Set(project.teamMembers)].map((member, index) => (
-    <div
-      key={`${project.id}-member-${index}`}
-      className="project-team-member"
-    >
-      <div className="member-container">
-        <img
-          src={member.userPhoto ? member.userPhoto : Avatar}
-          alt={`${member.firstName} ${member.lastName}`}
-          className="project-team-member-image"
-        />
-        <span>
-          {member.firstName} {member.lastName}
-        </span>
-      </div>
-    </div>
-))}
-                
+                  <strong>Team Members:</strong>
+                </p>
+                {project.teamMembers &&
+                  [...new Set(project.teamMembers)].map((member, index) => (
+                    <div
+                      key={`${project.id}-member-${index}`}
+                      className="project-team-member"
+                    >
+                      <div className="member-container">
+                        <img
+                          src={member.userPhoto ? member.userPhoto : Avatar}
+                          alt={`${member.firstName} ${member.lastName}`}
+                          className="project-team-member-image"
+                        />
+                        <span>
+                          {member.firstName} {member.lastName}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 <p className="card-text-project">
-  <strong>Slots available:</strong>{" "}
-  {project && project.teamMembers && project.maxTeamMembers &&
-    `${project.maxTeamMembers - project.teamMembers.length}/${project.maxTeamMembers}`}
-</p>
-{project &&
-  project.teamMembers &&
-  project.maxTeamMembers &&
-  project.maxTeamMembers > project.teamMembers.length ? (
-    !project.teamMembers.some((member) => member.userId === currentUser.id) ? (
-      <button className="btn btn-primary">Apply</button>
-    ) : (
-      <button className="btn btn-primary">Open Project</button>
-    )
-  ) : null}
+                  <strong>Slots available:</strong>{" "}
+                  {project &&
+                    project.teamMembers &&
+                    project.maxTeamMembers &&
+                    `${project.maxTeamMembers - project.teamMembers.length}/${
+                      project.maxTeamMembers
+                    }`}
+                </p>
+                {project &&
+                project.teamMembers &&
+                project.maxTeamMembers &&
+                project.maxTeamMembers > project.teamMembers.length &&
+                !project.teamMembers.some(
+                  (member) => member.userId === currentUser.id
+                ) ? (
+                  <button className="btn btn-primary">Apply</button>
+                ) : null}
               </div>
             </div>
           </div>

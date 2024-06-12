@@ -201,3 +201,20 @@ export const resetPassword = async (email) => {
     }
 };
 
+export const setPrivacy = async (token) => {
+    const response = await fetch(usersURL + '/setPrivacy', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        const data = await response.text();
+        return data;
+    }
+}
+

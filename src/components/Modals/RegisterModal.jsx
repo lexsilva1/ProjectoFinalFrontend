@@ -6,13 +6,13 @@ import { useTranslation } from "react-i18next";
 import { registerUser } from "../../services/userServices";
 
 const RegisterModal = () => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const showRegister = userStore((state) => state.showRegister);
   const setShow = userStore((state) => state.setShowRegister);
   const handleClose = () => setShow(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [email, setEmail] = useState(""); 
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -32,9 +32,17 @@ const RegisterModal = () => {
     } catch (error) {
       console.error(error);
       if (error.status === 401) {
-        setErrorMessage(t("Registration failed. Please ensure your password is at least 8 characters long, contains a lowercase and uppercase letter, a number, and a special character."));
+        setErrorMessage(
+          t(
+            "Registration failed. Please ensure your password is at least 8 characters long, contains a lowercase and uppercase letter, a number, and a special character."
+          )
+        );
       } else if (error.status === 404) {
-        setErrorMessage(t("The email you entered is already in use. Please use a different email."));
+        setErrorMessage(
+          t(
+            "The email you entered is already in use. Please use a different email."
+          )
+        );
       } else {
         setErrorMessage(t("An unexpected error occurred. Please try again."));
       }
@@ -62,7 +70,6 @@ const RegisterModal = () => {
               placeholder={t("Enter email")}
               onChange={(e) => setEmail(e.target.value)}
             />{" "}
-            {/* Update this line */}
           </Form.Group>
 
           <Form.Group controlId="formBasicPassword" className="mb-4">
@@ -75,13 +82,13 @@ const RegisterModal = () => {
           </Form.Group>
 
           <Form.Group controlId="formBasicConfirmPassword" className="mb-4">
-  <Form.Label>{t("Confirm Password")}</Form.Label>
-  <Form.Control 
-    type="password" 
-    placeholder={t("Confirm Password")} 
-    onChange={(e) => setConfirmPassword(e.target.value)} // Adicione esta linha
-  />
-</Form.Group>
+            <Form.Label>{t("Confirm Password")}</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder={t("Confirm Password")}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </Form.Group>
           {errorMessage && <p className="text-danger">{errorMessage}</p>}
 
           <p className="info-text">

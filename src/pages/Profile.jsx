@@ -3,10 +3,10 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
 import Avatar from "../multimedia/Images/Avatar.jpg";
-import { findUserById, uploadUserPhoto, updateUser } from "../services/userServices";
+import { findUserById, uploadUserPhoto, updateUser, setPrivacy } from "../services/userServices";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare, LockFill, UnlockFill } from "react-bootstrap-icons";
 import { getLabs } from "../services/labServices";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
@@ -194,6 +194,19 @@ const Profile = () => {
     setSelectedInterests(selected);
   };
 
+  const togglePrivacy = async () => {
+    try {
+      const newPrivacyStatus = profile.isPrivate ? 0 : 1;
+      await setPrivacy(token);
+      setProfile(prevProfile => ({
+        ...prevProfile,
+        isPrivate: newPrivacyStatus
+      }));
+    } catch (error) {
+      console.error("Error changing privacy status:", error);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -205,6 +218,11 @@ const Profile = () => {
           <Col md={9} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
+                <div className="privacy-icon">
+                  <Button variant="outline-secondary" onClick={togglePrivacy}>
+                    {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                  </Button>
+                </div>
                 <Row>
                   <Col md={4} className="text-center mb-3">
                     <img
