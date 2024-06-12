@@ -36,80 +36,51 @@ const Profile = () => {
     bio: '',
   });
 
+  // Fetch user data and set initial profile
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (user && user.id) {
-              
-          await findUserById(token, user.id)
-            .then((userFromServer) => {
-              setProfile(userFromServer);
-            })
-            .catch((error) => console.error(error));
+          const userFromServer = await findUserById(token, user.id);
+          setProfile(userFromServer);
+
+          const [allLabs, allSkills, allInterests, skillTypes, interestTypes] = await Promise.all([
+            getLabs(token),
+            getSkills(token),
+            getInterests(token),
+            getSkillTypes(),
+            getInterestTypes()
+          ]);
+
+          setLabs(allLabs);
+          setSkills(allSkills.filter(skill => !userFromServer.skills.includes(skill)));
+          setInterests(allInterests.filter(interest => !userFromServer.interests.includes(interest)));
+          setSkillTypes(skillTypes);
+          setInterestTypes(interestTypes);
         }
-        
-        if (profile) {
-          setFormValues({
-            firstName: profile.firstName || '',
-            lastName: profile.lastName || '',
-            nickname: profile.nickname || '',
-            labLocation: profile.labLocation || '',
-            bio: profile.bio || '',
-          });
-          setSelectedSkills(profile.skills || []);
-          setSelectedInterests(profile.interests || []);
-          
-        }
-  
-        if(profile ){
-          
-          await getSkills(token)
-          .then((allSkills) => {
-            if(profile.skills.length === 0) return setSkills(allSkills);
-            const filteredSkills = allSkills.filter(
-              (skill) => !profile.skills.includes(skill)
-            );
-            setSkills(filteredSkills);
-            console.log(filteredSkills);
-            
-          })
-          .catch((error) => console.error(error));
-           await  getSkillTypes()
-            .then((types) => setSkillTypes(types))
-            .catch((error) => console.error(error));
-      
-          await getInterests(token)
-            .then((allInterests) => {
-              if(profile.interests.length === 0) return setInterests(allInterests);
-              const filteredInterests = allInterests.filter(
-                (interest) => !profile.interests.includes(interest)
-              );
-              setInterests(filteredInterests);
-            })
-            .catch((error) => console.error(error));
-         await getInterestTypes()
-            .then((types) => setInterestTypes(types))
-            .catch((error) => console.error(error));
-          }
-         await getLabs(token)
-          .then((labs) => setLabs(labs))
-          .catch((error) => console.error(error));
-      }
-      catch (error) {
+      } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
-  
+
     fetchData();
-  }, [token]);
+  }, [token, user]);
 
-
-
-
-
-
-
-
+  // Update form values and selected skills/interests when profile changes
+  useEffect(() => {
+    if (profile) {
+      console.log(profile); // This will be called every time profile is updated
+      setFormValues({
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        nickname: profile.nickname || '',
+        labLocation: profile.labLocation || '',
+        bio: profile.bio || '',
+      });
+      setSelectedSkills(profile.skills || []);
+      setSelectedInterests(profile.interests || []);
+    }
+  }, [profile]);
 
   const handleImageUpload = (e) => {
     const uploadedImage = e.target.files[0];
@@ -125,16 +96,16 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = user.image;
-  
+
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
-        finalImageURL = response.data.image; 
+        finalImageURL = response.data.image;
       } catch (error) {
         console.error("Error uploading image:", error);
       }
     }
-  
+
     if (formValues.firstName && formValues.lastName && formValues.labLocation) {
       const userUpdate = {
         firstName: formValues.firstName,
@@ -144,7 +115,7 @@ const Profile = () => {
         userPhoto: finalImageURL,
         bio: formValues.bio,
       };
-  
+
       try {
         await updateUser(user.id, userUpdate, token);
         setEditMode(false);
@@ -164,53 +135,48 @@ const Profile = () => {
 
   const handleSkillsChange = async (selected) => {
     if (selected.length > selectedSkills.length) {
-        // If the selected array has more skills, create new skills
-        const newSkills = selected.filter(skill => !selectedSkills.some(s => s.name === skill.name));
-        for (const skill of newSkills) {
-            try {
-                await createSkill(token, skill);
-            } catch (error) {
-                console.error("Error creating skill:", error);
-            }
+      const newSkills = selected.filter(skill => !selectedSkills.some(s => s.name === skill.name));
+      for (const skill of newSkills) {
+        try {
+          await createSkill(token, skill);
+        } catch (error) {
+          console.error("Error creating skill:", error);
         }
+      }
     } else if (selected.length < selectedSkills.length) {
-        // If the selected array has less skills, delete skills
-        const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
-        for (const skill of removedSkills) {
-            try {
-                await deleteSkill(token, skill);
-            } catch (error) {
-                console.error("Error deleting skill:", error);
-            }
+      const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
+      for (const skill of removedSkills) {
+        try {
+          await deleteSkill(token, skill);
+        } catch (error) {
+          console.error("Error deleting skill:", error);
         }
+      }
     }
 
     setSelectedSkills(selected);
-};
-  
+  };
+
   const handleInterestsChange = async (selected) => {
-if(selected.length > selectedInterests.length){
-  const newInterests = selected.filter(interest => !selectedInterests.some(i => i.name === interest.name));
-  for (const interest of newInterests) {
-      try {
-          await createInterest(token, interest);
-      } catch (error) {
-          console.error("Error creating interest:", error);
-      }
-  }
-} else if (selected.length < selectedInterests.length) {
-    const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
-    for (const interest of removedInterests) {
+    if (selected.length > selectedInterests.length) {
+      const newInterests = selected.filter(interest => !selectedInterests.some(i => i.name === interest.name));
+      for (const interest of newInterests) {
         try {
-            await deleteInterest(token, interest);
+          await createInterest(token, interest);
         } catch (error) {
-            console.error("Error deleting interest:", error);
+          console.error("Error creating interest:", error);
         }
-
       }
-
+    } else if (selected.length < selectedInterests.length) {
+      const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
+      for (const interest of removedInterests) {
+        try {
+          await deleteInterest(token, interest);
+        } catch (error) {
+          console.error("Error deleting interest:", error);
+        }
+      }
     }
-  
     setSelectedInterests(selected);
   };
 
@@ -226,7 +192,7 @@ if(selected.length > selectedInterests.length){
       console.error("Error changing privacy status:", error);
     }
   };
-
+  
   return (
     <>
       <Header />
