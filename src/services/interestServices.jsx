@@ -12,6 +12,17 @@ export const getInterests = async () => {
     const interests = await response.json();
     return interests;
 }
+export const getInterestTypes = async () => {
+    const response = await fetch( baseURL + 'interests/types', {
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const types = await response.json();
+    return types;
+}
 
 export const createInterest = async (token, interestDto) => {
     const response = await fetch(baseURL + 'interests', {

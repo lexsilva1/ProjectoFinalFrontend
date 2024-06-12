@@ -9,8 +9,8 @@ import userStore from "../stores/userStore";
 import { PencilSquare } from "react-bootstrap-icons";
 import { getLabs } from "../services/labServices";
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { getSkills, createSkill, deleteSkill } from "../services/skillServices";
-import { getInterests, createInterest, deleteInterest } from "../services/interestServices";
+import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
+import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
 import "./Profile.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 
@@ -26,6 +26,8 @@ const Profile = () => {
   const [interests, setInterests] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [selectedInterests, setSelectedInterests] = useState([]);
+  const [interestTypes, setInterestTypes] = useState([]);
+  const [skillTypes, setSkillTypes] = useState([]);
   const [formValues, setFormValues] = useState({
     firstName: '',
     lastName: '',
@@ -45,16 +47,33 @@ const Profile = () => {
       });
       setSelectedSkills(profile.skills || []);
       setSelectedInterests(profile.interests || []);
+      
     }
   }, [profile]);
 
   useEffect(() => {
     getSkills(token)
-      .then((skills) => setSkills(skills))
+    .then((allSkills) => {
+      const filteredSkills = allSkills.filter(
+        (skill) => !profile.skills.includes(skill)
+      );
+      setSkills(filteredSkills);
+    })
+    .catch((error) => console.error(error));
+      getSkillTypes()
+      .then((types) => setSkillTypes(types))
       .catch((error) => console.error(error));
-  
+
     getInterests(token)
-      .then((interests) => setInterests(interests))
+      .then((allInterests) => {
+        const filteredInterests = allInterests.filter(
+          (interest) => !profile.interests.includes(interest)
+        );
+        setInterests(filteredInterests);
+      })
+      .catch((error) => console.error(error));
+    getInterestTypes()
+      .then((types) => setInterestTypes(types))
       .catch((error) => console.error(error));
   }, [token]);
 
@@ -106,8 +125,6 @@ const Profile = () => {
         nickname: formValues.nickname,
         userPhoto: finalImageURL,
         bio: formValues.bio,
-        skills: selectedSkills.map(skill => skill.name),
-        interests: selectedInterests.map(interest => interest.name),
       };
   
       try {
@@ -129,10 +146,11 @@ const Profile = () => {
 
   const handleSkillsChange = async (selected) => {
     const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
-  
+    
     for (const skill of selected) {
+    
       try {
-        await createSkill(skill.name, token);
+        await createSkill(skill, token);
       } catch (error) {
         console.error("Error creating skill:", error);
       }
@@ -140,7 +158,7 @@ const Profile = () => {
   
     for (const skill of removedSkills) {
       try {
-        await deleteSkill(skill.name, token);
+        await deleteSkill(skill, token);
       } catch (error) {
         console.error("Error deleting skill:", error);
       }
@@ -153,8 +171,13 @@ const Profile = () => {
     const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
   
     for (const interest of selected) {
+      const interestDto = {
+        name: interest.name,
+        type: interest.type,
+      };
+      console.log(interest.name, interest.type);
       try {
-        await createInterest(interest.name, token);
+        await createInterest(interestDto, token);
       } catch (error) {
         console.error("Error creating interest:", error);
       }
@@ -162,7 +185,7 @@ const Profile = () => {
   
     for (const interest of removedInterests) {
       try {
-        await deleteInterest(interest.name, token);
+        await deleteInterest(interest, token);
       } catch (error) {
         console.error("Error deleting interest:", error);
       }
@@ -268,6 +291,31 @@ const Profile = () => {
                               onChange={handleChange}
                             />
                           </Form.Group>
+                          <Button
+                            variant="primary"
+                            type="button"
+                            onClick={handleSave}
+                          >
+                            Save
+                          </Button>
+                        </Form>
+                      ) : (
+                        <div>
+                          <p>
+                            <strong>First Name:</strong> {profile?.firstName}
+                          </p>
+                          <p>
+                            <strong>Last Name:</strong> {profile?.lastName}
+                          </p>
+                          <p>
+                            <strong>Nickname:</strong> {profile?.nickname}
+                          </p>
+                          <p>
+                            <strong>Usual Work Place:</strong> {profile?.labLocation}
+                          </p>
+                          <p>
+                            <strong>Bio:</strong> {profile?.bio}
+                          </p>
                           <Form.Group>
                             <Form.Label>Skills:</Form.Label>
                             <Typeahead
@@ -294,45 +342,9 @@ const Profile = () => {
                               newSelectionPrefix="Add a new interest: "
                               placeholder="Choose your interests..."
                               selected={selectedInterests}
+
                             />
                           </Form.Group>
-                          <Button
-                            variant="primary"
-                            type="button"
-                            onClick={handleSave}
-                          >
-                            Save
-                          </Button>
-                        </Form>
-                      ) : (
-                        <div>
-                          <p>
-                            <strong>First Name:</strong> {profile?.firstName}
-                          </p>
-                          <p>
-                            <strong>Last Name:</strong> {profile?.lastName}
-                          </p>
-                          <p>
-                            <strong>Nickname:</strong> {profile?.nickname}
-                          </p>
-                          <p>
-                            <strong>Usual Work Place:</strong> {profile?.labLocation}
-                          </p>
-                          <p>
-                            <strong>Bio:</strong> {profile?.bio}
-                          </p>
-                          <p>
-                            <strong>Skills:</strong> 
-                            {profile?.skills?.length > 0
-                              ? profile.skills.join(", ")
-                              : "No skills added"}
-                          </p>
-                          <p>
-                            <strong>Interests:</strong> 
-                            {profile?.interests?.length > 0
-                              ? profile.interests.join(", ")
-                              : "No interests added"}
-                          </p>
                           <p>
                             <strong>Projects:</strong> 
                             {profile?.projects?.length > 0 ? (
