@@ -27,8 +27,8 @@ const RegisterModal = () => {
 
     try {
       const data = await registerUser(email, password);
-      console.log(data);
       setErrorMessage("");
+      handleClose();
     } catch (error) {
       console.error(error);
       if (error.status === 401) {

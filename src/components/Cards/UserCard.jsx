@@ -5,7 +5,6 @@ import Avatar from '../../multimedia/Images/Avatar.jpg';
 const UserCard = ({ user }) => {
   const { firstName, lastName, userPhoto, privacy } = user;
 
-  console.log(user);
 
   return (
     <div className="user-card" style={{ display: 'flex', flexDirection: 'row' }}>
