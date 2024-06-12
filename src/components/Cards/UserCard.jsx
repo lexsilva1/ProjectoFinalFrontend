@@ -3,8 +3,7 @@ import './UserCard.css';
 import Avatar from '../../multimedia/Images/Avatar.jpg';
 
 const UserCard = ({ user }) => {
-  const { firstName, lastName, userPhoto } = user;
-  const isPrivate = Boolean(user['private']);
+  const { firstName, lastName, userPhoto, privacy } = user;
 
   console.log(user);
 
@@ -16,7 +15,7 @@ const UserCard = ({ user }) => {
       </div>
       <div className="user-actions">
         <Button variant="primary">Send Message</Button>
-        {!isPrivate && <Button variant="secondary">View Profile</Button>}
+        {!privacy && <Button variant="secondary">View Profile</Button>}
       </div>
     </div>
   );
