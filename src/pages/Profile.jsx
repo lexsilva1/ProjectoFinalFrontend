@@ -360,22 +360,21 @@ const Profile = () => {
                               newSelectionPrefix="Add a new interest: "
                               placeholder="Choose your interests..."
                               selected={selectedInterests}
-
                             />
                           </Form.Group>
                           <p>
                             <strong>Projects:</strong> 
-                            {profile?.projects?.length > 0 ? (
-                              profile.projects.map((project, index) => (
-                                <div key={index}>
-                                  <strong>{project.name}</strong>
-                                  <p>{project.description}</p>
-                                </div>
-                              ))
-                            ) : (
-                              <p>No projects added</p>
-                            )}
                           </p>
+                          {profile?.projects?.length > 0 ? (
+                            profile.projects.map((project, index) => (
+                              <div key={index}>
+                                <strong>{project.name}</strong>
+                                <p>{project.description}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <p>No projects added</p>
+                          )}
                         </div>
                       )}
                     </div>
