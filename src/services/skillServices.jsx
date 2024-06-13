@@ -56,7 +56,7 @@ export const deleteSkill = async (token, skillDto) => {
         throw new Error('Network response was not ok');
     }
 
-    const result = await response.json();
+    const result = await response.text();
     return result;
 };
 

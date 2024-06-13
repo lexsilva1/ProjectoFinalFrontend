@@ -66,7 +66,7 @@ export const registerUser = async (email, password) => {
         }
     });
 
-    if (response.ok) {
+    if (response.status === 200) {
         const text = await response.text();
         try {
             const data = JSON.parse(text);

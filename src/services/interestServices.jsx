@@ -43,7 +43,7 @@ export const createInterest = async (token, interestDto) => {
 }
 
 export const deleteInterest = async (token, interestDto) => {
-    const response = await fetch(baseURL + 'interests', {
+    const response = await fetch(baseURL + 'interests/removeInterest', {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -56,6 +56,6 @@ export const deleteInterest = async (token, interestDto) => {
         throw new Error('Network response was not ok');
     }
 
-    const result = await response.json();
+    const result = await response.text();
     return result;
 };

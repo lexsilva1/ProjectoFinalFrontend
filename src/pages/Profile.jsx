@@ -13,6 +13,8 @@ import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/
 import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
 import "./Profile.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import TypeModal from "../components/Modals/TypeModal";
+import { set } from "react-hook-form";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -28,7 +30,11 @@ const Profile = () => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [interestTypes, setInterestTypes] = useState([]);
   const [skillTypes, setSkillTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null); // Add this line
   const [formValues, setFormValues] = useState({
+    
     firstName: '',
     lastName: '',
     nickname: '',
@@ -79,8 +85,28 @@ const Profile = () => {
       });
       setSelectedSkills(profile.skills || []);
       setSelectedInterests(profile.interests || []);
+      setProjects(profile.projects || []); // Add this line
     }
   }, [profile]);
+
+  const [showModal, setShowModal] = useState(false);
+const [modalType, setModalType] = useState('');
+const onTypeSelect = (type) => {
+  setSelectedType(type);
+  if (resolveOnSkillTypeSelected) {
+    resolveOnSkillTypeSelected(type);
+    setResolveOnSkillTypeSelected(null);
+  }
+  // Add the selected type to the skill or interest here
+};
+const handleOpenModal = (type) => {
+  setModalType(type);
+  setShowModal(true);
+};
+
+const handleCloseModal = () => {
+  setShowModal(false);
+};
 
   const handleImageUpload = (e) => {
     const uploadedImage = e.target.files[0];
@@ -134,20 +160,51 @@ const Profile = () => {
   };
 
   const handleSkillsChange = async (selected) => {
+    console.log('Selected:', selected); // Check the selected array
+    console.log('Token:', token); // Check the token
+  
     if (selected.length > selectedSkills.length) {
       const newSkills = selected.filter(skill => !selectedSkills.some(s => s.name === skill.name));
       for (const skill of newSkills) {
+        console.log('New skill:', skill); // Check the skill object
         try {
-          await createSkill(token, skill);
+          if (!skills.some(s => s.name === skill.name)) {
+            setModalType(skill.name);
+            const skillTypeSelected = new Promise(resolve => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenModal('skill');
+            skill.skillType = await skillTypeSelected;
+            skill.projetcId = 0;
+            skill.id = null;
+            delete skill.customOption;
+            console.log('Skill with type:', skill); // Check the skill object
+            const result = await createSkill(token, skill);
+            setSkills(prevSkills => [...prevSkills, result]);
+            console.log('Create skill result:', result);
+            setSelectedType('') // Check the result of createSkill
+          } else { // Check the result of createSkill
+          
+          try{
+            const result = await createSkill(token, skill);
+            console.log('Create skill result:', result); // Check the result of createSkill
+          }
+          catch (error) {
+            console.error("Error creating skill:", error);
+          }
+        }
         } catch (error) {
           console.error("Error creating skill:", error);
         }
       }
+
     } else if (selected.length < selectedSkills.length) {
       const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
       for (const skill of removedSkills) {
+        console.log('Removed skill:', skill); // Check the skill object
         try {
-          await deleteSkill(token, skill);
+          const result = await deleteSkill(token, skill);
+          console.log('Delete skill result:', result); // Check the result of deleteSkill
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
@@ -155,14 +212,38 @@ const Profile = () => {
     }
 
     setSelectedSkills(selected);
-  };
+}
 
   const handleInterestsChange = async (selected) => {
     if (selected.length > selectedInterests.length) {
       const newInterests = selected.filter(interest => !selectedInterests.some(i => i.name === interest.name));
       for (const interest of newInterests) {
         try {
-          await createInterest(token, interest);
+          if(!interests.some(i => i.name === interest.name)){
+            setModalType(interest.name);
+            const interestTypeSelected = new Promise(resolve => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenModal('interest');
+            interest.interestType = await interestTypeSelected;
+            interest.projectId = 0;
+            interest.id = null;
+            delete interest.customOption;
+            console.log('Interest with type:', interest); // Check the interest object
+            const result = await createInterest(token, interest);
+            setInterests(prevInterests => [...prevInterests, result]);
+            console.log('Create interest result:', result); // Check the result of createInterest
+            setSelectedType('') // Check the result of createInterest
+          } else {
+            try{
+            const result = await createInterest(token, interest);
+          console.log('Create interest result:', result); 
+          // Check the result of createInterest
+          } catch (error) {
+            console.error("Error creating interest:", error);
+          
+          }
+        }
         } catch (error) {
           console.error("Error creating interest:", error);
         }
@@ -170,8 +251,10 @@ const Profile = () => {
     } else if (selected.length < selectedInterests.length) {
       const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
       for (const interest of removedInterests) {
+        console.log('Removed interest:', interest); // Check the interest object
         try {
-          await deleteInterest(token, interest);
+         const result = await deleteInterest(token, interest);
+         console.log('Delete interest result:', result); // Check the result of deleteInterest
         } catch (error) {
           console.error("Error deleting interest:", error);
         }
@@ -354,8 +437,8 @@ const Profile = () => {
                           {profile?.projects?.length > 0 ? (
                             profile.projects.map((project, index) => (
                               <div key={index}>
-                                <strong>{project.name}</strong>
-                                <p>{project.description}</p>
+                                <strong>{project}</strong>
+                              
                               </div>
                             ))
                           ) : (
@@ -371,6 +454,14 @@ const Profile = () => {
           </Col>
         </Row>
       </Container>
+      <TypeModal
+  show={showModal}
+  onHide={handleCloseModal}
+  title={`Add ${modalType}`}
+  type={modalType}
+  types={modalType === 'skill' ? skillTypes : interestTypes}
+  onTypeSelect={onTypeSelect}
+/>
     </>
   );
 };

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Modal, Button, Dropdown } from 'react-bootstrap';
 
-const TypeModal = ({ name, stringArray, show, handleClose }) => {
+const TypeModal = ({ show, onHide, title, type, types, onTypeSelect }) => {
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>{name}</Modal.Title>
+                <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Dropdown>
@@ -13,18 +13,15 @@ const TypeModal = ({ name, stringArray, show, handleClose }) => {
                         Please select
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        {stringArray.map((str, index) => (
-                            <Dropdown.Item key={index} eventKey={str}>
-                                {str}
+                        {types.map((type, index) => (
+                            <Dropdown.Item key={index} eventKey={type} onClick={() => { onTypeSelect(type); onHide(); }}>
+                                {type}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
             </Modal.Footer>
         </Modal>
     );
