@@ -25,6 +25,7 @@ const Home = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento dos projetos
   const location = useLocation();
 
   useEffect(() => {
@@ -47,7 +48,16 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    getProjects().then(setProjects).catch(console.error);
+    getProjects()
+      .then((projectsData) => {
+        setProjects(projectsData);
+        setHasFetchedProjects(true); // Indica que os projetos foram carregados
+        setIsLoading(false); // Marca o carregamento como completo
+      })
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+        setIsLoading(false); // Em caso de erro, também marca o carregamento como completo para evitar bloqueios
+      });
   }, []);
 
   const handleOpenResetPasswordModal = () => {
@@ -132,18 +142,22 @@ const Home = () => {
               {/* Add your sorting options here */}
             </select>
           </div>
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-              isLoggedIn={isLoggedIn}
-            />
-          ))}
-<LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />      
-      <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
-      <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
-        <RegisterModal />
+          {isLoading ? ( // Mostra indicador de carregamento enquanto os projetos estão sendo carregados
+            <p>Loading...</p>
+          ) : (
+            projects.map((project) => (
+              <ProjectCard
+                key={project.name}
+                project={project}
+                isLoggedIn={isLoggedIn}
+              />
+            ))
+          )}
         </div>
+        <LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />      
+        <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
+        <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
+        <RegisterModal />
         <Footer />
       </div>
     </>

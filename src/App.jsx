@@ -28,7 +28,7 @@ function App() {
         <Route path="/new-project" element={<NewProject />} />
         <Route path="/users" element={<Users />} />
         <Route path="/confirmation/:token" element={<Confirmation />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/project/:projectName" element={<Project />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/PasswordReset/:token" element={<Home />} />

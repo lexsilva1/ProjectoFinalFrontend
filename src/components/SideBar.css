@@ -1,97 +1,96 @@
+/* Sidebar styles */
 .sidebar {
-    position: sticky; 
-    top: 0;
-    max-width: 200px;
-    min-width: 200px;
-    height: calc(110vh - 60px); 
-    background-color: var(--bs-body-color);
-    flex-grow: 1;
-    overflow: auto;
-    transition: transform 0.3s ease-in-out;
+    position: fixed; /* Fix it to the left */
+    top: 70px; /* Below the header */
+    left: 0;
+    width: 200px; /* Default width */
+    height: calc(100vh - 70px); /* Full height minus header */
+    background-color: #242423; /* Sidebar color */
+    overflow-y: auto; /* Allow scrolling */
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
     z-index: 1000;
 }
 
+/* Sidebar open state */
 .sidebar.open {
     transform: translateX(0);
 }
 
+/* Hamburger button */
 .hamburger {
-    display: none;
-    z-index: 9999; 
-    background: #fff; 
+    display: none; /* Hide by default */
+    z-index: 1001;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #E8EEF2;
 }
 
+/* Media queries for responsiveness */
 @media (max-width: 768px) {
     .sidebar {
-        position: fixed; 
-        left: 0;
-        top: 56px; 
-        bottom: 0;
-        width: 50px; 
-        padding: 0 10px 0 0;
-        z-index: 2; 
-        transition: width 0.3s ease-in-out;
-        overflow-x: hidden; 
+        width: 50px; /* Narrow width for small screens */
+        top: 70px; /* Still below the header */
+        overflow-x: hidden; /* Hide horizontal overflow */
     }
 
     .sidebar.open {
-        width: 250px; 
+        width: 200px; /* Expand to full width when open */
     }
 
     .hamburger {
-        display: block;
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        font-size: 24px;
-        color : var(--primary-color);
+        display: block; /* Show hamburger on small screens */
+        position: fixed;
+        top: 80px; /* Adjust position based on header */
+        left: 10px;
     }
 
-    .content {
-        position: relative; 
-        z-index: 1; 
-        padding-left: 50px; 
-        transition: padding-left 0.3s ease-in-out;
+    .sidebar ul li a {
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
     }
 
     .sidebar:not(.open) .link-text {
-        display: none; 
+        display: none; /* Hide link text when sidebar is closed */
     }
+}
 
-    .content.sidebar-open {
-        padding-left: 0;
-    }
-
-    .sidebar.open ~ .content {
-        position: relative;
-        z-index: 1;
-        margin-left: 0; 
-    }
-    .sidebar ul li a {
-        margin-left: 20px; 
-    }
-    .lista{
-        display: flex;
-        flex-direction: column;
-        margin-left: -27px;
-    }
-    }
-
+.sidebar ul {
+    padding: 0;
+    margin: 0;
+}
 
 .sidebar ul li {
-    margin-bottom: 20px;
     list-style: none;
+    margin: 20px 0;
 }
 
 .sidebar ul li a {
-    color: var(--primary-color);
+    color: #E8EEF2; /* Link color */
     text-decoration: none;
-    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
 }
 
 .link-text {
-    display: inline;
+    margin-left: 10px;
 }
 
+/* Ensure content is properly positioned when sidebar is open or closed */
+.content {
+    padding-left: 200px; /* Default padding for large screens */
+    transition: padding-left 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding-left: 50px; /* Adjust padding for small screens */
+    }
+
+    .sidebar.open ~ .content {
+        padding-left: 200px; /* Adjust padding when sidebar is open */
+    }
+}
