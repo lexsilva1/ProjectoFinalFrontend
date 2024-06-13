@@ -1,0 +1,32 @@
+.message-card {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.sender {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-weight: bold;
+}
+
+.datetime {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 12px;
+    color: #999;
+}
+
+.is-read {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: green;
+}
