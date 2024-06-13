@@ -15,6 +15,7 @@ import Footer from "../components/Footer";
 import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
 import SetPasswordModal from "../components/Modals/SetPasswordModal";
 import { useNavigate, useLocation } from "react-router-dom";
+import './Home.css';
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -91,8 +92,8 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div style={{ marginLeft: isLoggedIn ? "200px" : "0px" }}>
-        <div className={`banner${banner}`} style={{ width: "100%" }}>
+      <div style={{  }}>
+        <div className={`banner${banner}`} style={{ width: "100%", zIndex: "-1000" }}>
           {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />}
         </div>
         {!isLoggedIn && <InfoBox />}
@@ -143,16 +144,19 @@ const Home = () => {
             </select>
           </div>
           {isLoading ? ( // Mostra indicador de carregamento enquanto os projetos estão sendo carregados
-            <p>Loading...</p>
-          ) : (
-            projects.map((project) => (
-              <ProjectCard
-                key={project.name}
-                project={project}
-                isLoggedIn={isLoggedIn}
-              />
-            ))
-          )}
+  <p>Loading...</p>
+) : (
+  <div className="project-grid">
+  {projects.map((project) => (
+    <div className="project-card-container" key={project.name}>
+      <ProjectCard
+        project={project}
+        isLoggedIn={isLoggedIn}
+      />
+    </div>
+  ))}
+</div>
+)}
         </div>
         <LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />      
         <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />

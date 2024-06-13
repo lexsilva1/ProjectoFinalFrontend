@@ -1,10 +1,12 @@
 .project-card-card {
     margin: 3rem;
+    margin-left: 3rem;
     width: 400px; 
     height: 600px; 
     background-color: var(--primary-color);
     border: 1px solid var(--primary-color);
     border-radius: 10px;
+    
    
 }
 
@@ -15,6 +17,7 @@
     justify-content: center;
     align-items: right;
     max-width: 100%;
+    
     
 }
 
