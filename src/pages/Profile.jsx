@@ -14,12 +14,13 @@ import { getInterests, createInterest, deleteInterest, getInterestTypes } from "
 import "./Profile.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import TypeModal from "../components/Modals/TypeModal";
-import { set } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const { user } = userStore.getState();
+  const { userId } = useParams();
   const token = Cookies.get("authToken");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -30,39 +31,53 @@ const Profile = () => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [interestTypes, setInterestTypes] = useState([]);
   const [skillTypes, setSkillTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState("");
   const [projects, setProjects] = useState([]);
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null); // Add this line
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
+    useState(null);
+  const isOwnProfile = user?.id == userId;
+
   const [formValues, setFormValues] = useState({
-    
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    labLocation: '',
-    bio: '',
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    labLocation: "",
+    bio: "",
   });
 
-  // Fetch user data and set initial profile
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (user && user.id) {
-          const userFromServer = await findUserById(token, user.id);
+        if (userId) {
+          // Usa o userId da URL
+          const userFromServer = await findUserById(token, userId); // Busca usuário pelo userId da URL
           setProfile(userFromServer);
 
-          const [allLabs, allSkills, allInterests, skillTypes, interestTypes] = await Promise.all([
-            getLabs(token),
-            getSkills(token),
-            getInterests(token),
-            getSkillTypes(),
-            getInterestTypes()
-          ]);
+          const [allLabs, allSkills, allInterests, skillTypes, interestTypes] =
+            await Promise.all([
+              getLabs(token),
+              getSkills(token),
+              getInterests(token),
+              getSkillTypes(),
+              getInterestTypes(),
+            ]);
 
           setLabs(allLabs);
-          setSkills(allSkills.filter(skill => !userFromServer.skills.includes(skill)));
-          setInterests(allInterests.filter(interest => !userFromServer.interests.includes(interest)));
+          setSkills(
+            allSkills.filter((skill) => !userFromServer.skills.includes(skill))
+          );
+          setInterests(
+            allInterests.filter(
+              (interest) => !userFromServer.interests.includes(interest)
+            )
+          );
           setSkillTypes(skillTypes);
           setInterestTypes(interestTypes);
+
+          // Se o usuário logado não for o dono do perfil, desativa o modo de edição
+          if (user?.id !== userFromServer.id) {
+            setEditMode(false);
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -70,43 +85,43 @@ const Profile = () => {
     };
 
     fetchData();
-  }, [token, user]);
+  }, [userId, user, token]);
 
-  // Update form values and selected skills/interests when profile changes
   useEffect(() => {
     if (profile) {
-      console.log(profile); // This will be called every time profile is updated
       setFormValues({
-        firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
-        nickname: profile.nickname || '',
-        labLocation: profile.labLocation || '',
-        bio: profile.bio || '',
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        nickname: profile.nickname || "",
+        labLocation: profile.labLocation || "",
+        bio: profile.bio || "",
       });
       setSelectedSkills(profile.skills || []);
       setSelectedInterests(profile.interests || []);
-      setProjects(profile.projects || []); // Add this line
+      setProjects(profile.projects || []);
     }
+
+    console.log(profile);
   }, [profile]);
 
   const [showModal, setShowModal] = useState(false);
-const [modalType, setModalType] = useState('');
-const onTypeSelect = (type) => {
-  setSelectedType(type);
-  if (resolveOnSkillTypeSelected) {
-    resolveOnSkillTypeSelected(type);
-    setResolveOnSkillTypeSelected(null);
-  }
-  // Add the selected type to the skill or interest here
-};
-const handleOpenModal = (type) => {
-  setModalType(type);
-  setShowModal(true);
-};
+  const [modalType, setModalType] = useState("");
+  const onTypeSelect = (type) => {
+    setSelectedType(type);
+    if (resolveOnSkillTypeSelected) {
+      resolveOnSkillTypeSelected(type);
+      setResolveOnSkillTypeSelected(null);
+    }
+  };
 
-const handleCloseModal = () => {
-  setShowModal(false);
-};
+  const handleOpenModal = (type) => {
+    setModalType(type);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handleImageUpload = (e) => {
     const uploadedImage = e.target.files[0];
@@ -160,101 +175,81 @@ const handleCloseModal = () => {
   };
 
   const handleSkillsChange = async (selected) => {
-    console.log('Selected:', selected); // Check the selected array
-    console.log('Token:', token); // Check the token
-  
     if (selected.length > selectedSkills.length) {
-      const newSkills = selected.filter(skill => !selectedSkills.some(s => s.name === skill.name));
+      const newSkills = selected.filter(
+        (skill) => !selectedSkills.some((s) => s.name === skill.name)
+      );
       for (const skill of newSkills) {
-        console.log('New skill:', skill); // Check the skill object
         try {
-          if (!skills.some(s => s.name === skill.name)) {
+          if (!skills.some((s) => s.name === skill.name)) {
             setModalType(skill.name);
-            const skillTypeSelected = new Promise(resolve => {
+            const skillTypeSelected = new Promise((resolve) => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
-            handleOpenModal('skill');
+            handleOpenModal("skill");
             skill.skillType = await skillTypeSelected;
             skill.projetcId = 0;
             skill.id = null;
             delete skill.customOption;
-            console.log('Skill with type:', skill); // Check the skill object
             const result = await createSkill(token, skill);
-            setSkills(prevSkills => [...prevSkills, result]);
-            console.log('Create skill result:', result);
-            setSelectedType('') // Check the result of createSkill
-          } else { // Check the result of createSkill
-          
-          try{
+            setSkills((prevSkills) => [...prevSkills, result]);
+            setSelectedType("");
+          } else {
             const result = await createSkill(token, skill);
-            console.log('Create skill result:', result); // Check the result of createSkill
           }
-          catch (error) {
-            console.error("Error creating skill:", error);
-          }
-        }
         } catch (error) {
           console.error("Error creating skill:", error);
         }
       }
-
     } else if (selected.length < selectedSkills.length) {
-      const removedSkills = selectedSkills.filter(skill => !selected.some(s => s.name === skill.name));
+      const removedSkills = selectedSkills.filter(
+        (skill) => !selected.some((s) => s.name === skill.name)
+      );
       for (const skill of removedSkills) {
-        console.log('Removed skill:', skill); // Check the skill object
         try {
           const result = await deleteSkill(token, skill);
-          console.log('Delete skill result:', result); // Check the result of deleteSkill
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
       }
     }
-
     setSelectedSkills(selected);
-}
+  };
 
   const handleInterestsChange = async (selected) => {
     if (selected.length > selectedInterests.length) {
-      const newInterests = selected.filter(interest => !selectedInterests.some(i => i.name === interest.name));
+      const newInterests = selected.filter(
+        (interest) => !selectedInterests.some((i) => i.name === interest.name)
+      );
       for (const interest of newInterests) {
         try {
-          if(!interests.some(i => i.name === interest.name)){
+          if (!interests.some((i) => i.name === interest.name)) {
             setModalType(interest.name);
-            const interestTypeSelected = new Promise(resolve => {
+            const interestTypeSelected = new Promise((resolve) => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
-            handleOpenModal('interest');
+            handleOpenModal("interest");
             interest.interestType = await interestTypeSelected;
             interest.projectId = 0;
             interest.id = null;
             delete interest.customOption;
-            console.log('Interest with type:', interest); // Check the interest object
             const result = await createInterest(token, interest);
-            setInterests(prevInterests => [...prevInterests, result]);
-            console.log('Create interest result:', result); // Check the result of createInterest
-            setSelectedType('') // Check the result of createInterest
+            setInterests((prevInterests) => [...prevInterests, result]);
+            setSelectedType("");
           } else {
-            try{
             const result = await createInterest(token, interest);
-          console.log('Create interest result:', result); 
-          // Check the result of createInterest
-          } catch (error) {
-            console.error("Error creating interest:", error);
-          
           }
-        }
         } catch (error) {
           console.error("Error creating interest:", error);
         }
       }
     } else if (selected.length < selectedInterests.length) {
-      const removedInterests = selectedInterests.filter(interest => !selected.some(i => i.name === interest.name));
+      const removedInterests = selectedInterests.filter(
+        (interest) => !selected.some((i) => i.name === interest.name)
+      );
       for (const interest of removedInterests) {
-        console.log('Removed interest:', interest); // Check the interest object
         try {
-         const result = await deleteInterest(token, interest);
-         console.log('Delete interest result:', result); // Check the result of deleteInterest
+          const result = await deleteInterest(token, interest);
         } catch (error) {
           console.error("Error deleting interest:", error);
         }
@@ -267,15 +262,16 @@ const handleCloseModal = () => {
     try {
       const newPrivacyStatus = profile.isPrivate ? 0 : 1;
       await setPrivacy(token);
-      setProfile(prevProfile => ({
+      setProfile((prevProfile) => ({
         ...prevProfile,
-        isPrivate: newPrivacyStatus
+        isPrivate: newPrivacyStatus,
       }));
     } catch (error) {
       console.error("Error changing privacy status:", error);
     }
   };
   
+
   return (
     <>
       <Header />
@@ -287,15 +283,17 @@ const handleCloseModal = () => {
           <Col md={9} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
-                <div className="privacy-icon">
-                  <Button variant="outline-secondary" onClick={togglePrivacy}>
-                    {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
-                  </Button>
-                </div>
+                {isOwnProfile && (
+                  <div className="privacy-icon">
+                    <Button variant="outline-secondary" onClick={togglePrivacy}>
+                      {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                    </Button>
+                  </div>
+                )}
                 <Row>
                   <Col md={4} className="text-center mb-3">
                     <img
-                      src={imagePreview || user?.image || Avatar}
+                      src={imagePreview || profile?.image || Avatar}
                       alt="Profile"
                       className="profile-image"
                     />
@@ -313,14 +311,16 @@ const handleCloseModal = () => {
                   </Col>
                   <Col md={8}>
                     <h2 className="profile-name">
-                      {user?.firstName} {user?.lastName}
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => setEditMode(!editMode)}
-                        className="profile-edit-button"
-                      >
-                        <PencilSquare />
-                      </Button>
+                      {profile?.firstName} {profile?.lastName}
+                      {isOwnProfile && (
+                        <Button
+                          variant="outline-secondary"
+                          onClick={() => setEditMode(!editMode)}
+                          className="profile-edit-button"
+                        >
+                          <PencilSquare />
+                        </Button>
+                      )}
                     </h2>
                     <hr />
                     <div>
@@ -398,27 +398,43 @@ const handleCloseModal = () => {
                             <strong>Nickname:</strong> {profile?.nickname}
                           </p>
                           <p>
-                            <strong>Usual Work Place:</strong> {profile?.labLocation}
+                            <strong>Usual Work Place:</strong>{" "}
+                            {profile?.labLocation}
                           </p>
                           <p>
                             <strong>Bio:</strong> {profile?.bio}
                           </p>
                           <Form.Group>
                             <Form.Label>Skills:</Form.Label>
-                            <Typeahead
-                              id="skills-typeahead"
-                              labelKey="name"
-                              multiple
-                              onChange={handleSkillsChange}
-                              options={skills}
-                              allowNew
-                              newSelectionPrefix="Add a new skill: "
-                              placeholder="Choose your skills..."
-                              selected={selectedSkills}
-                            />
+                            {isOwnProfile ? (
+                              <Typeahead
+                                id="skills-typeahead"
+                                labelKey="name"
+                                multiple
+                                onChange={handleSkillsChange}
+                                options={skills}
+                                allowNew
+                                newSelectionPrefix="Add a new skill: "
+                                placeholder="Choose your skills..."
+                                selected={selectedSkills}
+                              />
+                            ) : (
+                              
+                              <div>
+                                {selectedSkills.map((skill, index) => (
+                                  <span
+                                    key={index}
+                                    className="user-pill"
+                                  >
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </Form.Group>
                           <Form.Group>
                             <Form.Label>Interests:</Form.Label>
+                            {isOwnProfile ? (
                             <Typeahead
                               id="interests-typeahead"
                               labelKey="name"
@@ -430,15 +446,26 @@ const handleCloseModal = () => {
                               placeholder="Choose your interests..."
                               selected={selectedInterests}
                             />
+                            ) : (
+                              <div>
+                                {selectedInterests.map((interest, index) => (
+                                  <span
+                                    key={index}
+                                    className="user-pill"
+                                  >
+                                    {interest}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </Form.Group>
                           <p>
-                            <strong>Projects:</strong> 
+                            <strong>Projects:</strong>
                           </p>
                           {profile?.projects?.length > 0 ? (
                             profile.projects.map((project, index) => (
                               <div key={index}>
                                 <strong>{project}</strong>
-                              
                               </div>
                             ))
                           ) : (
@@ -455,13 +482,13 @@ const handleCloseModal = () => {
         </Row>
       </Container>
       <TypeModal
-  show={showModal}
-  onHide={handleCloseModal}
-  title={`Add ${modalType}`}
-  type={modalType}
-  types={modalType === 'skill' ? skillTypes : interestTypes}
-  onTypeSelect={onTypeSelect}
-/>
+        show={showModal}
+        onHide={handleCloseModal}
+        title={`Add ${modalType}`}
+        type={modalType}
+        types={modalType === "skill" ? skillTypes : interestTypes}
+        onTypeSelect={onTypeSelect}
+      />
     </>
   );
 };

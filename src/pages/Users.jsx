@@ -33,7 +33,8 @@ const Users = () => {
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: "20px",
-              padding: "20px",
+              padding: "10px",
+              paddingLeft: "220px",
             }}
           >
             {users.map((user) => (

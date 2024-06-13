@@ -33,7 +33,14 @@ const Project = () => {
     (member) => member.userId === currentUser.id
   );
 
+  
+
   const renderInfoTabContent = () => {
+
+    const slotsAvailable = project.maxTeamMembers !== undefined &&
+    project.teamMembers !== undefined &&
+    project.maxTeamMembers > project.teamMembers.length;
+    
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -128,11 +135,13 @@ const Project = () => {
                 ))}
             </div>
           )}
+          {!isMember && slotsAvailable && (
+            <button className="btn btn-primary">Apply</button>
+          )}
         </div>
       </div>
     );
   };
-
   const renderTeamTabContent = () => {
     return (
       <div className="card shadow-lg w-100">

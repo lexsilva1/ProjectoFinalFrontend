@@ -1,6 +1,7 @@
 import { Button } from 'react-bootstrap'; 
 import './UserCard.css'; 
 import Avatar from '../../multimedia/Images/Avatar.jpg';
+import { Link } from 'react-router-dom';
 
 const UserCard = ({ user }) => {
   const { firstName, lastName, userPhoto, privacy } = user;
@@ -14,7 +15,11 @@ const UserCard = ({ user }) => {
       </div>
       <div className="user-actions">
         <Button variant="primary">Send Message</Button>
-        {!privacy && <Button variant="secondary">View Profile</Button>}
+        {!privacy && 
+          <Link to={`/profile/${user.userId}`}>
+            <Button variant="secondary">View Profile</Button>
+          </Link>
+        }
       </div>
     </div>
   );
