@@ -1,11 +1,13 @@
 .project-card-card {
     margin: 3rem;
-    width: 400px; 
+    width: 350px; 
     height: 600px; 
     background-color: var(--primary-color);
     border: 1px solid var(--primary-color);
     border-radius: 10px;
-   
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border: 3px solid #e2e2e2;
+    
 }
 
 .project-content-container {
@@ -15,6 +17,7 @@
     justify-content: center;
     align-items: right;
     max-width: 100%;
+    
     
 }
 
@@ -35,7 +38,7 @@
 .project-card-badge-dark, .project-card-badge-light {
     margin: 0.5rem;
     color: black; 
-    background-color: white; 
+    background-color: white !important; 
     border: 0.2px solid rgb(209, 209, 209);
     border-radius: 10px; 
     padding: 2px;
@@ -61,7 +64,7 @@
     display: inline-block;
     padding: 10px 20px;
     color: #fff;
-    background-color: var(--dark-color);
+    background-color: var(--contrast-color);
     border: none;
     border-radius: 5px;
     text-decoration: none;
@@ -71,7 +74,7 @@
 }
 
 .project-card-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--dark-color);
 }
 .project-card-card-body {
     height: 74%;

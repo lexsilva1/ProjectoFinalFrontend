@@ -17,6 +17,7 @@ const Project = () => {
   const [activeTab, setActiveTab] = useState("info");
   const token = Cookies.get("authToken");
   const currentUser = userStore((state) => state.user);
+  console.log(currentUser);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,8 +30,8 @@ const Project = () => {
     fetchProject();
   }, [projectName]);
 
-  const isMember = project.teamMembers?.some(
-    (member) => member.userId === currentUser.id
+  const isMember = project.teamMembers && project.teamMembers.some(
+    (member) => member.id === currentUser.id
   );
 
   

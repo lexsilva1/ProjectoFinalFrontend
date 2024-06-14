@@ -1,0 +1,31 @@
+.main-content {
+    padding-top: 70px;
+    position: absolute;
+    width: 100%;
+  }
+  
+  .banner-container {
+    width: 100%;
+    z-index: -1000;
+  }
+  
+  .projects-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 2rem;
+    margin-left: 4rem;
+  }
+  
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    
+  }
+  
+  .project-card-container {
+    box-sizing: border-box;
+    margin-left: 3rem;
+ 
+  }

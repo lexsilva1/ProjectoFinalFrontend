@@ -1,12 +1,13 @@
 .container {
-    margin: 3rem;
+    margin: 20rem;
 }
 
 .card {
-    width: 90%; 
+    width: 80% !important; 
     height: auto;
     background-color: var(--primary-color);
     border: 1px solid var(--primary-color);
+    margin-top: 10%;
 }
 
 .card-title {

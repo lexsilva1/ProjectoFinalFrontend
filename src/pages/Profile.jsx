@@ -270,7 +270,6 @@ const Profile = () => {
       console.error("Error changing privacy status:", error);
     }
   };
-  
 
   return (
     <>
@@ -419,13 +418,9 @@ const Profile = () => {
                                 selected={selectedSkills}
                               />
                             ) : (
-                              
                               <div>
                                 {selectedSkills.map((skill, index) => (
-                                  <span
-                                    key={index}
-                                    className="user-pill"
-                                  >
+                                  <span key={index} className="user-pill">
                                     {skill}
                                   </span>
                                 ))}
@@ -435,24 +430,21 @@ const Profile = () => {
                           <Form.Group>
                             <Form.Label>Interests:</Form.Label>
                             {isOwnProfile ? (
-                            <Typeahead
-                              id="interests-typeahead"
-                              labelKey="name"
-                              multiple
-                              onChange={handleInterestsChange}
-                              options={interests}
-                              allowNew
-                              newSelectionPrefix="Add a new interest: "
-                              placeholder="Choose your interests..."
-                              selected={selectedInterests}
-                            />
+                              <Typeahead
+                                id="interests-typeahead"
+                                labelKey="name"
+                                multiple
+                                onChange={handleInterestsChange}
+                                options={interests}
+                                allowNew
+                                newSelectionPrefix="Add a new interest: "
+                                placeholder="Choose your interests..."
+                                selected={selectedInterests}
+                              />
                             ) : (
                               <div>
                                 {selectedInterests.map((interest, index) => (
-                                  <span
-                                    key={index}
-                                    className="user-pill"
-                                  >
+                                  <span key={index} className="user-pill">
                                     {interest}
                                   </span>
                                 ))}
