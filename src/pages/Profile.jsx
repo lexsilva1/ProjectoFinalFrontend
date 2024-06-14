@@ -137,11 +137,12 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = user.image;
-
+      console.log("Image:", image);
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
-        finalImageURL = response.data.image;
+        finalImageURL = response;
+        console.log("Image URL:", finalImageURL);
       } catch (error) {
         console.error("Error uploading image:", error);
       }
