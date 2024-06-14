@@ -3,6 +3,11 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: var(--primary-color);
+}
+.message-card:hover {
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .sender {

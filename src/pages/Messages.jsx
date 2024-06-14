@@ -2,27 +2,38 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import Sidebar from '../components/SideBar';
 import Header from '../components/Header';
-import MessageCard from '../components/Cards/MessageCard';
+import Conversation from '../components/Conversation';
 import UserList from '../components/UserLIst';
 import { useState } from 'react';
 import { use } from 'i18next';
 import { useEffect } from 'react';
+import { getMessages, getLastMessages, sendMessage } from '../services/messageServices';
+import userstore from '../stores/userStore';
+import Cookies from 'js-cookie';
 
 const Messages = () => {
-    // Dummy data for messages
-    const messages = [
-        { id: 1, sender: 'User A', message: 'Hello!', dateTime: '2021-09-01 12:00:00', isRead: true},
-        { id: 2, sender: 'User B', content: 'Hi there!', dateTime: '2021-09-01 12:01:00', isRead: false},
-        { id: 3, sender: 'User A', content: 'How are you?, dateTime: 2021-09-01 12:02:00', isRead: true},
-        { id: 4, sender: 'User B', content: 'I am good, thanks!', dateTime: '2021-09-01 12:03:00', isRead: false},
-    ];
+
     const [userList, setUserList] = useState([]);
     const [selectedMessages, setSelectedMessages] = useState([]);
+    const selectedUserMessages = userstore((state) => state.selectedUserMessages);
+    const token = Cookies.get('authToken');
 
     useEffect(() => {
-        setUserList(messages)
+        getLastMessages(token).then((messages) => {
+            setUserList(messages);
+            console.log(messages);
+        });
     }
     , []);
+    useEffect(() => {
+        if (selectedUserMessages !== null) {
+            getMessages(token, selectedUserMessages).then((messages) => {
+                setSelectedMessages(messages);
+                console.log(messages);
+            ;
+            });
+        }
+    }, [selectedUserMessages]);
     return (
         <><Header />
         <Row>
@@ -42,11 +53,7 @@ const Messages = () => {
 <UserList users={userList}/>
 </Col>
                 <Col>
-                    {selectedMessages.map((message) => (
-                        <Card key={message.id} className="mb-3">
-                         <MessageCard message={message} />
-                        </Card>
-                    ))}
+                    <Conversation conversations={selectedMessages} />
                 </Col>
             </Row>
         

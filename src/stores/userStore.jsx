@@ -15,6 +15,8 @@ const userStore = create(persist(
     isLoggedIn: Cookies.get('authToken') ? true : false,
     setIsLoggedIn: (loggedIn) => set({ isLoggedIn: loggedIn }),
     user: null,
+    selectedUserMessages: null,
+    setSelectedUserMessages : (userId) => set({ selectedUserMessages: userId }),
   }),
   {
     name: 'user-storage', 
