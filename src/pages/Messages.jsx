@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import Sidebar from '../components/SideBar';
 import Header from '../components/Header';
 import Conversation from '../components/Conversation';
@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { getMessages, getLastMessages, sendMessage } from '../services/messageServices';
 import userstore from '../stores/userStore';
 import Cookies from 'js-cookie';
+import { Fa0 } from 'react-icons/fa6';
 
 const Messages = () => {
 
@@ -17,6 +18,7 @@ const Messages = () => {
     const [selectedMessages, setSelectedMessages] = useState([]);
     const selectedUserMessages = userstore((state) => state.selectedUserMessages);
     const token = Cookies.get('authToken');
+    console.log (selectedMessages)
 
     useEffect(() => {
         getLastMessages(token).then((messages) => {
@@ -40,25 +42,24 @@ const Messages = () => {
                 <Col xs={3}>
                     <Sidebar />
                 </Col>
-                <Col>
+                
         <Container>
             <Row>
-                <Col>
                     <h1>Messages</h1>
-                </Col>
-
             </Row>
             <Row>
-<Col>
-<UserList users={userList}/>
-</Col>
+
                 <Col>
+                {selectedUserMessages === null ? (
+                <UserList users={userList}/>
+                ) : (
                     <Conversation conversations={selectedMessages} />
+                    
+                )}
                 </Col>
             </Row>
         
         </Container>
-        </Col>
         </Row>
         </>
     );
