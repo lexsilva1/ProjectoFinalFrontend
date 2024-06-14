@@ -52,12 +52,12 @@ const Home = () => {
     getProjects()
       .then((projectsData) => {
         setProjects(projectsData);
-        setHasFetchedProjects(true); // Indica que os projetos foram carregados
-        setIsLoading(false); // Marca o carregamento como completo
+        setHasFetchedProjects(true); 
+        setIsLoading(false); 
       })
       .catch((error) => {
         console.error("Error fetching projects:", error);
-        setIsLoading(false); // Em caso de erro, também marca o carregamento como completo para evitar bloqueios
+        setIsLoading(false); 
       });
   }, []);
 
@@ -80,6 +80,7 @@ const Home = () => {
 
   return (
     <>
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}></div>
       <div style={{ position: "fixed", width: "100%", zIndex: 1000 }}>
         <Header />
       </div>
@@ -105,7 +106,7 @@ const Home = () => {
               gap: "1rem",
               margin: "1rem 0",
               justifyContent: "flex-start",
-              paddingLeft: "2rem",
+              paddingLeft: "10rem",
             }}
           >
             <div
@@ -162,8 +163,10 @@ const Home = () => {
         <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
         <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
         <RegisterModal />
-        <Footer />
-      </div>
+        
+       
+      </div> 
+      <Footer style={{ position: 'fixed', bottom: 0, width: '100%' }} />
     </>
   );
 };

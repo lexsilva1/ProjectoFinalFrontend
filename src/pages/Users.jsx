@@ -34,7 +34,7 @@ const Users = () => {
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: "20px",
               padding: "10px",
-              paddingLeft: "220px",
+              paddingLeft: "120px",
             }}
           >
             {users.map((user) => (
