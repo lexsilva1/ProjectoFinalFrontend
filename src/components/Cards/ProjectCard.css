@@ -64,7 +64,7 @@
     display: inline-block;
     padding: 10px 20px;
     color: #fff;
-    background-color: var(--contrast-color);
+    background-color: var(--dark-color);
     border: none;
     border-radius: 5px;
     text-decoration: none;
@@ -74,7 +74,7 @@
 }
 
 .project-card-btn:hover {
-    background-color: var(--dark-color);
+    background-color: var(--contrast-color);
 }
 .project-card-card-body {
     height: 74%;
