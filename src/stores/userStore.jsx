@@ -17,6 +17,8 @@ const userStore = create(persist(
     user: null,
     selectedUserMessages: null,
     setSelectedUserMessages : (userId) => set({ selectedUserMessages: userId }),
+    userList: [],
+    setUserList: (users) => set({ userList: users }),
   }),
   {
     name: 'user-storage', 

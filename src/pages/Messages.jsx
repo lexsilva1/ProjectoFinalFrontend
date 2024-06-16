@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 import MessageSidebar from '../components/MessageSidebar';
 
 const Messages = () => {
-  const [userList, setUserList] = useState([]);
+  const userList = userstore((state) => state.userList);
   const [selectedMessages, setSelectedMessages] = useState([]);
   const selectedUserMessages = userstore((state) => state.selectedUserMessages);
   const token = Cookies.get("authToken");
@@ -27,7 +27,7 @@ const Messages = () => {
 
   useEffect(() => {
     getLastMessages(token).then((messages) => {
-      setUserList(messages);
+      userstore.setState({ userList: messages });
     });
   }, []);
 
