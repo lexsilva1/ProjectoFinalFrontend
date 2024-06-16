@@ -1,15 +1,17 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
+import Avatar from '../../multimedia/Images/Avatar.jpg';
+import userStore from '../../stores/userStore';
+import './ConversationCard.css';
 
 const ConversationCard = ({ conversation }) => {
     const name = conversation.sender.firstName + ' ' + conversation.sender.lastName;
-    console.log(conversation);
+
     return (
-        <ListGroup.Item className="d-flex justify-content-between mb-4">
+        <ListGroup.Item className="custom-d-flex">
+            <img src={conversation.sender.avatar || Avatar} alt="avatar"
+                className="custom-rounded-circle align-self-start ms-3 shadow-1-strong" width="60" />
             <Card className="w-100">
                 <Card.Header className="d-flex justify-content-between p-3">
                     <p className="fw-bold mb-0">{name}</p>
@@ -21,8 +23,6 @@ const ConversationCard = ({ conversation }) => {
                     </p>
                 </Card.Body>
             </Card>
-            <img src={conversation.avatar} alt="avatar"
-                className="rounded-circle d-flex align-self-start ms-3 shadow-1-strong" width="60" />
         </ListGroup.Item>
     );
 };

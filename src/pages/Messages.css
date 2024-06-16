@@ -1,0 +1,33 @@
+.sidebar-container {
+    background-color: var(--primary-color);
+    height: 100vh;
+    padding-top: 1rem;
+  }
+  
+  .message-sidebar-container {
+    background-color: var(--secondary-color);
+    height: 100vh;
+    padding-top: 1rem;
+    border-right: 1px solid #ddd;
+  }
+  
+  .conversation-container {
+    background-color: #f9f9f9;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar-container,
+    .message-sidebar-container,
+    .conversation-container {
+      padding: 0;
+    }
+  
+    .message-sidebar-container,
+    .conversation-container {
+      height: auto;
+    }
+  }

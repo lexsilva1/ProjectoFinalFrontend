@@ -1,0 +1,24 @@
+
+  
+  .custom-rounded-circle {
+    border-radius: 50%;
+  }
+  .custom-d-flex {
+    display: flex;
+  }
+  .custom-rounded-circle {
+    border-radius: 50%;
+  }
+  
+  .float-right {
+    float: right;
+  }
+  
+  .float-left {
+    float: left;
+  } 
+
+  .custom-flex-row-reverse {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }

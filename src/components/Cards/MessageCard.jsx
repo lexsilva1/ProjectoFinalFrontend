@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './MessageCard.css';
 import useStore from '../../stores/userStore';
-
+import Avatar from '../../multimedia/Images/Avatar.jpg';
 
 const MessageCard = ({ message }) => {
 
@@ -15,24 +15,24 @@ const MessageCard = ({ message }) => {
         setSelectedUserMessages(message.id);
     }
     return (
-        <Card className="message-card mb-2"   onClick={handleClick}>
+        <Card className="mail-message-card" onClick={handleClick}>
             <Card.Body>
                 <Row className="align-items-center">
-                    <Col xs={2} className="d-flex justify-content-center">
-                        <img src={message.senderImage} alt="avatar" className="rounded-circle shadow-1-strong" style={{ width: '60px' }} />
+                    <Col xs={3} className="d-flex align-items-center">
+                        <img src={message.senderImage || Avatar} alt="avatar" className="rounded-circle shadow-1-strong mail-avatar" />
+                        <Card.Title className="fw-bold mb-0 mail-sender">{message.sender}</Card.Title>
                     </Col>
-                    <Col xs={8}>
-                        <Card.Title className="fw-bold mb-0">{message.sender}</Card.Title>
-                        <Card.Text className="small text-muted">{message.message}</Card.Text>
+                    <Col xs={6} className="mail-content">
+                        <Card.Text className="small text-muted mail-message">{message.message}</Card.Text>
                     </Col>
                     <Col xs={2} className="text-end">
-                        <Card.Subtitle className="small text-muted mb-1">{message.dateTime}</Card.Subtitle>
-                        {message.isRead ? null : <span className="badge bg-danger">New</span>}
+                        {message.isRead ? null : <span className="badge bg-danger mail-is-read">New</span>}
                     </Col>
                 </Row>
+                <Card.Subtitle className="small text-muted mb-1 mail-datetime">{message.dateTime}</Card.Subtitle>
             </Card.Body>
         </Card>
     );
-};
+}
 
 export default MessageCard;
