@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form, Image } from "react-bootstrap";
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
 import Avatar from "../multimedia/Images/Avatar.jpg";
@@ -49,11 +49,10 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         if (userId) {
-          // Usa o userId da URL
-          const userFromServer = await findUserById(token, userId); // Busca usuário pelo userId da URL
+          const userFromServer = await findUserById(token, userId);
           setProfile(userFromServer);
 
-          const [allLabs, allSkills, allInterests, skillTypes, interestTypes] =
+          const [allLabs, allSkills, allInterests, fetchedSkillTypes, fetchedInterestTypes] =
             await Promise.all([
               getLabs(token),
               getSkills(token),
@@ -64,17 +63,14 @@ const Profile = () => {
 
           setLabs(allLabs);
           setSkills(
-            allSkills.filter((skill) => !userFromServer.skills.includes(skill))
+            allSkills.filter((skill) => !userFromServer.skills.some((s) => s.id === skill.id))
           );
           setInterests(
-            allInterests.filter(
-              (interest) => !userFromServer.interests.includes(interest)
-            )
+            allInterests.filter((interest) => !userFromServer.interests.some((i) => i.id === interest.id))
           );
-          setSkillTypes(skillTypes);
-          setInterestTypes(interestTypes);
+          setSkillTypes(fetchedSkillTypes);
+          setInterestTypes(fetchedInterestTypes);
 
-          // Se o usuário logado não for o dono do perfil, desativa o modo de edição
           if (user?.id !== userFromServer.id) {
             setEditMode(false);
           }
@@ -100,12 +96,11 @@ const Profile = () => {
       setSelectedInterests(profile.interests || []);
       setProjects(profile.projects || []);
     }
-
-    console.log(profile);
   }, [profile]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
+
   const onTypeSelect = (type) => {
     setSelectedType(type);
     if (resolveOnSkillTypeSelected) {
@@ -137,12 +132,11 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = user.image;
-      console.log("Image:", image);
+
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
         finalImageURL = response;
-        console.log("Image URL:", finalImageURL);
       } catch (error) {
         console.error("Error uploading image:", error);
       }
@@ -161,8 +155,10 @@ const Profile = () => {
       try {
         await updateUser(user.id, userUpdate, token);
         setEditMode(false);
+        const updatedUser = await findUserById(token, userId);
+        setProfile(updatedUser);
       } catch (error) {
-        console.error("Error from updateUser:", error);
+        console.error("Error updating user:", error);
       }
     }
   };
@@ -188,32 +184,27 @@ const Profile = () => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
             handleOpenModal("skill");
-            skill.skillType = await skillTypeSelected;
-            skill.projetcId = 0;
-            skill.id = null;
-            delete skill.customOption;
-            const result = await createSkill(token, skill);
-            setSkills((prevSkills) => [...prevSkills, result]);
-            setSelectedType("");
-          } else {
-            const result = await createSkill(token, skill);
+            const skillType = await skillTypeSelected;
+            await createSkill(token, { name: skill.name, type: skillType });
           }
         } catch (error) {
           console.error("Error creating skill:", error);
         }
       }
-    } else if (selected.length < selectedSkills.length) {
+    } else {
       const removedSkills = selectedSkills.filter(
         (skill) => !selected.some((s) => s.name === skill.name)
       );
       for (const skill of removedSkills) {
         try {
-          const result = await deleteSkill(token, skill);
+          await deleteSkill(token, skill.id);
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
       }
     }
+    const updatedSkills = await getSkills(token);
+    setSkills(updatedSkills.filter((skill) => !selected.some((s) => s.name === skill.name)));
     setSelectedSkills(selected);
   };
 
@@ -230,39 +221,34 @@ const Profile = () => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
             handleOpenModal("interest");
-            interest.interestType = await interestTypeSelected;
-            interest.projectId = 0;
-            interest.id = null;
-            delete interest.customOption;
-            const result = await createInterest(token, interest);
-            setInterests((prevInterests) => [...prevInterests, result]);
-            setSelectedType("");
-          } else {
-            const result = await createInterest(token, interest);
+            const interestType = await interestTypeSelected;
+            await createInterest(token, { name: interest.name, type: interestType });
           }
         } catch (error) {
           console.error("Error creating interest:", error);
         }
       }
-    } else if (selected.length < selectedInterests.length) {
+    } else {
       const removedInterests = selectedInterests.filter(
         (interest) => !selected.some((i) => i.name === interest.name)
       );
       for (const interest of removedInterests) {
         try {
-          const result = await deleteInterest(token, interest);
+          await deleteInterest(token, interest.id);
         } catch (error) {
           console.error("Error deleting interest:", error);
         }
       }
     }
+    const updatedInterests = await getInterests(token);
+    setInterests(updatedInterests.filter((interest) => !selected.some((i) => i.name === interest.name)));
     setSelectedInterests(selected);
   };
 
   const togglePrivacy = async () => {
     try {
       const newPrivacyStatus = profile.isPrivate ? 0 : 1;
-      await setPrivacy(token);
+      await setPrivacy(token, newPrivacyStatus);
       setProfile((prevProfile) => ({
         ...prevProfile,
         isPrivate: newPrivacyStatus,
@@ -277,9 +263,10 @@ const Profile = () => {
       <Header />
       <Container fluid className="profile-container">
         <Row className="profile-row">
-          <Col md={3} className="profile-sidebar">
+          <div>
             <Sidebar />
-          </Col>
+          </div>
+          
           <Col md={9} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
@@ -292,9 +279,10 @@ const Profile = () => {
                 )}
                 <Row>
                   <Col md={4} className="text-center mb-3">
-                    <img
-                      src={imagePreview || profile?.image || Avatar}
+                    <Image
+                      src={imagePreview || profile?.userPhoto || Avatar}
                       alt="Profile"
+                      roundedCircle
                       className="profile-image"
                     />
                     {editMode && (
@@ -323,150 +311,140 @@ const Profile = () => {
                       )}
                     </h2>
                     <hr />
-                    <div>
-                      {editMode ? (
-                        <Form>
-                          <Form.Group>
-                            <Form.Label>First Name:</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="firstName"
-                              value={formValues.firstName}
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label>Last Name:</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="lastName"
-                              value={formValues.lastName}
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label>Nickname:</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="nickname"
-                              value={formValues.nickname}
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label>Usual Work Place:</Form.Label>
-                            <Form.Control
-                              as="select"
-                              name="labLocation"
-                              value={formValues.labLocation}
-                              onChange={handleChange}
+                    <Row>
+                      <Col md={4}>
+                        <h4>Profile Information</h4>
+                        {editMode ? (
+                          <Form>
+                            <Form.Group>
+                              <Form.Label>First Name:</Form.Label>
+                              <Form.Control
+                                type="text"
+                                name="firstName"
+                                value={formValues.firstName}
+                                onChange={handleChange}
+                              />
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Label>Last Name:</Form.Label>
+                              <Form.Control
+                                type="text"
+                                name="lastName"
+                                value={formValues.lastName}
+                                onChange={handleChange}
+                              />
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Label>Nickname:</Form.Label>
+                              <Form.Control
+                                type="text"
+                                name="nickname"
+                                value={formValues.nickname}
+                                onChange={handleChange}
+                              />
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Label>Usual Work Place:</Form.Label>
+                              <Form.Control
+                                as="select"
+                                name="labLocation"
+                                value={formValues.labLocation}
+                                onChange={handleChange}
+                              >
+                                {labs.map((lab, index) => (
+                                  <option key={index} value={lab.location}>
+                                    {lab.location}
+                                  </option>
+                                ))}
+                              </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Label>Bio:</Form.Label>
+                              <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="bio"
+                                value={formValues.bio}
+                                onChange={handleChange}
+                              />
+                            </Form.Group>
+                            <Button
+                              variant="primary"
+                              type="button"
+                              onClick={handleSave}
                             >
-                              {labs.map((lab, index) => (
-                                <option key={index} value={lab.location}>
-                                  {lab.location}
-                                </option>
-                              ))}
-                            </Form.Control>
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label>Bio:</Form.Label>
-                            <Form.Control
-                              as="textarea"
-                              rows={3}
-                              name="bio"
-                              value={formValues.bio}
-                              onChange={handleChange}
-                            />
-                          </Form.Group>
-                          <Button
-                            variant="primary"
-                            type="button"
-                            onClick={handleSave}
-                          >
-                            Save
-                          </Button>
-                        </Form>
-                      ) : (
-                        <div>
-                          <p>
-                            <strong>First Name:</strong> {profile?.firstName}
-                          </p>
-                          <p>
-                            <strong>Last Name:</strong> {profile?.lastName}
-                          </p>
-                          <p>
-                            <strong>Nickname:</strong> {profile?.nickname}
-                          </p>
-                          <p>
-                            <strong>Usual Work Place:</strong>{" "}
-                            {profile?.labLocation}
-                          </p>
-                          <p>
-                            <strong>Bio:</strong> {profile?.bio}
-                          </p>
-                          <Form.Group>
-                            <Form.Label>Skills:</Form.Label>
-                            {isOwnProfile ? (
-                              <Typeahead
-                                id="skills-typeahead"
-                                labelKey="name"
-                                multiple
-                                onChange={handleSkillsChange}
-                                options={skills}
-                                allowNew
-                                newSelectionPrefix="Add a new skill: "
-                                placeholder="Choose your skills..."
-                                selected={selectedSkills}
-                              />
-                            ) : (
-                              <div>
-                                {selectedSkills.map((skill, index) => (
-                                  <span key={index} className="user-pill">
-                                    {skill}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label>Interests:</Form.Label>
-                            {isOwnProfile ? (
-                              <Typeahead
-                                id="interests-typeahead"
-                                labelKey="name"
-                                multiple
-                                onChange={handleInterestsChange}
-                                options={interests}
-                                allowNew
-                                newSelectionPrefix="Add a new interest: "
-                                placeholder="Choose your interests..."
-                                selected={selectedInterests}
-                              />
-                            ) : (
-                              <div>
-                                {selectedInterests.map((interest, index) => (
-                                  <span key={index} className="user-pill">
-                                    {interest}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </Form.Group>
-                          <p>
-                            <strong>Projects:</strong>
-                          </p>
-                          {profile?.projects?.length > 0 ? (
-                            profile.projects.map((project, index) => (
-                              <div key={index}>
-                                <strong>{project}</strong>
-                              </div>
-                            ))
-                          ) : (
-                            <p>No projects added</p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                              Save
+                            </Button>
+                          </Form>
+                        ) : (
+                          <div>
+                            <p><strong>First Name:</strong> {profile?.firstName}</p>
+                            <p><strong>Last Name:</strong> {profile?.lastName}</p>
+                            <p><strong>Nickname:</strong> {profile?.nickname}</p>
+                            <p><strong>Usual Work Place:</strong> {profile?.labLocation}</p>
+                            <p><strong>Bio:</strong> {profile?.bio}</p>
+                          </div>
+                        )}
+                      </Col>
+                      <Col md={4}>
+                        <h4>Skills</h4>
+                        {isOwnProfile ? (
+                          <Typeahead
+                            id="skills-typeahead"
+                            labelKey="name"
+                            multiple
+                            onChange={handleSkillsChange}
+                            options={skills}
+                            allowNew
+                            newSelectionPrefix="Add a new skill: "
+                            placeholder="Choose your skills..."
+                            selected={selectedSkills}
+                          />
+                        ) : (
+                          <div>
+                            {selectedSkills.map((skill, index) => (
+                              <span key={index} className="user-pill">
+                                {skill.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <h4>Interests</h4>
+                        {isOwnProfile ? (
+                          <Typeahead
+                            id="interests-typeahead"
+                            labelKey="name"
+                            multiple
+                            onChange={handleInterestsChange}
+                            options={interests}
+                            allowNew
+                            newSelectionPrefix="Add a new interest: "
+                            placeholder="Choose your interests..."
+                            selected={selectedInterests}
+                          />
+                        ) : (
+                          <div>
+                            {selectedInterests.map((interest, index) => (
+                              <span key={index} className="user-pill">
+                                {interest.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </Col>
+                      <Col md={4}>
+                        <h4>Projects</h4>
+                        {profile?.projects?.length > 0 ? (
+                          profile.projects.map((project, index) => (
+                            <div key={index}>
+                              <strong>{project.name}</strong>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No projects added</p>
+                        )}
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </Card.Body>

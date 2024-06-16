@@ -10,6 +10,7 @@ import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import { getProjectByName } from "../services/projectServices";
 import UserCard from "../components/Cards/UserCard";
+import { useTranslation } from "react-i18next";
 
 const Project = () => {
   const { projectName } = useParams();
@@ -18,6 +19,7 @@ const Project = () => {
   const token = Cookies.get("authToken");
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProject = async () => {

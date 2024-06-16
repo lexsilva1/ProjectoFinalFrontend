@@ -9,6 +9,7 @@ import Avatar from '../multimedia/Images/Avatar.jpg';
 import logo2 from '../multimedia/Images/logo2.png';
 import { FaBell } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
+import { FaEnvelope } from 'react-icons/fa';
 
 const Header = () => {
   const { t, i18n } = useTranslation();
@@ -55,6 +56,7 @@ const Header = () => {
         )}
         {authToken && user && (
           <>
+            <FaEnvelope className="messages-icon" onClick={() => navigate("/messages")} />
             <FaBell className="notification-icon" />
             <div className="user-info">
               <img

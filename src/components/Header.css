@@ -97,4 +97,10 @@
   .user-name {
     color: var(--dark-color);
   }
+
+  .messages-icon {
+    color: var(--dark-color);
+    cursor: pointer;
+    
+  }
   

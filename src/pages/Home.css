@@ -2,11 +2,12 @@
     padding-top: 70px;
     position: absolute;
     width: 100%;
+    background-color: #F5F5F5!important;
   }
   
   .banner-container {
     width: 100%;
-    z-index: -1000;
+    background-color: #F5F5F5!important;
   }
   
   .projects-container {
