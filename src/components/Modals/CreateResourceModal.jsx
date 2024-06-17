@@ -48,7 +48,7 @@ const CreateResourceModal = (props) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e, callback) => {
     e.preventDefault();
     if (!validate()) return;
   
@@ -56,10 +56,12 @@ const CreateResourceModal = (props) => {
       const response = await createResource(token, formData);
       console.log("Response from createResource:", response);
       props.toggle(); // fecha o modal após a criação do recurso
+      if (callback) callback(); // chama a função de callback se ela existir
+      if (props.fetchResources) props.fetchResources(); // atualiza a lista de recursos
     } catch (error) {
       console.error('An error occurred:', error);
     }
-  };
+};
 
   return (
     <div>
@@ -71,7 +73,7 @@ const CreateResourceModal = (props) => {
         <ModalBody>
           <Form onSubmit={onSubmit}>
           <FormGroup>
-            <Row form>
+          <Row>
               <Col md={6}>
                 <FormGroup>
                   <Label for="name">Name</Label>
@@ -146,7 +148,7 @@ const CreateResourceModal = (props) => {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label for="observations">Notes/Observations</Label>
+                  <Label for="observations">Observations</Label>
                   <Input
                     type="textarea"
                     name="observations"

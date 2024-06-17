@@ -81,6 +81,7 @@ const Profile = () => {
     };
 
     fetchData();
+   
   }, [userId, user, token]);
 
   useEffect(() => {
@@ -289,7 +290,7 @@ const Profile = () => {
                   </div>
                 )}
                 <Row>
-                  <Col md={4} className="text-center mb-3">
+                  <Col md={3} className="text-center mb-3">
                     <Image
                       src={imagePreview || profile?.userPhoto || Avatar}
                       alt="Profile"
@@ -299,7 +300,6 @@ const Profile = () => {
                     {editMode && (
                       <div className="mt-3">
                         <Form.Group>
-                          <Form.Label>Choose Image:</Form.Label>
                           <Form.Control
                             type="file"
                             onChange={handleImageUpload}
@@ -324,7 +324,6 @@ const Profile = () => {
                     <hr />
                     <Row>
                       <Col md={4}>
-                      <h4 style={{ fontSize: '1.2rem' }}>Profile Information</h4>
                         {editMode ? (
                           <Form>
                             <Form.Group>

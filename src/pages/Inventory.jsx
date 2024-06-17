@@ -16,18 +16,23 @@ const Inventory = () => {
     const token = Cookies.get('authToken');
     const [modalOpen, setModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchResources = async () => {
-            const resourcesData = await getResources(token);
-            console.log(resourcesData);
-            setResources(resourcesData);
-        };
+    const fetchResources = async () => {
+        const resourcesData = await getResources(token);
+        console.log(resourcesData);
+        setResources(resourcesData);
+    };
 
+    useEffect(() => {
         fetchResources();
     }, [token]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        fetchResources();
     };
 
     const requestSort = (key) => {
@@ -54,6 +59,14 @@ const Inventory = () => {
         return sortableResources;
     }, [resources, sortConfig]);
 
+    const filteredResources = React.useMemo(() => {
+        return sortedResources.filter(resource => 
+            ['name', 'brand', 'identifier', 'supplier'].some(field => 
+                resource[field] && resource[field].toString().toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+    }, [sortedResources, searchTerm]);
+    
     const renderSortArrow = (columnName) => {
         if (sortConfig && sortConfig.key === columnName) {
             return sortConfig.direction === 'ascending' ? '▲' : '▼';
@@ -78,7 +91,7 @@ const Inventory = () => {
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
-                                <CreateResourceModal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} />
+                                <CreateResourceModal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} onSubmit={(e) => onSubmit(e, fetchResources)} fetchResources={fetchResources} />
                             </InputGroup>
                         </Col>
                     </Row>
@@ -101,11 +114,11 @@ const Inventory = () => {
                                 </th>
                                 <th><FaPhone /> Contact</th>
                                 <th><FaWarehouse /> Quantity</th>
-                                <th><FaStickyNote /> Notes/Observations</th>
+                                <th><FaStickyNote />Observations</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedResources.map((resource) => (
+                            {filteredResources.map((resource) => (
                                 <tr key={resource.id}>
                                     <td>{resource.name}</td>
                                     <td>{resource.identifier}</td>
