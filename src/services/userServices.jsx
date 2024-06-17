@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import baseURL from './baseURL';
 import userStore from '../stores/userStore';
+import { useStore } from 'zustand';
 
 
 const usersURL = baseURL + 'users';
@@ -91,10 +92,13 @@ export const confirmUser = async (token, userConfirmation) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const responseText = await response.text();
-    console.log('Response text from server:', responseText);
+    const dto = await response.json();
+    
+    Cookies.set('authToken', dto.token);
+    userStore.setState({ isLoggedIn: true, user: dto });
+   return true;
 
-    return responseText; // Return the response text directly
+   
 }
 
 export const findAllUsers = async (token) => {

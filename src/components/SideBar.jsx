@@ -34,6 +34,12 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/messages">
+                        <i className="fas fa-envelope"></i>
+                        {isOpen && <span className="link-text">{t('Messages')}</span>}
+                    </Link>
+                </li>
+                <li>
                     <Link to="/users">
                         <i className="fas fa-users"></i>
                         {isOpen && <span className="link-text">{t('Users')}</span>}

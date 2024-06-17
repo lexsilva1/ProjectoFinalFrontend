@@ -313,7 +313,7 @@ const Profile = () => {
                     <hr />
                     <Row>
                       <Col md={4}>
-                        <h4>Profile Information</h4>
+                      <h4 style={{ fontSize: '1.2rem' }}>Profile Information</h4>
                         {editMode ? (
                           <Form>
                             <Form.Group>
@@ -387,7 +387,7 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col md={4}>
-                        <h4>Skills</h4>
+                        <h4 style={{ fontSize: '1.2rem' }} >Skills</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -409,7 +409,7 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4>Interests</h4>
+                        <h4 style={{ fontSize: '1.2rem' }}>Interests</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="interests-typeahead"
@@ -433,7 +433,7 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col md={4}>
-                        <h4>Projects</h4>
+                        <h4 style={{ fontSize: '1.2rem' }}>Projects</h4>
                         {profile?.projects?.length > 0 ? (
                           profile.projects.map((project, index) => (
                             <div key={index}>
