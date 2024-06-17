@@ -1,15 +1,6 @@
-.create-resource-modal {
-  position: fixed;
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-}
 
-.create-resource-modal .modal-header {
-  background-color: #007bff;
-  color: #fff;
-  border-bottom: none;
-}
+
+
 
 .create-resource-modal .modal-body {
   padding: 20px;

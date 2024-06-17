@@ -81,6 +81,7 @@ const Profile = () => {
     };
 
     fetchData();
+   
   }, [userId, user, token]);
 
   useEffect(() => {

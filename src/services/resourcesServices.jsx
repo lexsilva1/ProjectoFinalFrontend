@@ -30,7 +30,12 @@ export const createResource = async (token, resourceDto) => {
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     } else {
-        return await response.json();
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch {
+            return text;
+        }
     }
 };
 
