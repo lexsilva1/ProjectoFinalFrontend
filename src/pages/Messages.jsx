@@ -6,28 +6,28 @@ import Conversation from '../components/Conversation';
 import UserList from '../components/UserList';
 import { useState, useEffect } from 'react';
 import { getMessages, getLastMessages, sendMessage } from '../services/messageServices';
-import userstore from '../stores/userStore';
+import userStore from '../stores/userStore';
 import Cookies from 'js-cookie';
 import MessageSidebar from '../components/MessageSidebar';
 
 const Messages = () => {
-  const userList = userstore((state) => state.userList);
-  const [selectedMessages, setSelectedMessages] = useState([]);
-  const selectedUserMessages = userstore((state) => state.selectedUserMessages);
+  const userList = userStore((state) => state.userList);
+  const setSelectedMessages = userStore((state) => state.setSelectedMessages);
+  const selectedUserMessages = userStore((state) => state.selectedUserMessages);
   const token = Cookies.get("authToken");
   const resetSelectedUserMessages = () => {
-    userstore.setState({ selectedUserMessages: null });
+    userStore.setState({ selectedUserMessages: null });
   };
 
   useEffect(() => {
     return () => {
-      userstore.setState({ selectedUserMessages: null });
+      userStore.setState({ selectedUserMessages: null });
     };
   }, []);
 
   useEffect(() => {
     getLastMessages(token).then((messages) => {
-      userstore.setState({ userList: messages });
+      userStore.setState({ userList: messages });
     });
   }, []);
 
@@ -60,7 +60,7 @@ const Messages = () => {
                 {selectedUserMessages === null ? (
                   <UserList users={userList} />
                 ) : (
-                  <Conversation conversations={selectedMessages} />
+                  <Conversation />
                 )}
               </Col>
             </Row>

@@ -1,56 +1,36 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import ConversationCard from '../components/Cards/ConversationCard'; 
-import userstore from '../stores/userStore';
+import userStore from '../stores/userStore';
 import { sendMessage } from '../services/messageServices';
 import './Conversation.css';
 import Cookies from 'js-cookie';
+import useMsgSocket from '../Websockets/messagesWebsocket';
 
-const Conversation = ({ conversations }) => {
+const Conversation = () => {
 
   const token = Cookies.get('authToken');
   const [newMessage, setNewMessage] = useState('');
-  const senderId = userstore((state) => state.user.id);
-  const senderName = userstore((state) => state.user.name);
-  const receiverId = userstore((state) => state.selectedUserMessages.id);
-  const receiverName = userstore((state) => state.selectedUserMessages.name);
-
+  const senderId = userStore((state) => state.user.id);
+  const senderName = userStore((state) => state.user.name);
+  const receiverId = userStore((state) => state.selectedUserMessages);
+  console.log(receiverId);
+    const selectedMessages = userStore((state) => state.selectedMessages);
+  const [sendMessage] = useMsgSocket(token, receiverId,selectedMessages);
+console.log(selectedMessages);
   const handleChange = (event) => {
     setNewMessage(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (newMessage.trim() === '') return;
-  
     
     try {
+        sendMessage(newMessage);
       
-      const sender = {
-     
-        id: senderId,
-        name: senderName,
-        
-      };
-  
-      const receiver = {
-       
-        id: receiverId,
-        name: receiverName,
-       
-      };
-  
-      const messageDto = {
-        message: newMessage,
-        sender: sender,
-        receiver: receiver,
-        time: new Date().toISOString(), // tempo atual em formato ISO
-        isRead: false, // supondo que a mensagem não foi lida
-      };
-      await sendMessage(token, messageDto);
     } catch (error) {
-      console.error('Failed to send message:', error);
-    }
+        console.error(error);
+        }
   
     setNewMessage('');
   };
@@ -58,7 +38,7 @@ const Conversation = ({ conversations }) => {
   return (
     <Container fluid className="conversation">
       <div className="conversation-cards">
-        {conversations.map((conversation, index) => (
+        {selectedMessages.map((conversation, index) => (
           <ConversationCard key={index} conversation={conversation} />
         ))}
       </div>
