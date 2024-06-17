@@ -1,22 +1,19 @@
 .profile-container {
   background-color: #f5f5f5;
   min-height: 100vh;
-  padding: 2rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 5rem;
+ 
 }
 
 .profile-row {
   margin-top: 2rem;
-
 }
 
 .profile-card {
   border: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
-  margin: 0 10rem;
+  margin: 2rem;
 }
 
 .profile-header {
@@ -50,11 +47,12 @@
   right: 20px;
 }
 
-.profile-body {
+.profile-main-content {
   padding: 2rem;
+  width: 100%;
 }
 
-.profile-info, .profile-skills, .profile-projects {
+.profile-section {
   background-color: white;
   border-radius: 15px;
   padding: 2rem;
@@ -62,14 +60,14 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.profile-info h4, .profile-skills h4, .profile-projects h4 {
+.profile-section h4 {
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   border-bottom: 2px solid #007bff;
   padding-bottom: 0.5rem;
 }
 
-.profile-info p, .profile-skills p, .profile-projects p {
+.profile-section p {
   font-size: 1rem;
   line-height: 1.5;
 }

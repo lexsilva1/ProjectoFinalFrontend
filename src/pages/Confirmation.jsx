@@ -67,10 +67,9 @@ const Confirmation = () => {
       };
 
       await confirmUser(token, userConfirmation)
-        .then((response) => {
-          console.log("userConfirmation:", userConfirmation);
-          Cookies.set("authToken", response);
-          userStore.setState({ isLoggedIn: true });
+        .then(() => {
+       
+          
           navigate("/");
         })
         .catch((error) => {
