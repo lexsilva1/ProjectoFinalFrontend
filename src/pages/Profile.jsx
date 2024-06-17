@@ -184,27 +184,32 @@ const Profile = () => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
             handleOpenModal("skill");
-            const skillType = await skillTypeSelected;
-            await createSkill(token, { name: skill.name, type: skillType });
+            skill.skillType = await skillTypeSelected;
+            skill.projetcId = 0;
+            skill.id = null;
+            delete skill.customOption;
+            const result = await createSkill(token, skill);
+            setSkills((prevSkills) => [...prevSkills, result]);
+            setSelectedType("");
+          } else {
+            const result = await createSkill(token, skill);
           }
         } catch (error) {
           console.error("Error creating skill:", error);
         }
       }
-    } else {
+    } else if (selected.length < selectedSkills.length) {
       const removedSkills = selectedSkills.filter(
         (skill) => !selected.some((s) => s.name === skill.name)
       );
       for (const skill of removedSkills) {
         try {
-          await deleteSkill(token, skill.id);
+          const result = await deleteSkill(token, skill);
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
       }
     }
-    const updatedSkills = await getSkills(token);
-    setSkills(updatedSkills.filter((skill) => !selected.some((s) => s.name === skill.name)));
     setSelectedSkills(selected);
   };
 
@@ -221,29 +226,35 @@ const Profile = () => {
               setResolveOnSkillTypeSelected(() => resolve);
             });
             handleOpenModal("interest");
-            const interestType = await interestTypeSelected;
-            await createInterest(token, { name: interest.name, type: interestType });
+            interest.interestType = await interestTypeSelected;
+            interest.projectId = 0;
+            interest.id = null;
+            delete interest.customOption;
+            const result = await createInterest(token, interest);
+            setInterests((prevInterests) => [...prevInterests, result]);
+            setSelectedType("");
+          } else {
+            const result = await createInterest(token, interest);
           }
         } catch (error) {
           console.error("Error creating interest:", error);
         }
       }
-    } else {
+    } else if (selected.length < selectedInterests.length) {
       const removedInterests = selectedInterests.filter(
         (interest) => !selected.some((i) => i.name === interest.name)
       );
       for (const interest of removedInterests) {
         try {
-          await deleteInterest(token, interest.id);
+          const result = await deleteInterest(token, interest);
         } catch (error) {
           console.error("Error deleting interest:", error);
         }
       }
     }
-    const updatedInterests = await getInterests(token);
-    setInterests(updatedInterests.filter((interest) => !selected.some((i) => i.name === interest.name)));
     setSelectedInterests(selected);
   };
+
 
   const togglePrivacy = async () => {
     try {

@@ -20,6 +20,25 @@ const Project = () => {
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  const isUserMember = project.teamMembers?.some(
+    (member) => member.approvalStatus === "MEMBER"
+  );
+  
+  const teamMembers = project.teamMembers?.filter(
+    (member) => member.approvalStatus === "MEMBER"
+  );
+  const invitedMembers = isUserMember
+    ? project.teamMembers?.filter(
+        (member) => member.approvalStatus === "INVITED"
+      )
+    : [];
+  const appliedMembers = isUserMember
+    ? project.teamMembers?.filter(
+        (member) => member.approvalStatus === "APPLIED"
+      )
+    : [];
+
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -39,127 +58,143 @@ const Project = () => {
 
   const renderInfoTabContent = () => {
 
-    const slotsAvailable = project.maxTeamMembers !== undefined &&
-    project.teamMembers !== undefined &&
-    project.maxTeamMembers > project.teamMembers.length;
+    const approvedMembers = project.teamMembers
+    ? project.teamMembers.filter((member) => member.approvalStatus === 'MEMBER')
+    : [];
+
+  const slotsAvailable = project.maxTeamMembers - approvedMembers.length;
+
     
     return (
       <div className="card shadow-lg w-100">
-        <img
-          src={project.image ? project.image : avatarProject}
-          alt={project.name}
-          className="card-img-top"
-        />
-        <div className="card-body">
-          <h2 className="card-title">{project.name}</h2>
+      <img
+        src={project.image ? project.image : avatarProject}
+        alt={project.name}
+        className="card-img-top"
+      />
+      <div className="card-body">
+        <h2 className="card-title">{project.name}</h2>
+        <p className="card-text-project">
+        <strong>Status:</strong> {project.status}
+        </p>
+        <p className="card-text-project">
+        <strong>Laboratory:</strong> {project.lab}
+        </p>
+        <p className="card-text-project">
+        <strong>Description: </strong>
+        {project.description}
+        </p>
+        <p className="card-text-project">
+        <strong>Keywords: </strong>
+        {project.interests &&
+          project.interests.map((interest, index) => (
+          <span
+            key={`${project.id}-keyword-${index}`}
+            className="badge badge-dark mr-2 mb-2"
+          >
+            {interest}
+          </span>
+          ))}
+        </p>
+        <p className="card-text-project">
+        <strong>Skills: </strong>
+        {project.skills &&
+          project.skills.map((skill, index) => (
+          <span
+            key={`${project.id}-skill-${index}`}
+            className="badge badge-light mr-2 mb-2"
+          >
+            {skill}
+          </span>
+          ))}
+        </p>
+        {!isMember && (
+        <>
           <p className="card-text-project">
-            <strong>Status:</strong> {project.status}
+          <strong>Team Members:</strong>
           </p>
-          <p className="card-text-project">
-            <strong>Laboratory:</strong> {project.lab}
-          </p>
-          <p className="card-text-project">
-            <strong>Description: </strong>
-            {project.description}
-          </p>
-          <p className="card-text-project">
-            <strong>Keywords: </strong>
-            {project.interests &&
-              project.interests.map((interest, index) => (
-                <span
-                  key={`${project.id}-keyword-${index}`}
-                  className="badge badge-dark mr-2 mb-2"
-                >
-                  {interest}
-                </span>
-              ))}
-          </p>
-          <p className="card-text-project">
-            <strong>Skills: </strong>
-            {project.skills &&
-              project.skills.map((skill, index) => (
-                <span
-                  key={`${project.id}-skill-${index}`}
-                  className="badge badge-light mr-2 mb-2"
-                >
-                  {skill}
-                </span>
-              ))}
-          </p>
-          {!isMember && (
-            <>
-              <p className="card-text-project">
-                <strong>Team Members:</strong>
-              </p>
-              {project.teamMembers &&
-                project.teamMembers.map((member, index) => (
-                  <div
-                    key={`${project.id}-member-${index}`}
-                    className="project-team-member"
-                  >
-                    <div className="member-container">
-                      <img
-                        src={member.userPhoto ? member.userPhoto : Avatar}
-                        alt={`${member.firstName} ${member.lastName}`}
-                        className="project-team-member-image"
-                      />
-                      <span>
-                        {member.firstName} {member.lastName}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              <p className="card-text-project">
-                <strong>Slots available:</strong>{" "}
-                {project.maxTeamMembers !== undefined &&
-                  project.teamMembers !== undefined &&
-                  `${project.maxTeamMembers - project.teamMembers.length}/${
-                    project.maxTeamMembers
-                  }`}
-              </p>
-            </>
-          )}
-          {isMember && (
-            <div>
-              <p className="card-text-project">
-                <strong>Materials:</strong>
-              </p>
-              {project.billOfMaterials &&
-                project.billOfMaterials.map((material, index) => (
-                  <div key={`${material.id}-${index}`}>
-                    <p>
-                      <strong>Name:</strong> {material.name}
-                    </p>
-                    <p>
-                      <strong>Quantity:</strong> {material.quantity}
-                    </p>
-                  </div>
-                ))}
+          {teamMembers &&
+          teamMembers.map((member, index) => (
+            <div
+            key={`${project.id}-member-${index}`}
+            className="project-team-member"
+            >
+            <div className="member-container">
+              <img
+              src={member.userPhoto ? member.userPhoto : Avatar}
+              alt={`${member.firstName} ${member.lastName}`}
+              className="project-team-member-image"
+              />
+              <span>
+              {member.firstName} {member.lastName}
+              </span>
             </div>
-          )}
-          {!isMember && slotsAvailable && (
-            <button className="btn btn-primary">Apply</button>
-          )}
+            </div>
+          ))}
+          <p className="card-text-project">
+          <strong>Slots available:</strong>{" "}
+          {project.maxTeamMembers !== undefined &&
+            project.teamMembers !== undefined &&
+            `${slotsAvailable}/${
+            project.maxTeamMembers
+            }`}
+          </p>
+        </>
+        )}
+        {isMember && (
+        <div>
+          <p className="card-text-project">
+          <strong>Materials:</strong>
+          </p>
+          {project.billOfMaterials &&
+          project.billOfMaterials.map((material, index) => (
+            <div key={`${material.id}-${index}`}>
+            <p>
+              <strong>Name:</strong> {material.name}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {material.quantity}
+            </p>
+            </div>
+          ))}
         </div>
+        )}
+        {!isMember && slotsAvailable && (
+        <button className="btn btn-primary">Apply</button>
+        )}
+      </div>
       </div>
     );
   };
   const renderTeamTabContent = () => {
+    // Separar os membros da equipe por status de aprovação
+    const members = project.teamMembers?.filter((member) => member.approvalStatus === 'MEMBER') || [];
+    const invited = project.teamMembers?.filter((member) => member.approvalStatus === 'INVITED') || [];
+    const applied = project.teamMembers?.filter((member) => member.approvalStatus === 'APPLIED') || [];
+  
     return (
       <div className="card shadow-lg w-100">
         <h2>Team Members for {project.name}</h2>
         <p className="card-text-project">
           <strong>Slots available:</strong>{" "}
           {project.maxTeamMembers !== undefined &&
-            project.teamMembers !== undefined &&
-            `${project.maxTeamMembers - project.teamMembers.length}/${
-              project.maxTeamMembers
-            }`}
+            `${project.maxTeamMembers - members.length}/${project.maxTeamMembers}`}
         </p>
-        {project.teamMembers &&
-          project.teamMembers.map((member, index) => (
-            <UserCard key={`${project.id}-member-${index}`} user={member} />
-          ))}
+  
+        <h3>Members</h3>
+        {members.map((member, index) => (
+          <UserCard key={`${project.id}-member-${index}`} user={member} />
+        ))}
+  
+        <h3>Invited</h3>
+        {invited.map((member, index) => (
+          <UserCard key={`${project.id}-invited-${index}`} user={member} />
+        ))}
+  
+        <h3>Applied</h3>
+        {applied.map((member, index) => (
+          <UserCard key={`${project.id}-applied-${index}`} user={member} />
+        ))}
       </div>
     );
   };
