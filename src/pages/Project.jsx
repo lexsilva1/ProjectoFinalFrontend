@@ -10,6 +10,7 @@ import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import { getProjectByName } from "../services/projectServices";
 import UserCard from "../components/Cards/UserCard";
+import ProjectTeamTab from "../components/ProjectTeamTab";
 import { useTranslation } from "react-i18next";
 
 const Project = () => {
@@ -28,16 +29,6 @@ const Project = () => {
   const teamMembers = project.teamMembers?.filter(
     (member) => member.approvalStatus === "MEMBER"
   );
-  const invitedMembers = isUserMember
-    ? project.teamMembers?.filter(
-        (member) => member.approvalStatus === "INVITED"
-      )
-    : [];
-  const appliedMembers = isUserMember
-    ? project.teamMembers?.filter(
-        (member) => member.approvalStatus === "APPLIED"
-      )
-    : [];
 
 
   useEffect(() => {
@@ -166,37 +157,9 @@ const Project = () => {
       </div>
     );
   };
+  
   const renderTeamTabContent = () => {
-    // Separar os membros da equipe por status de aprovação
-    const members = project.teamMembers?.filter((member) => member.approvalStatus === 'MEMBER') || [];
-    const invited = project.teamMembers?.filter((member) => member.approvalStatus === 'INVITED') || [];
-    const applied = project.teamMembers?.filter((member) => member.approvalStatus === 'APPLIED') || [];
-  
-    return (
-      <div className="card shadow-lg w-100">
-        <h2>Team Members for {project.name}</h2>
-        <p className="card-text-project">
-          <strong>Slots available:</strong>{" "}
-          {project.maxTeamMembers !== undefined &&
-            `${project.maxTeamMembers - members.length}/${project.maxTeamMembers}`}
-        </p>
-  
-        <h3>Members</h3>
-        {members.map((member, index) => (
-          <UserCard key={`${project.id}-member-${index}`} user={member} />
-        ))}
-  
-        <h3>Invited</h3>
-        {invited.map((member, index) => (
-          <UserCard key={`${project.id}-invited-${index}`} user={member} />
-        ))}
-  
-        <h3>Applied</h3>
-        {applied.map((member, index) => (
-          <UserCard key={`${project.id}-applied-${index}`} user={member} />
-        ))}
-      </div>
-    );
+    return <ProjectTeamTab project={project} />;
   };
 
   const renderExecutionPlanTabContent = () => {
