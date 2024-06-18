@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 export function startWebSocket() {
   const websocketURL = 'ws://localhost:8080/projectoFinalBackend/websocket/notifications/';
   const socket = new WebSocket(websocketURL+`${Cookies.get('authToken')}`);
+  
 
   // Definição do manipulador de mensagens
   socket.onmessage = function(event) {
@@ -24,7 +25,9 @@ export function startWebSocket() {
     socket.close();
   };
     }else if(message.type === 'LAST_MESSAGE'){
+      console.log(message)
       let userList = userStore((state) => state.userList);
+      console.log(userList);  
       const userIndex = userList.findIndex((user) => user.id === message.sender.id);
       
       if(userIndex !== -1){

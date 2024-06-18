@@ -31,13 +31,6 @@ const Messages = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (selectedUserMessages !== null) {
-      getMessages(token, selectedUserMessages).then((messages) => {
-        setSelectedMessages(messages);
-      });
-    }
-  }, [selectedUserMessages]);
 
   return (
     <>

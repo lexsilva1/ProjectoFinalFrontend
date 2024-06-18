@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { set } from 'react-hook-form';
 import userstore from '../stores/userStore';
+import { getMessages } from '../services/messageServices';
 
-const useMsgSocket = (authToken,id, selectedMessages) => {
+const useMsgSocket = (authToken,id) => {
     const [socket, setSocket] = useState(null);
-    const setSelectedMessages = userstore((state) => state.setSelectedMessages);
+    const [messages,setMessages] = useState([]);
     const selectedUserMessages = userstore((state) => state.selectedUserMessages);
- 
     useEffect(() => {
         // Create a new WebSocket connection
         const socket = new WebSocket( `ws://localhost:8080/projectoFinalBackend/websocket/messages/${authToken}/${id}`);
@@ -15,14 +15,16 @@ const useMsgSocket = (authToken,id, selectedMessages) => {
         // Connection opened
  socket.onopen = function () {
     console.log('WebSocket connection opened');
+
     }
+
+    
+    
         // Listen for messages
     socket.onmessage = function (event) {
         console.log(`Message received: ${event.data}`);
         const message = JSON.parse(event.data);
-        const messages = selectedMessages;
-        messages.push(message);
-        setSelectedMessages(messages);
+        setMessages((prevMessages) => [...prevMessages, message]);
 
     }
 
@@ -48,7 +50,7 @@ const useMsgSocket = (authToken,id, selectedMessages) => {
       };
       
 
-    return [sendMessage];
+    return {sendMessage, messages, setMessages};
 };
 
 export default useMsgSocket;
