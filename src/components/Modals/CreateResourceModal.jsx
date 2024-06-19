@@ -1,25 +1,12 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  FormFeedback,
-  Row,
-  Col
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Row, Col } from "reactstrap";
 import "./CreateResourceModal.css";
 import { createResource } from "../../services/resourcesServices";
 import Cookies from "js-cookie";
 
-const CreateResourceModal = (props) => {
+const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
   const token = Cookies.get("authToken");
 
-  // Estado para o formulário e validação
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -30,8 +17,6 @@ const CreateResourceModal = (props) => {
     supplierContact: '',
     observations: ''
   });
-
-  
 
   const [errors, setErrors] = useState({});
 
@@ -48,32 +33,27 @@ const CreateResourceModal = (props) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const onSubmit = async (e, callback) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-  
+
     try {
       const response = await createResource(token, formData);
       console.log("Response from createResource:", response);
-      props.toggle(); // fecha o modal após a criação do recurso
-      if (callback) callback(); // chama a função de callback se ela existir
-      if (props.fetchResources) props.fetchResources(); // atualiza a lista de recursos
+      fetchResources(); // Refresh the resource list
+      toggle(); // Close the modal
     } catch (error) {
       console.error('An error occurred:', error);
     }
-};
+  };
 
   return (
-    <div>
-      <Button color="primary" onClick={props.toggle}>
-        Create Resource
-      </Button>
-      <Modal isOpen={props.isOpen} toggle={props.toggle} className="custom-modal create-resource-modal">
-        <ModalHeader toggle={props.toggle}>Create Resource</ModalHeader>
-        <ModalBody>
-          <Form onSubmit={onSubmit}>
+    <Modal isOpen={isOpen} toggle={toggle} className="custom-modal create-resource-modal">
+      <ModalHeader toggle={toggle}>Create Resource</ModalHeader>
+      <ModalBody>
+        <Form onSubmit={onSubmit}>
           <FormGroup>
-          <Row>
+            <Row>
               <Col md={6}>
                 <FormGroup>
                   <Label for="name">Name</Label>
@@ -120,7 +100,6 @@ const CreateResourceModal = (props) => {
                   <Label for="stock">Quantity</Label>
                   <Input
                     type="number"
-                    min="0"
                     name="stock"
                     value={formData.stock}
                     onChange={onChange}
@@ -130,7 +109,6 @@ const CreateResourceModal = (props) => {
                 </FormGroup>
               </Col>
               <Col md={6}>
-               
                 <FormGroup>
                   <Label for="brand">Brand</Label>
                   <Input
@@ -140,7 +118,7 @@ const CreateResourceModal = (props) => {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label for="supplierContact">Contact</Label>
+                  <Label for="supplierContact">Supplier Contact</Label>
                   <Input
                     name="supplierContact"
                     value={formData.supplierContact}
@@ -150,7 +128,6 @@ const CreateResourceModal = (props) => {
                 <FormGroup>
                   <Label for="observations">Observations</Label>
                   <Input
-                    type="textarea"
                     name="observations"
                     value={formData.observations}
                     onChange={onChange}
@@ -159,12 +136,13 @@ const CreateResourceModal = (props) => {
               </Col>
             </Row>
           </FormGroup>
-            <Button color="primary" type="submit">Submit</Button>
-          </Form>
-        </ModalBody>
-      </Modal>
-    </div>
+          <Button type="submit" color="primary">Submit</Button>
+        </Form>
+      </ModalBody>
+    </Modal>
   );
 };
 
 export default CreateResourceModal;
+
+

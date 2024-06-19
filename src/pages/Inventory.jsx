@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Container, Row, Col, Input, InputGroup } from 'reactstrap';
+import { Table, Container, Row, Col, Input, InputGroup, Button } from 'reactstrap';
 import { getResources } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
@@ -91,7 +91,7 @@ const Inventory = () => {
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
-                                <CreateResourceModal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} onSubmit={(e) => onSubmit(e, fetchResources)} fetchResources={fetchResources} />
+                                <Button onClick={() => setModalOpen(true)}>Add Resource</Button>
                             </InputGroup>
                         </Col>
                     </Row>
@@ -114,7 +114,7 @@ const Inventory = () => {
                                 </th>
                                 <th><FaPhone /> Contact</th>
                                 <th><FaWarehouse /> Quantity</th>
-                                <th><FaStickyNote />Observations</th>
+                                <th><FaStickyNote /> Observations</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,6 +135,7 @@ const Inventory = () => {
                     </Table>
                 </Container>
             </div>
+            <CreateResourceModal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} fetchResources={fetchResources} />
         </>
     );
 };

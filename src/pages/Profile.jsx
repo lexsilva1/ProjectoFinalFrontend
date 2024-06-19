@@ -54,21 +54,31 @@ const Profile = () => {
           console.log(userFromServer);
           setProfile(userFromServer);
 
-          const [allLabs, allSkills, allInterests, fetchedSkillTypes, fetchedInterestTypes] =
-            await Promise.all([
-              getLabs(token),
-              getSkills(token),
-              getInterests(token),
-              getSkillTypes(),
-              getInterestTypes(),
-            ]);
+          const [
+            allLabs,
+            allSkills,
+            allInterests,
+            fetchedSkillTypes,
+            fetchedInterestTypes,
+          ] = await Promise.all([
+            getLabs(token),
+            getSkills(token),
+            getInterests(token),
+            getSkillTypes(),
+            getInterestTypes(),
+          ]);
 
           setLabs(allLabs);
           setSkills(
-            allSkills.filter((skill) => !userFromServer.skills.some((s) => s.id === skill.id))
+            allSkills.filter(
+              (skill) => !userFromServer.skills.some((s) => s.id === skill.id)
+            )
           );
           setInterests(
-            allInterests.filter((interest) => !userFromServer.interests.some((i) => i.id === interest.id))
+            allInterests.filter(
+              (interest) =>
+                !userFromServer.interests.some((i) => i.id === interest.id)
+            )
           );
           setSkillTypes(fetchedSkillTypes);
           setInterestTypes(fetchedInterestTypes);
@@ -83,7 +93,6 @@ const Profile = () => {
     };
 
     fetchData();
-   
   }, [userId, user, token]);
 
   useEffect(() => {
@@ -258,7 +267,6 @@ const Profile = () => {
     setSelectedInterests(selected);
   };
 
-
   const togglePrivacy = async () => {
     try {
       const newPrivacyStatus = profile.isPrivate ? 0 : 1;
@@ -280,7 +288,7 @@ const Profile = () => {
           <div>
             <Sidebar />
           </div>
-          
+
           <Col md={9} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
@@ -390,16 +398,27 @@ const Profile = () => {
                           </Form>
                         ) : (
                           <div>
-                            <p><strong>First Name:</strong> {profile?.firstName}</p>
-                            <p><strong>Last Name:</strong> {profile?.lastName}</p>
-                            <p><strong>Nickname:</strong> {profile?.nickname}</p>
-                            <p><strong>Usual Work Place:</strong> {profile?.labLocation}</p>
-                            <p><strong>Bio:</strong> {profile?.bio}</p>
+                            <p>
+                              <strong>First Name:</strong> {profile?.firstName}
+                            </p>
+                            <p>
+                              <strong>Last Name:</strong> {profile?.lastName}
+                            </p>
+                            <p>
+                              <strong>Nickname:</strong> {profile?.nickname}
+                            </p>
+                            <p>
+                              <strong>Usual Work Place:</strong>{" "}
+                              {profile?.labLocation}
+                            </p>
+                            <p>
+                              <strong>Bio:</strong> {profile?.bio}
+                            </p>
                           </div>
                         )}
                       </Col>
                       <Col md={4}>
-                        <h4 style={{ fontSize: '1.2rem' }} >Skills</h4>
+                        <h4 style={{ fontSize: "1.2rem" }}>Skills</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -421,7 +440,7 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4 style={{ fontSize: '1.2rem' }}>Interests</h4>
+                        <h4 style={{ fontSize: "1.2rem" }}>Interests</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="interests-typeahead"
@@ -445,19 +464,19 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col md={4}>
-  <h4 style={{ fontSize: '1.2rem' }}>Projects</h4>
-  {profile?.projects?.length > 0 ? (
-    profile.projects.map((project, index) => (
-      <div key={index}>
-        <Link to={`/project/${project}`}>
-          <strong>{project}</strong>
-        </Link>
-      </div>
-    ))
-  ) : (
-    <p>No projects added</p>
-  )}
-</Col>
+                        <h4 style={{ fontSize: "1.2rem" }}>Projects</h4>
+                        {profile?.projects?.length > 0 ? (
+                          profile.projects.map((project, index) => (
+                            <div key={index}>
+                              <Link to={`/project/${project}`}>
+                                <strong>{project}</strong>
+                              </Link>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No projects added</p>
+                        )}
+                      </Col>
                     </Row>
                   </Col>
                 </Row>
