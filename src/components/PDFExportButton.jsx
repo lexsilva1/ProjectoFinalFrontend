@@ -8,7 +8,7 @@ const PDFExportButton = ({ contentRef }) => {
         html2canvas(input)
             .then((canvas) => {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
+                const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 210;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -18,8 +18,8 @@ const PDFExportButton = ({ contentRef }) => {
     };
 
     return (
-        <div>
-            <button onClick={exportToPDF}>Export Statistics (PDF)</button>
+        <div className="text-center my-4">
+            <button onClick={exportToPDF} className="btn btn-primary">Export Statistics (PDF)</button>
         </div>
     );
 };

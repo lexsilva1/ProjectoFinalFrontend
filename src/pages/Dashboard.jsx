@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import { getStatistics } from '../services/projectServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
@@ -22,12 +22,12 @@ const STATUS_ORDER = ['Planning', 'In Progress', 'Ready', 'Approved', 'Cancelled
 const Dashboard = () => {
     const [data, setData] = useState(null);
     const token = Cookies.get('authToken');
-    const contentRef = useRef(null); // Referência para o Container
+    const contentRef = useRef(null); 
 
     useEffect(() => {
         const fetchData = async () => {
             const result = await getStatistics(token);
-            console.log(result); // Verifique os dados retornados
+            console.log(result); 
             setData(result);
         };
 
@@ -41,7 +41,7 @@ const Dashboard = () => {
     const totalProjects = data.totalProjects || 0;
 
     const calculatePercentage = (count) => {
-        return totalProjects ? (count / totalProjects) : 0;
+        return totalProjects ? (count / totalProjects) * 100 : 0;
     };
 
     const projectStatusData = STATUS_ORDER.map(status => ({
@@ -56,24 +56,28 @@ const Dashboard = () => {
             const statusCount = data[`total${status.replace(/\s/g, '')}Projects`][lab] || 0;
             return {
                 name: status,
-                value: labTotal ? (statusCount / labTotal) : 0,
+                value: labTotal ? (statusCount / labTotal) * 100 : 0,
             };
         });
 
         console.log(`Lab: ${lab}, Lab Total: ${labTotal}, Lab Data:`, labData);
 
         return (
-            <Col key={lab}>
-                <h2>{lab}</h2>
-                <PieChart width={300} height={300}>
-                    <Pie data={labData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8">
-                        {labData.map((entry) => (
-                            <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name] || '#000000'} />
-                        ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
-                    <Legend />
-                </PieChart>
+            <Col key={lab} md={6} className="mb-4">
+                <Card className="shadow-sm">
+                    <Card.Body className="chart-content">
+                        <Card.Title>{lab}</Card.Title>
+                        <PieChart width={300} height={300}> {/* Reduzindo o tamanho do gráfico */}
+                            <Pie data={labData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                                {labData.map((entry) => (
+                                    <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name] || '#000000'} />
+                                ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
+                            <Legend layout="vertical" align="right" verticalAlign="middle" wrapperStyle={{ paddingLeft: "10px" }} formatter={(value, entry) => `${value}: ${parseFloat(entry.payload.value).toFixed(2)}%`} />
+                        </PieChart>
+                    </Card.Body>
+                </Card>
             </Col>
         );
     });
@@ -82,24 +86,55 @@ const Dashboard = () => {
         <div className="dashboard">
             <Header />
             <Sidebar />
-            <Container ref={contentRef} id="export-pdf"> {/* Adicionando ref e id */}
-                <Row>
-                    <Col>
-                        <h2>Total Projects: {totalProjects}</h2>
-                        <PieChart width={300} height={300}>
-                            <Pie data={projectStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8">
-                                {projectStatusData.map((entry) => (
-                                    <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name] || '#000000'} />
-                                ))}
-                            </Pie>
-                            <Tooltip formatter={(value) => `${(value * 100).toFixed(2)}%`} />
-                            <Legend />
-                        </PieChart>
+            <Container ref={contentRef} id="export-pdf" className="mt-4">
+                <h1 className="text-center mb-4">ForgeXperimental Projects Dashboard </h1>
+                <Row className="mb-4">
+                    <Col md={4}>
+                        <Card className="shadow-sm">
+                            <Card.Body>
+                                <Card.Title>Total Projects</Card.Title>
+                                <h2>{totalProjects}</h2>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card className="shadow-sm">
+                            <Card.Body>
+                                <Card.Title>Average Members per Project</Card.Title>
+                                <h2>{data.averageMembersPerProject.toFixed(1)}</h2>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card className="shadow-sm">
+                            <Card.Body>
+                                <Card.Title>Average Execution Time (days)</Card.Title>
+                                <h2>{data.averageExecutionTime.toFixed(1)}</h2>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row className="mb-4">
+                    <Col md={6} className="mb-4">
+                        <Card className="shadow-sm">
+                            <Card.Body className="chart-content">
+                                <Card.Title>Status Overview</Card.Title>
+                                <PieChart width={300} height={300}> {/* Reduzindo o tamanho do gráfico */}
+                                    <Pie data={projectStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+                                        {projectStatusData.map((entry) => (
+                                            <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name] || '#000000'} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
+                                    <Legend layout="vertical" align="right" verticalAlign="middle" wrapperStyle={{ paddingLeft: "10px" }} formatter={(value, entry) => `${value}: ${parseFloat(entry.payload.value).toFixed(2)}%`} />
+                                </PieChart>
+                            </Card.Body>
+                        </Card>
                     </Col>
                     {labCharts}
                 </Row>
             </Container>
-            <PDFExportButton contentRef={contentRef} /> {/* Passando a ref para o PDFExportButton */}
+            <PDFExportButton contentRef={contentRef} /> 
         </div>
     );
 };

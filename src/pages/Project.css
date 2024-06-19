@@ -1,14 +1,15 @@
 .container {
-    margin: 10rem auto; /* Aumentar a margem superior para mover o conteúdo para baixo */
-    width: 80%; /* Ajustar a largura do container */
+    margin: 10rem auto; 
+    width: 80%; 
 }
 
 .card {
-    width: 100%; /* O card ocupará a largura completa do container */
+    width: 100%; 
     height: auto;
     background-color: white;
     border: 1px solid var(--primary-color);
     margin-left: 2rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3)!important;
 }
 
 .card-title {
