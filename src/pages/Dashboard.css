@@ -1,0 +1,73 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dashboard .container {
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+
+.dashboard h1 {
+    color: var(--dark-color);
+    margin: 7%;
+    margin-bottom: 5%!important;
+    text-align: center;
+}
+
+.dashboard h2 {
+    color: var(--dark-color);
+    font-weight: bold;
+    text-align: center;
+}
+
+.chart-content .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.chart-content .recharts-default-tooltip {
+    font-size: 0.75rem; 
+}
+
+.chart-content .recharts-legend-item {
+    font-size: 0.75rem; 
+}
+
+
+
+.card-title {
+    color: var(--dark-color);
+    font-weight: bold;
+    margin: 1rem;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+
+.card-body {
+    padding: 1rem; 
+}
+
+.chart-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-title {
+    margin-bottom: 0.5rem; 
+}
