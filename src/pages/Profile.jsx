@@ -15,6 +15,7 @@ import "./Profile.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import TypeModal from "../components/Modals/TypeModal";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -50,6 +51,7 @@ const Profile = () => {
       try {
         if (userId) {
           const userFromServer = await findUserById(token, userId);
+          console.log(userFromServer);
           setProfile(userFromServer);
 
           const [allLabs, allSkills, allInterests, fetchedSkillTypes, fetchedInterestTypes] =
@@ -443,17 +445,19 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col md={4}>
-                        <h4 style={{ fontSize: '1.2rem' }}>Projects</h4>
-                        {profile?.projects?.length > 0 ? (
-                          profile.projects.map((project, index) => (
-                            <div key={index}>
-                              <strong>{project.name}</strong>
-                            </div>
-                          ))
-                        ) : (
-                          <p>No projects added</p>
-                        )}
-                      </Col>
+  <h4 style={{ fontSize: '1.2rem' }}>Projects</h4>
+  {profile?.projects?.length > 0 ? (
+    profile.projects.map((project, index) => (
+      <div key={index}>
+        <Link to={`/project/${project}`}>
+          <strong>{project}</strong>
+        </Link>
+      </div>
+    ))
+  ) : (
+    <p>No projects added</p>
+  )}
+</Col>
                     </Row>
                   </Col>
                 </Row>
