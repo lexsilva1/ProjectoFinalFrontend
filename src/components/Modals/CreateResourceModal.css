@@ -1,7 +1,3 @@
-
-
-
-
 .create-resource-modal .modal-body {
   padding: 20px;
 }
@@ -36,4 +32,5 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
+  z-index: 1060; 
 }
