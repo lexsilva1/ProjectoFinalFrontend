@@ -1,0 +1,9 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart {
+    max-width: 200px; /* Ajuste para o tamanho desejado */
+    max-height: 200px; /* Ajuste para o tamanho desejado */
+}

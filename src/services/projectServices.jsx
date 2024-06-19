@@ -85,6 +85,22 @@ export const createProject = async (token, projectDto) => {
     return response.json();
   };
 
+  export const getStatistics = async (token) => {
+    const response = await fetch(`${projectsURL}/statistics`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+};
+
 
 
 

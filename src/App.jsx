@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { startWebSocket } from './Websockets/notificationsWebsocket';
 import userStore from './stores/userStore';
 import Messages from './pages/Messages';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -34,6 +35,7 @@ function App() {
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/PasswordReset/:token" element={<Home />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </>
   );
