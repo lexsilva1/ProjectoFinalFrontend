@@ -2,16 +2,22 @@ import userStore from "../stores/userStore";
 import Cookies from 'js-cookie';
 import { getLastMessages } from "../services/messageServices";
 import { useEffect, useState } from "react";
+import userstore from "../stores/userStore";
+import { set } from "react-hook-form";
 
 const useStartWebSocket = (token) => {
 
   const [socket, setSocket] = useState(null);
   const websocketURL = 'ws://localhost:8080/projectoFinalBackend/websocket/notifications/';
+  const userList = userStore((state) => state.userList);
+  const setUserList = userStore((state) => state.setUserList);
+  const SelectedUserMessages = userStore((state) => state.selectedUserMessages);
   useEffect(() => {
     const ws = new WebSocket(websocketURL+`${token}`);
   setSocket( ws );
    ws.onopen = function() {
     console.log('WebSocket connection opened');
+    
    }
     
 
@@ -38,12 +44,20 @@ const useStartWebSocket = (token) => {
     ws.close();
   };
     }else if(messageObj.type === 'LAST_MESSAGE' && window.location.pathname === '/messages'){
-      console.log('message', message);
-      getLastMessages(token).then((messages) => {
-        userStore.setState({ userList: messages });
-      });
-    }
+      
+
+      userstore.setState({userList: userList.map((user) => {
+        if(user.sender.id === messageObj.sender.id){
+          console.log(user);
+          console.log(messageObj);
+          console.log(messageObj.read);
+          user = messageObj;
+        }
+        return user;
+      })});
   }
+  }
+
 
   ws.onclose = function() {
     console.log('WebSocket connection closed');
@@ -52,14 +66,14 @@ const useStartWebSocket = (token) => {
   ws.onerror = function(event) {
     console.error('WebSocket error observed:', event);
   }
-}, [token]);
+}, [token, userList, setUserList]);
 function startWebSocket(token) {
   if (socket !== null && socket.readyState === WebSocket.OPEN) {
     socket.send(token);
   }
 }
 
-return { startWebSocket};
+return { startWebSocket };
 };
 
 
