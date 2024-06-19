@@ -4,13 +4,14 @@ import React from 'react';
 import './Header.css';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom'; 
+import { useEffect } from 'react';
 import { logout } from '../services/userServices';
 import Avatar from '../multimedia/Images/Avatar.jpg';
 import logo2 from '../multimedia/Images/logo2.png';
 import { FaBell } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
-
+import  useStartWebSocket  from '../Websockets/notificationsWebsocket';
 const Header = () => {
   const { t, i18n } = useTranslation();
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -20,6 +21,13 @@ const Header = () => {
   const navigate = useNavigate();
   const user = userStore((state) => state.user);
   const authToken = Cookies.get("authToken");
+  const { startWebSocket} =  useStartWebSocket(authToken);
+  // Call useStartWebSocket at the top level, conditionally activating it based on isLoggedIn
+  useEffect(() => {
+    if (isLoggedIn || authToken !== undefined) {
+      startWebSocket(authToken); // This is incorrect and will be addressed below
+    }
+  }, [isLoggedIn, authToken]);
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);

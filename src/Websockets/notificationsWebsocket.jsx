@@ -1,14 +1,27 @@
 import userStore from "../stores/userStore";
 import Cookies from 'js-cookie';
+import { getLastMessages } from "../services/messageServices";
+import { useEffect, useState } from "react";
 
-export function startWebSocket() {
+const useStartWebSocket = (token) => {
+
+  const [socket, setSocket] = useState(null);
   const websocketURL = 'ws://localhost:8080/projectoFinalBackend/websocket/notifications/';
-  const socket = new WebSocket(websocketURL+`${Cookies.get('authToken')}`);
-  
+  useEffect(() => {
+    const ws = new WebSocket(websocketURL+`${token}`);
+  setSocket( ws );
+   ws.onopen = function() {
+    console.log('WebSocket connection opened');
+   }
+    
+
+
 
   // Definição do manipulador de mensagens
-  socket.onmessage = function(event) {
+  ws.onmessage = function(event) {
+    console.log('Message received:', event.data);
     const message = event.data;
+    const messageObj = JSON.parse(message);
     if (message === 'You have been logged out due to inactivity.') {
       // Limpeza dos cookies
       Cookies.remove('authToken');
@@ -22,33 +35,32 @@ export function startWebSocket() {
       window.location.replace('/');
         // Retorna a função de limpeza
   return () => {
-    socket.close();
+    ws.close();
   };
-    }else if(message.type === 'LAST_MESSAGE'){
-      console.log(message)
-      let userList = userStore((state) => state.userList);
-      console.log(userList);  
-      const userIndex = userList.findIndex((user) => user.id === message.sender.id);
-      
-      if(userIndex !== -1){
-        // Update the user's last message
-        userList[userIndex].messages = [message];
-      }else{
-        // Add new user with the message
-        userList.push({id: message.sender.id, messages: [message]});
-      }
-      
-      // Order userList by message timestamp, assuming message has a timestamp property
-      userList = userList.sort((a, b) => {
-        const lastMessageA = a.messages[0].time;
-        const lastMessageB = b.messages[0].time;
-        return lastMessageB - lastMessageA; // For descending order
+    }else if(messageObj.type === 'LAST_MESSAGE' && window.location.pathname === '/messages'){
+      console.log('message', message);
+      getLastMessages(token).then((messages) => {
+        userStore.setState({ userList: messages });
       });
-      
-      userStore.setState({ userList: userList });
     }
-    }
+  }
 
-
-
+  ws.onclose = function() {
+    console.log('WebSocket connection closed');
+  }
+  
+  ws.onerror = function(event) {
+    console.error('WebSocket error observed:', event);
+  }
+}, [token]);
+function startWebSocket(token) {
+  if (socket !== null && socket.readyState === WebSocket.OPEN) {
+    socket.send(token);
+  }
 }
+
+return { startWebSocket};
+};
+
+
+export default useStartWebSocket;

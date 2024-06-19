@@ -9,18 +9,12 @@ import Profile from './pages/Profile';
 import Project from './pages/Project';
 import Inventory from './pages/Inventory';
 import { useEffect } from 'react';
-import { startWebSocket } from './Websockets/notificationsWebsocket';
+
 import userStore from './stores/userStore';
 import Messages from './pages/Messages';
 
 function App() {
-  const isLoggedIn = userStore((state) => state.isLoggedIn);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      startWebSocket();
-    }
-  }, [isLoggedIn]);
 
   return (
     <>
