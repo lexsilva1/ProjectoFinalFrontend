@@ -89,7 +89,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
-      <NotificationsCanva/>
+      {isLoggedIn && <NotificationsCanva/>}
     </div>
   );
 };
