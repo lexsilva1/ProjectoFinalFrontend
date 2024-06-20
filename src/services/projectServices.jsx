@@ -116,7 +116,7 @@ export const manageInvitesApplications = async (token, projectName, userId, oper
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+   
     return response.json();
 };
 export const rejectInvitesApplications = async (token, projectName, userId, operationType, notificationId) => {

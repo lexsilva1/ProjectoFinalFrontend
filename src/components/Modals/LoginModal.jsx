@@ -5,6 +5,8 @@ import "./RegisterModal.css";
 import { useTranslation } from "react-i18next";
 import { login } from "../../services/userServices";
 import ResetPasswordModal from "./ResetPasswordModal";
+import { getNotifications } from "../../services/notificationService";
+import Cookies from 'js-cookie';
 
 const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const { t } = useTranslation();
@@ -13,6 +15,8 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const handleClose = () => setShow(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const notifications = userStore((state) => state.notifications);
+  const setNotifications = userStore((state) => state.setNotifications);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +25,13 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
     const loginSuccessful = await login(email, password);
     if (loginSuccessful) {
       handleClose();
+      const userNotifications = await getNotifications(Cookies.get("authToken"));
+      if(userNotifications) {
+        setNotifications(userNotifications)
+        console.log(userNotifications);
+      }
+
+
       setLoginError(false);
     } else {
       setLoginError(true);

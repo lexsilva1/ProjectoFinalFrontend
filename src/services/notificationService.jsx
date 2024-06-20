@@ -10,5 +10,6 @@ export const getNotifications = async (token, queryParams) => {
             'token': token
         }
     }).then(response => response.json());
+    console.log(response);
     return response;
 }

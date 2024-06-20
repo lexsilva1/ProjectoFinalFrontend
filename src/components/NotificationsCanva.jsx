@@ -3,19 +3,13 @@ import { Offcanvas, Card } from 'react-bootstrap';
 import NotificationCard from './Cards/NotificationCard';
 import { getNotifications } from '../services/notificationService';
 import Cookies from 'js-cookie';
+import userstore from '../stores/userStore';
 
 const NotificationsCanva = () => {
     const [show, setShow] = useState(false);
-    const [notifications, setNotifications] = useState([]);
-    console.log(notifications);
-    useEffect(() => {
-        const token = Cookies.get("authToken");
-        const fetchNotifications = async () => {
-            const notifications = await getNotifications(token);
-            setNotifications(notifications);
-        };
-        fetchNotifications();
-    }, []);
+    const notifications = userstore((state) => state.notifications);
+
+  
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -28,9 +22,16 @@ const NotificationsCanva = () => {
                 
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Notifications</Offcanvas.Title>
+                    <div className="d-flex align-items-center">
+                        <input type="text" placeholder="Search" />
+                        <label className="ml-3">
+                            <input type="checkbox" />
+                            Show Unread Only
+                        </label>
+                    </div>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    {notifications.map((notification) => (
+                    {Array.isArray(notifications) && notifications.map((notification) => (
                         <NotificationCard key={notification.notificationId} notification={notification} />
                     ))}
                 </Offcanvas.Body>

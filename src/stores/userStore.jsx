@@ -21,6 +21,8 @@ const userStore = create(persist(
     setUserList: (users) => set({ userList: users }),
     selectedMessages: [],
     setSelectedMessages: (messages) => set({ selectedMessages: messages }),
+    notifications: [],  
+    setNotifications: (notifications) => set({ notifications: notifications }),
   }),
   {
     name: 'user-storage', 

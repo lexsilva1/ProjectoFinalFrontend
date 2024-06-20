@@ -27,27 +27,27 @@ const handleClick = () =>{
     }
     
 }
-    const handleAccept = () => {
+    const handleAccept = async (event) => {
+        event.stopPropagation();
         let operation = 'ACCEPT_INVITATION'
         if (type === 'INVITE') {
-           const newNotification =  manageInvitesApplications(token,projectName,user.id,operation,notificationId);
-           
-              //const newNotifications = notifications.filter(notification => notification.id !== id);
-                //setNotifications([...newNotifications,newNotification]);
-        } else if (type === 'APPLY') {
-            operation = 'ACCEPT_APPLICATION';
-            manageInvitesApplications(token,projectName,otherUserid,operation,notificationId);
+           const newNotification = await manageInvitesApplications(token,projectName,user.id,operation,notificationId);
+           newNotification.isRead = true;
+              const newNotifications = notifications.filter((notification) => notification.notificationId !== notificationId);
+                setNotifications([...newNotifications, newNotification]);
+console.log(newNotifications);
         }
         
     }
-    const handleDecline = () => {
-        let operation = 'REJECT_INVITATION'
+    const handleDecline = async (event) => {
+        event.stopPropagation();
+        let operation = 'ACCEPT_INVITATION'
         if(type === 'INVITE') {
-            rejectInvitesApplications(token,projectName,user.id,operation,notificationId);
-        } else if (type === 'APPLY') {
-            operation = 'REJECT_APPLICATION';
-            rejectInvitesApplications(token,projectName,otherUserid,operation,notificationId);
-        }
+           const newNotification = await rejectInvitesApplications(token,projectName,user.id,operation,notificationId);
+              newNotification.isRead = true;
+                  const newNotifications = notifications.filter((notification) => notification.notificationId !== notificationId);
+                 setNotifications([...newNotifications, newNotification]);
+        } 
 }
 
 
@@ -58,7 +58,6 @@ const handleClick = () =>{
                 <Card.Subtitle className="mb-2 text-muted">{date}</Card.Subtitle>
                 <Card.Text>{type}</Card.Text>
                 <Card.Text>{isRead ? 'Read' : 'Unread'}</Card.Text>
-            
             </Card.Body>
             {type === 'INVITE'  ? <ButtonGroup><Button variant="primary" onClick={handleAccept}>Accept</Button> <Button variant="danger" onClick={handleDecline}>Decline</Button></ButtonGroup> : null}
         </Card>

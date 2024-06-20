@@ -13,6 +13,7 @@ import { Button } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
 import  useStartWebSocket  from '../Websockets/notificationsWebsocket';
 import NotificationsCanva from './NotificationsCanva';
+import { getNotifications } from '../services/notificationService';
 const Header = () => {
   const { t, i18n } = useTranslation();
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -23,10 +24,13 @@ const Header = () => {
   const user = userStore((state) => state.user);
   const authToken = Cookies.get("authToken");
   const { startWebSocket} =  useStartWebSocket(authToken);
+  const setNotifications = userStore((state) => state.setNotifications);
+  const notifications = userStore((state) => state.notifications);
   // Call useStartWebSocket at the top level, conditionally activating it based on isLoggedIn
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
-      startWebSocket(authToken); // This is incorrect and will be addressed below
+      startWebSocket(authToken);
+ // This is incorrect and will be addressed below
     }
   }, [isLoggedIn, authToken]);
 
@@ -89,7 +93,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
-      {isLoggedIn && <NotificationsCanva/>}
+      {isLoggedIn &&  <NotificationsCanva/>}
     </div>
   );
 };
