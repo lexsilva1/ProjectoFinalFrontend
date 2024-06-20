@@ -1,6 +1,9 @@
 import baseURL from "./baseURL";
+import { useParams } from "react-router-dom";
 
 const projectsURL = baseURL + 'projects';
+const queryParams = new URLSearchParams();
+
 
 export const getProjects = async () => {
     const response = await fetch(projectsURL);
@@ -100,6 +103,38 @@ export const createProject = async (token, projectDto) => {
 
     return response.json();
 };
+export const manageInvitesApplications = async (token, projectName, userId, operationType) => {
+    const queryParams = new URLSearchParams({ userId, operationType }).toString();
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/accept?${queryParams}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+};
+export const rejectInvitesApplications = async (token, projectName, userId, operationType) => {
+    const queryParams = new URLSearchParams({ userId, operationType }).toString();
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/reject?${queryParams}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
 
 
 

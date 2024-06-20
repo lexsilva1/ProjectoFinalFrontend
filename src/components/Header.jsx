@@ -12,6 +12,7 @@ import { FaBell } from 'react-icons/fa';
 import { Button } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
 import  useStartWebSocket  from '../Websockets/notificationsWebsocket';
+import NotificationsCanva from './NotificationsCanva';
 const Header = () => {
   const { t, i18n } = useTranslation();
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -88,6 +89,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
+      <NotificationsCanva/>
     </div>
   );
 };
