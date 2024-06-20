@@ -4,7 +4,7 @@
     top: 85px;
     left: 0;
     height: calc(100vh - 100px);
-    background-color: var(--contrast-color);
+    background-color: rgba(46, 107, 117, 0.9);
     overflow-y: auto;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
     z-index: 1000;
@@ -29,6 +29,7 @@
     margin: 10px 0;
     align-self: flex-end;
     padding: 0 10px;
+    
 }
 
 .sidebar-menu {

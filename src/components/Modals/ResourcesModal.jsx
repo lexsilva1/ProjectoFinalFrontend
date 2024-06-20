@@ -52,7 +52,7 @@ const ResourcesModal = ({ show, handleClose, handleSelect }) => {
 
   const handleCloseCreateResourceModal = () => {
     setShowCreateResourceModal(false);
-    fetchResources(); // Atualiza a lista de recursos após fechar o modal de criação
+    fetchResources(); 
   };
 
   return (
