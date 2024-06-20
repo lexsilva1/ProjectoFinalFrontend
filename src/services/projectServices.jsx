@@ -103,8 +103,8 @@ export const createProject = async (token, projectDto) => {
 
     return response.json();
 };
-export const manageInvitesApplications = async (token, projectName, userId, operationType) => {
-    const queryParams = new URLSearchParams({ userId, operationType }).toString();
+export const manageInvitesApplications = async (token, projectName, userId, operationType, notificationId) => {
+    const queryParams = new URLSearchParams({ userId, operationType, notificationId }).toString();
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/accept?${queryParams}`, {
         method: 'POST',
         headers: {
@@ -119,8 +119,8 @@ export const manageInvitesApplications = async (token, projectName, userId, oper
 
     return response.json();
 };
-export const rejectInvitesApplications = async (token, projectName, userId, operationType) => {
-    const queryParams = new URLSearchParams({ userId, operationType }).toString();
+export const rejectInvitesApplications = async (token, projectName, userId, operationType, notificationId) => {
+    const queryParams = new URLSearchParams({ userId, operationType, notificationId }).toString();
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/reject?${queryParams}`, {
         method: 'DELETE',
         headers: {
