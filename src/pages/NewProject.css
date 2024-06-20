@@ -5,12 +5,7 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.new-project .header {
-  width: 100%;
-  height: 60px;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+
 
 .new-project .content-wrapper {
   flex: 1;

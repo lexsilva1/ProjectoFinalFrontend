@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import userStore from '../stores/userStore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import './SideBar.css';
 
 const Sidebar = () => {
@@ -11,9 +13,9 @@ const Sidebar = () => {
 
     return (
         <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-            <div className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? '◀' : '▶'}
-            </div>
+<div className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+    <FontAwesomeIcon icon={isOpen ? faChevronLeft : faChevronRight} />
+</div>
             <ul className='sidebar-menu'>
                 <li>
                     <Link to="/">

@@ -94,7 +94,7 @@ const Inventory = () => {
                         <Col>
                             <h1 className="inventory-title">Inventory</h1>
                         </Col>
-                        <Col className="text-right">
+                        <Col className="d-flex">
                             <InputGroup>
                                 <Input
                                     placeholder="Search..."
@@ -103,6 +103,7 @@ const Inventory = () => {
                                 />
                                 <Button className="buttonAddResource" onClick={() => setModalOpen(true)}>Add Resource/Component</Button>
                             </InputGroup>
+                            <Button className="buttonViewStats" onClick={() => {/* Ação do botão View Stats */}}>View Stats</Button>
                         </Col>
                     </Row>
                     <Table striped bordered hover responsive className="inventory-table">
@@ -174,3 +175,4 @@ const Inventory = () => {
 };
 
 export default Inventory;
+

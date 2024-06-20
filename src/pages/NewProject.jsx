@@ -1,129 +1,111 @@
 import React, { useState, useEffect } from "react";
-import {Button, Form, FormGroup, Label, Input, Container, Row, Col, Card, CardBody, CardHeader,} from "reactstrap";
-import { Typeahead } from "react-bootstrap-typeahead"; 
+import { Button, Container, Card, CardBody, CardHeader, Form } from "reactstrap";
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
-import { getLabs } from "../services/labServices";
-import Cookies from "js-cookie";
-import avatarProject from "../multimedia/Images/avatarProject.png";
 import UsersModal from "../components/Modals/UsersModal";
 import ResourcesModal from "../components/Modals/ResourcesModal";
-import userStore from "../stores/userStore";
-import Avatar from "../multimedia/Images/Avatar.jpg";
-import "./NewProject.css";
-import { createProject } from "../services/projectServices";
-import { getSkills, createSkill } from "../services/skillServices";
-import { getInterests, createInterest } from "../services/interestServices";
-
+import Step1 from "../components/CreateProjectSteps/Step1";
+import Step2 from "../components/CreateProjectSteps/Step2";
+import Step3 from "../components/CreateProjectSteps/Step3";
 
 const NewProject = () => {
+  const [step, setStep] = useState(1);
   const [inputs, setInputs] = useState({
     name: "",
     location: "",
     description: "",
-    slots: "",
+    slots: 0,
     skills: [""],
     keywords: [""],
     materials: [],
+    imageUpload: null,
+    avatar: "",
   });
-  const [labs, setLabs] = useState([]);
+
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
-  const token = Cookies.get("authToken");
-  const [image, setImage] = useState(null);
-  const [avatar, setAvatar] = useState(avatarProject);
-  const [showUsersModal, setShowUsersModal] = useState(false);
+  const [labs, setLabs] = useState([]);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
-  const currentUser = userStore((state) => state.user);
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [step, setStep] = useState(1);
   const [error, setError] = useState("");
+  const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
-    getLabs(token)
-      .then((labs) => setLabs(labs))
-      .catch((error) => console.error(error));
+    // Fetch labs, skill suggestions, and keyword suggestions
+    const fetchLabs = async () => {
+      const res = await fetch("/api/labs");
+      const data = await res.json();
+      setLabs(data);
+    };
 
-    getSkills(token)
-      .then((skills) => setSkillSuggestions(skills))
-      .catch((error) => console.error(error));
+    const fetchSuggestions = async () => {
+      const res = await fetch("/api/skills");
+      const data = await res.json();
+      setSkillSuggestions(data);
+    };
 
-    getInterests(token)
-      .then((interests) => setKeywordSuggestions(interests))
-      .catch((error) => console.error(error));
-  }, [token]);
+    const fetchKeywordSuggestions = async () => {
+      const res = await fetch("/api/keywords");
+      const data = await res.json();
+      setKeywordSuggestions(data);
+    };
+
+    fetchLabs();
+    fetchSuggestions();
+    fetchKeywordSuggestions();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInputs({ ...inputs, [name]: value });
+  };
 
   const handleImageUpload = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setAvatar(reader.result);
+      setInputs({ ...inputs, avatar: reader.result });
     };
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(file);
   };
 
-  const handleInputChange = (event) => {
-    setInputs({ ...inputs, [event.target.name]: event.target.value });
-  };
   const addField = (field) => {
-    // Verifica se já existe um campo vazio
-    const hasEmptyField = inputs[field].some((value) => value === "");
-
-    // Se não existir, adiciona um novo campo
-    if (!hasEmptyField) {
-      setInputs((prevInputs) => ({
-        ...prevInputs,
-        [field]: [...prevInputs[field], ""],
-      }));
-    }
+    setInputs({
+      ...inputs,
+      [field]: [...inputs[field], ""],
+    });
   };
 
   const handleDelete = (index, field) => {
-    const newValues = [...inputs[field]];
-    newValues.splice(index, 1);
-    setInputs({ ...inputs, [field]: newValues });
+    const newArray = [...inputs[field]];
+    newArray.splice(index, 1);
+    setInputs({ ...inputs, [field]: newArray });
   };
 
-  const handleOpenUserModal = () => {
-    if (!inputs.slots) {
-      setError("Please define the number of slots first.");
-    } else {
-      setShowUsersModal(true);
-      setError("");
+  const handleArrayChange = (selected, index, field) => {
+    const newArray = [...inputs[field]];
+    newArray[index] = selected.length ? selected[0].name : "";
+    setInputs({ ...inputs, [field]: newArray });
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "e" || e.key === "+" || e.key === "-") {
+      e.preventDefault();
     }
   };
 
-  const handleCloseUsersModal = () => {
-    setShowUsersModal(false);
+  const handleOpenUserModal = () => {
+    setShowUserModal(true);
   };
 
   const handleOpenResourcesModal = () => {
     setShowResourcesModal(true);
   };
 
-  const handleCloseResourcesModal = () => {
-    setShowResourcesModal(false);
-  };
-
-  const handleUserSelect = (selectedUser) => {
-    if (teamMembers.length >= parseInt(inputs.slots)) {
-      setError("You have reached the maximum number of slots.");
-    } else {
-      setTeamMembers([...teamMembers, selectedUser]);
-      handleCloseUsersModal();
-      setError("");
-    }
-  };
-
-  const handleResourcesSelect = (selectedMaterials) => {
-    setInputs({ ...inputs, materials: selectedMaterials });
-    handleCloseResourcesModal();
-  };
-
   const removeTeamMember = (index) => {
-    const newTeamMembers = [...teamMembers];
-    newTeamMembers.splice(index, 1);
-    setTeamMembers(newTeamMembers);
+    const newTeam = [...teamMembers];
+    newTeam.splice(index, 1);
+    setTeamMembers(newTeam);
   };
 
   const nextStep = () => {
@@ -134,393 +116,114 @@ const NewProject = () => {
     setStep(step - 1);
   };
 
-  const handleKeyPress = (event) => {
-    const keyCode = event.keyCode || event.which;
-    const keyValue = String.fromCharCode(keyCode);
-    if (keyValue === "." || keyValue === ",") {
-      event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Validation
+    if (inputs.slots <= 0) {
+      setError("Number of slots must be greater than zero.");
+      return;
     }
-  };
+    // Prepare form data
+    const formData = new FormData();
+    for (const key in inputs) {
+      if (Array.isArray(inputs[key])) {
+        formData.append(key, JSON.stringify(inputs[key]));
+      } else {
+        formData.append(key, inputs[key]);
+      }
+    }
+    // Add team members to form data
+    formData.append("teamMembers", JSON.stringify(teamMembers));
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const projectDto = {
-      name: inputs.name,
-      description: inputs.description,
-      location: inputs.location,
-      image: image,
-      slots: inputs.slots,
-      skills: Array.isArray(inputs.skills) ? inputs.skills : [inputs.skills],
-      keywords: Array.isArray(inputs.keywords)
-        ? inputs.keywords
-        : [inputs.keywords],
-      teamMembers: teamMembers.map((member) => member.id),
-      materials: inputs.materials,
-    };
-
+    // Send request
     try {
-      const data = await createProject(token, projectDto);
-      console.log(data);
-    } catch (error) {
-      console.error(error);
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        // Handle success
+      } else {
+        // Handle errors
+        const errorData = await res.json();
+        setError(errorData.message || "An error occurred.");
+      }
+    } catch (err) {
+      setError("An error occurred while submitting the form.");
     }
   };
 
-  const handleArrayChange = (selected, index, field) => {
-    const newValues = [...inputs[field]];
-    newValues[index] = selected.length > 0 ? selected[0].name : "";
-    setInputs({ ...inputs, [field]: newValues });
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <Step1
+            inputs={inputs}
+            labs={labs}
+            handleInputChange={handleInputChange}
+            handleImageUpload={handleImageUpload}
+            nextStep={nextStep}
+          />
+        );
+      case 2:
+        return (
+          <Step2
+            inputs={inputs}
+            skillSuggestions={skillSuggestions}
+            keywordSuggestions={keywordSuggestions}
+            addField={addField}
+            handleDelete={handleDelete}
+            handleArrayChange={handleArrayChange}
+            handleInputChange={handleInputChange}
+            handleKeyPress={handleKeyPress}
+            handleOpenUserModal={handleOpenUserModal}
+            handleOpenResourcesModal={handleOpenResourcesModal}
+            teamMembers={teamMembers}
+            removeTeamMember={removeTeamMember}
+            error={error}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        );
+      case 3:
+        return (
+          <Step3
+            inputs={inputs}
+            teamMembers={teamMembers}
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <>
+    <div style={{ position: 'absolute', top: 0, width: '100%' }}>
+      <Header />
+    </div>
+      <Sidebar />
+      <Container>
+        <Card>
+          <CardHeader>Create New Project</CardHeader>
+          <CardBody>
+            <Form onSubmit={handleSubmit}>{renderStep()}</Form>
+          </CardBody>
+        </Card>
+      </Container>
       <UsersModal
-        show={showUsersModal}
-        handleClose={handleCloseUsersModal}
-        onAdd={handleUserSelect}
+        isOpen={showUserModal}
+        toggle={() => setShowUserModal(!showUserModal)}
+        setTeamMembers={setTeamMembers}
       />
       <ResourcesModal
-        show={showResourcesModal}
-        handleClose={handleCloseResourcesModal}
-        handleSelect={handleResourcesSelect}
+        isOpen={showResourcesModal}
+        toggle={() => setShowResourcesModal(!showResourcesModal)}
+        setInputs={setInputs}
+        inputs={inputs}
       />
-      <Header className="header" />
-      <div className="new-project">
-        <Sidebar className="sidebar" />
-        <div className="content-wrapper">
-          <Container fluid className="content-new-project">
-            <Card className="project-card">
-              <CardHeader>
-                <h2 className="centered-title">Create New Project</h2>
-              </CardHeader>
-              <CardBody>
-                <Form onSubmit={handleSubmit}>
-                  {step === 1 && (
-                    <>
-                      <Row>
-                        <Col md={6}>
-                          <FormGroup className="my-form-group">
-                            <Label for="name">Project Name</Label>
-                            <Input
-                              type="text"
-                              name="name"
-                              id="name"
-                              onChange={handleInputChange}
-                              className="short-input"
-                            />
-                          </FormGroup>
-                          <FormGroup className="my-form-group">
-                            <Label for="location">Location</Label>
-                            <Input
-                              type="select"
-                              name="location"
-                              id="location"
-                              onChange={handleInputChange}
-                              className="short-input"
-                            >
-                              <option value="">Select a laboratory</option>
-                              {labs.map((lab, index) => (
-                                <option key={index} value={lab.location}>
-                                  {lab.location}
-                                </option>
-                              ))}
-                            </Input>
-                          </FormGroup>
-                          <FormGroup className="my-form-group">
-                            <Label for="description">Description</Label>
-                            <Input
-                              type="textarea"
-                              name="description"
-                              id="description"
-                              onChange={handleInputChange}
-                              className="short-input textarea-input"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col md={6}>
-                          <FormGroup className="my-form-group">
-                            <Label for="imageUpload">Project Image</Label>
-                            <Input
-                              type="file"
-                              name="imageUpload"
-                              id="imageUpload"
-                              onChange={handleImageUpload}
-                              className="short-input"
-                            />
-                            <img
-                              src={avatar}
-                              alt="Project Avatar"
-                              className="avatar"
-                            />
-                          </FormGroup>
-                          <Button
-                            onClick={nextStep}
-                            color="primary"
-                            className="next-button"
-                          >
-                            Next
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-
-                  {step === 2 && (
-                    <>
-                      <Row>
-                        <Col md={6}>
-                          {["skills", "keywords"].map((field) => (
-                            <React.Fragment key={field}>
-                              {[...inputs[field]].map((value, index) => (
-                                <Row key={`${field}-${index}`}>
-                                  <Col md={12}>
-                                    <FormGroup className="my-form-group">
-                                      <Label for={`${field}-${index}`}>
-                                        {index === 0
-                                          ? field.charAt(0).toUpperCase() +
-                                            field.slice(1)
-                                          : ""}
-                                      </Label>
-                                      {index < inputs[field].length - 1 ? (
-                                        <div className="array-field">
-                                          {value}
-                                          <Button
-                                            onClick={() =>
-                                              handleDelete(index, field)
-                                            }
-                                            color="danger"
-                                            size="sm"
-                                            className="array-remove-button"
-                                          >
-                                            Remove
-                                          </Button>
-                                        </div>
-                                      ) : (
-                                        <div className="array-field">
-                                          <Typeahead
-                                            id={`${field}-${index}`}
-                                            labelKey="name"
-                                            options={
-                                              field === "skills"
-                                                ? skillSuggestions
-                                                : keywordSuggestions
-                                            }
-                                            placeholder={`Enter ${field}`}
-                                            onChange={(selected) =>
-                                              handleArrayChange(
-                                                selected,
-                                                index,
-                                                field
-                                              )
-                                            }
-                                            className="short-input"
-                                          />
-                                        </div>
-                                      )}
-                                    </FormGroup>
-                                  </Col>
-                                </Row>
-                              ))}
-                              <Row>
-                                <Col md={12}>
-                                  <Button onClick={() => addField(field)}>
-                                    Add
-                                  </Button>
-                                </Col>
-                              </Row>
-                            </React.Fragment>
-                          ))}
-                        </Col>
-                        <Col md={6}>
-                          <FormGroup className="my-form-group">
-                            <Label for="slots">Number of Slots</Label>
-                            <Input
-                              type="number"
-                              name="slots"
-                              id="slots"
-                              onChange={handleInputChange}
-                              onKeyPress={handleKeyPress}
-                              className="short-input"
-                              min="0"
-                            />
-                          </FormGroup>
-                          <FormGroup>
-                            <Label>Team Members</Label>
-                            <Button
-                              onClick={handleOpenUserModal}
-                              color="primary"
-                              className="modal-button"
-                            >
-                              Add Team Members
-                            </Button>
-                            {error && <p className="error-message">{error}</p>}
-                            <ul className="list-group">
-                              {teamMembers.map((member, index) => (
-                                <li
-                                  key={index}
-                                  className="list-group-item d-flex justify-content-between align-items-center"
-                                >
-                                  <img
-                                    src={member.userPhoto || Avatar}
-                                    alt={`${member.firstName} ${member.lastName}`}
-                                    className="rounded-circle"
-                                    style={{
-                                      width: "40px",
-                                      height: "40px",
-                                      marginRight: "10px",
-                                    }}
-                                  />
-                                  {member.firstName} {member.lastName}
-                                  <Button
-                                    onClick={() => removeTeamMember(index)}
-                                    color="danger"
-                                    size="sm"
-                                    className="ml-2"
-                                  >
-                                    Remove
-                                  </Button>
-                                </li>
-                              ))}
-                            </ul>
-                          </FormGroup>
-                          <FormGroup>
-                            <Label>Materials</Label>
-                            <Button
-                              onClick={handleOpenResourcesModal}
-                              color="primary"
-                              className="modal-button"
-                            >
-                              Add Materials
-                            </Button>
-                            <ul className="list-group">
-                              {inputs.materials.map((material, index) => (
-                                <li
-                                  key={index}
-                                  className="list-group-item d-flex justify-content-between align-items-center"
-                                >
-                                  {material.name} - {material.quantity}
-                                  <Button
-                                    onClick={() => {
-                                      const newMaterials = [
-                                        ...inputs.materials,
-                                      ];
-                                      newMaterials.splice(index, 1);
-                                      setInputs({
-                                        ...inputs,
-                                        materials: newMaterials,
-                                      });
-                                    }}
-                                    color="danger"
-                                    size="sm"
-                                  >
-                                    Remove
-                                  </Button>
-                                </li>
-                              ))}
-                            </ul>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={6}>
-                          <Button
-                            onClick={prevStep}
-                            color="secondary"
-                            className="previous-button"
-                          >
-                            Previous
-                          </Button>
-                        </Col>
-                        <Col md={4} className="text-right">
-                          <Button
-                            onClick={nextStep}
-                            color="primary"
-                            className="next-button"
-                          >
-                            Next
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-                  {step === 3 && (
-                    <>
-                      <Row>
-                        <Col md={12}>
-                          <FormGroup className="my-form-group">
-                            <Label>Review Your Project</Label>
-                            <div className="review-section">
-                              <p>
-                                <strong>Project Name:</strong> {inputs.name}
-                              </p>
-                              <p>
-                                <strong>Location:</strong> {inputs.location}
-                              </p>
-                              <p>
-                                <strong>Description:</strong>{" "}
-                                {inputs.description}
-                              </p>
-                              <p>
-                                <strong>Number of Slots:</strong> {inputs.slots}
-                              </p>
-                              <p>
-                                <strong>Skills:</strong>{" "}
-                                {inputs.skills.join(", ")}
-                              </p>
-                              <p>
-                                <strong>Keywords:</strong>{" "}
-                                {inputs.keywords.join(", ")}
-                              </p>
-                              <p>
-                                <strong>Team Members:</strong>{" "}
-                                {teamMembers
-                                  .map(
-                                    (member) =>
-                                      `${member.firstName} ${member.lastName}`
-                                  )
-                                  .join(", ")}
-                              </p>
-                              <p>
-                                <strong>Materials:</strong>{" "}
-                                {inputs.materials
-                                  .map(
-                                    (material) =>
-                                      `${material.name} - ${material.quantity}`
-                                  )
-                                  .join(", ")}
-                              </p>
-                            </div>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={6}>
-                          <Button
-                            onClick={prevStep}
-                            color="secondary"
-                            className="previous-button"
-                          >
-                            Previous
-                          </Button>
-                        </Col>
-                        <Col md={6}>
-                          <Button
-                            color="success"
-                            className="float-right submit-button"
-                          >
-                            Submit
-                          </Button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-                </Form>
-              </CardBody>
-            </Card>
-          </Container>
-        </div>
-      </div>
     </>
   );
 };
