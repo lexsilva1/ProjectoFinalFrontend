@@ -10,7 +10,7 @@ const ConversationCard = ({ conversation }) => {
 
     return (
         <ListGroup.Item className="custom-d-flex">
-            <img src={conversation.sender.avatar || Avatar} alt="avatar"
+            <img src={conversation.sender.image || Avatar} alt="avatar"
                 className="custom-rounded-circle align-self-start ms-3 shadow-1-strong" width="60" />
             <Card className="w-100">
                 <Card.Header className="d-flex justify-content-between p-3">

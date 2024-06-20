@@ -5,14 +5,26 @@ import Col from 'react-bootstrap/Col';
 import './MessageCard.css';
 import useStore from '../../stores/userStore';
 import Avatar from '../../multimedia/Images/Avatar.jpg';
+import UserList from '../UserList';
+import { set } from 'react-hook-form';
 
 const MessageCard = ({ message }) => {
 
     const setSelectedUserMessages = useStore(state => state.setSelectedUserMessages);
-
+    const userList=useStore(state=>state.userList);
+    const setUserList=useStore(state=>state.setUserList);
     const handleClick = () => {
-        console.log();
         setSelectedUserMessages(message.id);
+        
+        const newUserList = userList.map(user => {
+            if (user.id === message.id) {
+                return { ...user, isRead: true };
+            }
+            return user;
+        });
+        
+        setUserList(newUserList);
+        console.log(newUserList);
     }
     return (
         <Card className="mail-message-card" onClick={handleClick}>

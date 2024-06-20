@@ -8,6 +8,7 @@ const UserList = ({ users }) => {
     return (
         <div className="user-list">
             {users.map((message, index) => (
+                console.log(message),
                 <MessageCard
                     key={index}
                     
@@ -17,7 +18,7 @@ const UserList = ({ users }) => {
                         sender: message.sender.firstName + ' ' + message.sender.lastName,
                         message: message.message,
                         dateTime: message.time,
-                        isRead: message.isRead
+                        isRead: message.read
                     }
                 }
                 />
