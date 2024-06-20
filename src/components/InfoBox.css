@@ -1,33 +1,40 @@
 .infoBox {
     position: sticky;
     top: 0;
-    height: 300px;
-    background-color: var(--dark-color);
+    height: 100vh;
+    background-color: var(--contrast-color);
     overflow: auto;
-    color: white;
+    color: var(--primary-color);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-family: 'Spline Sans', sans-serif;
+    font-weight: 200; 
 }
 
 .title {
-    font-size: 1.5em;
-    font-weight: 300; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+    font-size: 3em;
+    line-height: 0.8;
+    font-family: 'Spline Sans', sans-serif;
+    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
+}
+
+.title-bottom-margin {
+    margin-bottom: 60px; 
 }
 
 .text {
-    font-size: 0.7em;
+    font-size: 1em;
     margin: 0;
-    font-weight: 300;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+    color: white;
+    font-family: 'Spline Sans', sans-serif;
+    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
 }
 
 .ending {
-    font-size: 1em;
+    font-size: 2em;
     margin-top: 20px;
-    font-weight: 300; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
 }

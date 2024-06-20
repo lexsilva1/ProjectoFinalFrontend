@@ -1,0 +1,40 @@
+.blue-square {
+    background-color: #2e6b75;
+    width: 90%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8% !important;
+    border-radius: 20px;
+    margin: auto;
+}
+
+.white-card {
+    background-color: white;
+    width: 60%;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    margin: 5%;
+    border-radius: 20px;
+}
+
+.white-card h1 {
+    font-size: 3em;
+    margin: 40px;
+    color: #2e6b75;
+}
+
+.white-card p {
+ 
+    margin: 20px;
+    color: #6c7577;
+}
+
+.white-card img {
+    width: 60%;
+    height: auto;
+    margin-top: 20px;
+    border-radius: 20px;
+}

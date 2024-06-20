@@ -1,5 +1,5 @@
 .footer {
-    background-color: #333;
+    background-color: var(--contrast-color);
     color: #fff;
     z-index: 10000;
     bottom: 0;

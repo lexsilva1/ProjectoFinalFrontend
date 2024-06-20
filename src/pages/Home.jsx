@@ -15,6 +15,9 @@ import Footer from "../components/Footer";
 import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
 import SetPasswordModal from "../components/Modals/SetPasswordModal";
 import { useNavigate, useLocation } from "react-router-dom";
+import InfoBox2 from "../components/InfoBox2";
+import InfoBox3 from "../components/InfoBox3";
+import InfoBox4 from "../components/InfoBox4";
 import './Home.css';
 
 const Home = () => {
@@ -94,10 +97,15 @@ const Home = () => {
         </div>
       )}
       <div style={{  }}>
-        <div className={`banner${banner}`} style={{ width: "100%", zIndex: "-1000" }}>
-          {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />}
-        </div>
-        {!isLoggedIn && <InfoBox />}
+      <div style={{ display: 'flex' }}>
+      {!isLoggedIn && <InfoBox />}
+      <div className={`banner${banner}`} style={{ width: "100%", zIndex: "-1000" }}>
+        {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />}
+      </div>
+    </div>
+        {!isLoggedIn && <InfoBox2 />}
+        {!isLoggedIn && <InfoBox3 />}
+        {!isLoggedIn && <InfoBox4 />}
         <div className="content" style={{ flexGrow: 1 }}>
           <div
             style={{

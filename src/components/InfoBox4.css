@@ -1,0 +1,21 @@
+.white-box4 {
+    background-color: var(--primary-color);
+    justify-content: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-right: 30%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.unique-title {
+
+    color: #2e6b75;
+    font-size: 4em!important;
+
+}
+
+.nowrap {
+    white-space: nowrap; 
+}

@@ -16,7 +16,6 @@ import { getSkills, createSkill } from "../services/skillServices";
 import { getInterests, createInterest } from "../services/interestServices";
 
 
-
 const NewProject = () => {
   const [inputs, setInputs] = useState({
     name: "",
@@ -69,7 +68,7 @@ const NewProject = () => {
   const addField = (field) => {
     // Verifica se já existe um campo vazio
     const hasEmptyField = inputs[field].some((value) => value === "");
-    
+
     // Se não existir, adiciona um novo campo
     if (!hasEmptyField) {
       setInputs((prevInputs) => ({
@@ -170,7 +169,7 @@ const NewProject = () => {
 
   const handleArrayChange = (selected, index, field) => {
     const newValues = [...inputs[field]];
-    newValues[index] = selected.length > 0 ? selected[0].name : ""; 
+    newValues[index] = selected.length > 0 ? selected[0].name : "";
     setInputs({ ...inputs, [field]: newValues });
   };
 
@@ -271,52 +270,67 @@ const NewProject = () => {
                     <>
                       <Row>
                         <Col md={6}>
-                        {["skills", "keywords"].map((field) => (
-  <React.Fragment key={field}>
-    {[...inputs[field]].map((value, index) => (
-      <Row key={`${field}-${index}`}>
-        <Col md={12}>
-          <FormGroup className="my-form-group">
-            <Label for={`${field}-${index}`}>
-              {index === 0 ? field.charAt(0).toUpperCase() + field.slice(1) : ""}
-            </Label>
-            {index < inputs[field].length - 1 ? (
-              <div className="array-field">
-                {value}
-                <Button
-                  onClick={() => handleDelete(index, field)}
-                  color="danger"
-                  size="sm"
-                  className="array-remove-button"
-                >
-                  Remove
-                </Button>
-              </div>
-            ) : (
-              <div className="array-field">
-                <Typeahead
-                  id={`${field}-${index}`}
-                  labelKey="name"
-                  options={
-                    field === "skills" ? skillSuggestions : keywordSuggestions
-                  }
-                  placeholder={`Enter ${field}`}
-                  onChange={(selected) => handleArrayChange(selected, index, field)}
-                  className="short-input"
-                />
-              </div>
-            )}
-          </FormGroup>
-        </Col>
-      </Row>
-    ))}
-    <Row>
-      <Col md={12}>
-        <Button onClick={() => addField(field)}>Add</Button>
-      </Col>
-    </Row>
-  </React.Fragment>
-))}
+                          {["skills", "keywords"].map((field) => (
+                            <React.Fragment key={field}>
+                              {[...inputs[field]].map((value, index) => (
+                                <Row key={`${field}-${index}`}>
+                                  <Col md={12}>
+                                    <FormGroup className="my-form-group">
+                                      <Label for={`${field}-${index}`}>
+                                        {index === 0
+                                          ? field.charAt(0).toUpperCase() +
+                                            field.slice(1)
+                                          : ""}
+                                      </Label>
+                                      {index < inputs[field].length - 1 ? (
+                                        <div className="array-field">
+                                          {value}
+                                          <Button
+                                            onClick={() =>
+                                              handleDelete(index, field)
+                                            }
+                                            color="danger"
+                                            size="sm"
+                                            className="array-remove-button"
+                                          >
+                                            Remove
+                                          </Button>
+                                        </div>
+                                      ) : (
+                                        <div className="array-field">
+                                          <Typeahead
+                                            id={`${field}-${index}`}
+                                            labelKey="name"
+                                            options={
+                                              field === "skills"
+                                                ? skillSuggestions
+                                                : keywordSuggestions
+                                            }
+                                            placeholder={`Enter ${field}`}
+                                            onChange={(selected) =>
+                                              handleArrayChange(
+                                                selected,
+                                                index,
+                                                field
+                                              )
+                                            }
+                                            className="short-input"
+                                          />
+                                        </div>
+                                      )}
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                              ))}
+                              <Row>
+                                <Col md={12}>
+                                  <Button onClick={() => addField(field)}>
+                                    Add
+                                  </Button>
+                                </Col>
+                              </Row>
+                            </React.Fragment>
+                          ))}
                         </Col>
                         <Col md={6}>
                           <FormGroup className="my-form-group">

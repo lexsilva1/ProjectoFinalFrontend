@@ -3,12 +3,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: var(--primary-color);
+    background-color: white;
     position: fixed;
     width: 100%;
     height: 70px;
     z-index: 1000;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    
   }
   
   .logo-img {
@@ -21,27 +22,29 @@
   }
   
   .button,
-  .button2,
   .language-button {
     border: none;
     margin-inline: 1rem;
     border-radius: 5px;
     cursor: pointer;
   }
-  
-  .button {
-    --bs-btn-color: var(--contrast-color);
-    --bs-btn-bg: var(--primary-color);
-    --bs-btn-bg-hover: var(--secondary-color);
-    --bs-btn-color-hover: color-mix(in srgb, var(--contrast-color), black 25%);
-  }
-  
+
   .button2 {
-    --bs-btn-color: var(--primary-color);
-    --bs-btn-bg: var(--contrast-color);
-    --bs-btn-bg-hover: var(--secondary-color);
-    --bs-btn-color-hover: color-mix(in srgb, var(--contrast-color), black 25%);
+    border: none !important;
+    margin-inline: 1rem !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    background-color: var(--contrast-color) !important;
+    color: white !important;
+    padding: 0.7rem 2.2rem !important;
   }
+
+  .button2:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--contrast-color) !important;
+  }
+  
+
   
   .language-button {
     --bs-btn-color: var(--primary-color);
