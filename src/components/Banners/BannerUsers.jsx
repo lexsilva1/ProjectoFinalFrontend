@@ -1,10 +1,10 @@
 import React from 'react';
 import usersImage from "../../multimedia/Images/usersImage.jpg";
-import './Banner.css'; 
+import './BannerUsers.css';
 
 const BannerUsers = () => {
     return (
-        <div className="banner">
+        <div className="banner-users">
             <img src={usersImage} className="usersImage" alt="usersImage" />
             <div className="banner-text"> 
                 <p>Empower your team</p> 

@@ -1,51 +1,74 @@
 .inventory-container {
-    padding: 20px;
-    flex: 1;
-    background-color: #f9f9f9;
-    margin-left: 15%;
-    margin:10rem;
-  }
-  
-  .inventory-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .inventory-table {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .inventory-table th,
-  .inventory-table td {
-    padding: 15px;
-    text-align: center;
-  }
-  
-  .inventory-table th {
-    background-color: #343a40;
-    color: #ffffff;
-  }
-  
-  .inventory-table tbody tr:nth-of-type(odd) {
-    background-color: #f2f2f2;
-  }
-  
-  .inventory-table tbody tr:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .input-group {
-    max-width: 400px;
-  }
-  
-  .input-group .form-control {
-    border-radius: 0.25rem 0 0 0.25rem;
-  }
-  
-  .input-group .btn {
-    border-radius: 0 0.25rem 0.25rem 0;
-  }
-  
+  padding: 20px;
+  flex: 1;
+  margin: 10rem;
+}
+
+.inventory-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.inventory-table {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 15px;
+  text-align: center;
+}
+
+.inventory-table th {
+  background-color: var(--contrast-color);
+  color: #ffffff;
+}
+
+.inventory-table tbody tr:nth-of-type(odd) {
+  background-color: #f2f2f2;
+}
+
+.inventory-table tbody tr:hover {
+  background-color: #e0e0e0;
+}
+
+.input-group {
+  max-width: 400px;
+}
+
+.input-group .form-control {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.input-group .btn {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.buttonAddResource {
+  background-color: var(--contrast-color);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 20px !important;
+  padding: 10px 20px !important;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 10px !important; /* Ajuste para mover o botão para a esquerda */
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--contrast-color); /* Cor de fundo da paginação */
+  border-color: var(--dark-color) /* Cor da borda da paginação */
+}
+
+.pagination .page-link {
+  color: var(--dark-color); /* Cor do texto da paginação */
+}

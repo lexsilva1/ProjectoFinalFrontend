@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Container, Row, Col, Input, InputGroup, Button } from 'reactstrap';
+import { Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { getResources } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
@@ -13,6 +13,8 @@ const Inventory = () => {
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'ascending' });
     const [searchTerm, setSearchTerm] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // Número máximo de itens por página
     const token = Cookies.get('authToken');
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -28,11 +30,7 @@ const Inventory = () => {
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
-    };
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-        fetchResources();
+        setCurrentPage(1); // Resetar para a primeira página em uma nova pesquisa
     };
 
     const requestSort = (key) => {
@@ -66,12 +64,24 @@ const Inventory = () => {
             )
         );
     }, [sortedResources, searchTerm]);
-    
+
+    const currentResources = React.useMemo(() => {
+        const firstIndex = (currentPage - 1) * itemsPerPage;
+        const lastIndex = firstIndex + itemsPerPage;
+        return filteredResources.slice(firstIndex, lastIndex);
+    }, [filteredResources, currentPage, itemsPerPage]);
+
+    const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
+
     const renderSortArrow = (columnName) => {
         if (sortConfig && sortConfig.key === columnName) {
             return sortConfig.direction === 'ascending' ? '▲' : '▼';
         }
         return '';
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     return (
@@ -91,7 +101,7 @@ const Inventory = () => {
                                     value={searchTerm}
                                     onChange={handleSearch}
                                 />
-                                <Button onClick={() => setModalOpen(true)}>Add Resource</Button>
+                                <Button className="buttonAddResource" onClick={() => setModalOpen(true)}>Add Resource/Component</Button>
                             </InputGroup>
                         </Col>
                     </Row>
@@ -118,7 +128,7 @@ const Inventory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredResources.map((resource) => (
+                            {currentResources.map((resource) => (
                                 <tr key={resource.id}>
                                     <td>{resource.name}</td>
                                     <td>{resource.identifier}</td>
@@ -133,6 +143,29 @@ const Inventory = () => {
                             ))}
                         </tbody>
                     </Table>
+                    <div className="pagination-container">
+                        <Pagination>
+                            <PaginationItem disabled={currentPage === 1}>
+                                <PaginationLink first onClick={() => handlePageChange(1)} />
+                            </PaginationItem>
+                            <PaginationItem disabled={currentPage === 1}>
+                                <PaginationLink previous onClick={() => handlePageChange(currentPage - 1)} />
+                            </PaginationItem>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <PaginationItem active={index + 1 === currentPage} key={index}>
+                                    <PaginationLink onClick={() => handlePageChange(index + 1)}>
+                                        {index + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+                            <PaginationItem disabled={currentPage === totalPages}>
+                                <PaginationLink next onClick={() => handlePageChange(currentPage + 1)} />
+                            </PaginationItem>
+                            <PaginationItem disabled={currentPage === totalPages}>
+                                <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+                            </PaginationItem>
+                        </Pagination>
+                    </div>
                 </Container>
             </div>
             <CreateResourceModal isOpen={modalOpen} toggle={() => setModalOpen(!modalOpen)} fetchResources={fetchResources} />

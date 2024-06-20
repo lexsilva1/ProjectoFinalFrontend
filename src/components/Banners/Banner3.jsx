@@ -2,7 +2,7 @@ import React from 'react';
 import projectsImage3 from "../../multimedia/Images/projectsImage3.jpg";
 import './Banner3.css'; 
 
-const Banner = () => {
+const Banner3 = () => {
     return (
         <div className="banner3">
             <img src={projectsImage3} className="projectsImage" alt="projectsImage" />
@@ -15,4 +15,4 @@ const Banner = () => {
     );
 };
 
-export default Banner;
+export default Banner3;

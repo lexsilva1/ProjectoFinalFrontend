@@ -83,26 +83,24 @@ const Home = () => {
 
   return (
     <>
-        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}></div>
+      <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}></div>
       <div style={{ position: "fixed", width: "100%", zIndex: 1000 }}>
         <Header />
       </div>
       {isLoggedIn && (
-        <div
-          style={{ paddingTop: "70px", position: "absolute", width: "100%" }}
-        >
+        <div style={{ paddingTop: "70px", position: "absolute", width: "100%" }}>
           <div style={{ position: "fixed" }}>
             <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
         </div>
       )}
-      <div style={{  }}>
-      <div style={{ display: 'flex' }}>
-      {!isLoggedIn && <InfoBox />}
-      <div className={`banner${banner}`} style={{ width: "100%", zIndex: "-1000" }}>
-        {banner === 1 ? <Banner /> : banner === 2 ? <Banner2 /> : <Banner3 />}
-      </div>
-    </div>
+      <div>
+        <div style={{ display: 'flex' }}>
+          {!isLoggedIn && <InfoBox />}
+          <div className={`banner${banner} ${isLoggedIn ? 'banner-logged-in' : 'banner-logged-out'}`} style={{ width: "100%", zIndex: "-1000" }}>
+            {banner === 1 ? <Banner isLoggedIn={isLoggedIn} /> : banner === 2 ? <Banner2 /> : <Banner3 />}
+          </div>
+        </div>
         {!isLoggedIn && <InfoBox2 />}
         {!isLoggedIn && <InfoBox3 />}
         {!isLoggedIn && <InfoBox4 />}
@@ -153,27 +151,25 @@ const Home = () => {
             </select>
           </div>
           {isLoading ? ( // Mostra indicador de carregamento enquanto os projetos estão sendo carregados
-  <p>Loading...</p>
-) : (
-  <div className="project-grid">
-  {projects.map((project) => (
-    <div className="project-card-container" key={project.name}>
-      <ProjectCard
-        project={project}
-        isLoggedIn={isLoggedIn}
-      />
-    </div>
-  ))}
-</div>
-)}
+            <p>Loading...</p>
+          ) : (
+            <div className="project-grid">
+              {projects.map((project) => (
+                <div className="project-card-container" key={project.name}>
+                  <ProjectCard
+                    project={project}
+                    isLoggedIn={isLoggedIn}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-        <LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />      
+        <LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />
         <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
         <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
         <RegisterModal />
-        
-       
-      </div> 
+      </div>
       <Footer style={{ position: 'fixed', bottom: 0, width: '100%' }} />
     </>
   );

@@ -1,10 +1,10 @@
 /* Sidebar styles */
 .sidebar {
     position: fixed;
-    top: 70px;
+    top: 85px;
     left: 0;
-    height: calc(100vh - 70px);
-    background-color: var(--dark-color);
+    height: calc(100vh - 100px);
+    background-color: var(--contrast-color);
     overflow-y: auto;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
     z-index: 1000;
@@ -14,12 +14,12 @@
     align-items: center;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    border-radius: 30px;
 }
 
 .sidebar.open {
     width: 150px;
 }
-
 
 
 .toggle-btn {
@@ -38,14 +38,14 @@
     width: 100%;
     
     flex-direction: column;
-    align-items: center; /* Center items horizontally */
+    align-items: center; 
 }
 
 .sidebar-menu li {
     width: 100%;
     margin: 20px 0;
     display: flex;
-    justify-content: center; /* Center items horizontally */
+    justify-content: center; 
 }
 
 .sidebar-menu li a {
@@ -60,7 +60,7 @@
 }
 
 .sidebar.open .sidebar-menu li a {
-    justify-content: flex-start; /* Align items to the left when sidebar is open */
+    justify-content: flex-start; 
 }
 
 .sidebar-menu li a:hover {

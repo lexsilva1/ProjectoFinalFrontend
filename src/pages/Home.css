@@ -30,3 +30,11 @@
     margin-left: 3rem;
  
   }
+
+  .banner-logged-in {
+    height: 70vh !important; 
+  }
+  
+  .banner-logged-out {
+    height: 100vh; 
+  }
