@@ -2,6 +2,7 @@ import baseURL from './baseURL';
 
 export const getLabs = async (token) => {
     const response = await fetch( baseURL + 'labs', {
+        method: 'GET', 
         headers: {
             'token': token
         }

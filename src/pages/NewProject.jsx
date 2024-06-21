@@ -2,13 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Button, Container, Card, CardBody, CardHeader, Form } from "reactstrap";
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
+import Cookies from "js-cookie";
 import UsersModal from "../components/Modals/UsersModal";
 import ResourcesModal from "../components/Modals/ResourcesModal";
 import Step1 from "../components/CreateProjectSteps/Step1";
 import Step2 from "../components/CreateProjectSteps/Step2";
 import Step3 from "../components/CreateProjectSteps/Step3";
-
+import { getLabs } from "../services/labServices";
+import { getInterests } from "../services/interestServices";
+import { getSkills } from "../services/skillServices";
+import { get } from "react-hook-form";
 const NewProject = () => {
+  const token = Cookies.get("authToken");
   const [step, setStep] = useState(1);
   const [inputs, setInputs] = useState({
     name: "",
@@ -33,21 +38,21 @@ const NewProject = () => {
   useEffect(() => {
     // Fetch labs, skill suggestions, and keyword suggestions
     const fetchLabs = async () => {
-      const res = await fetch("/api/labs");
-      const data = await res.json();
-      setLabs(data);
+      const res = await getLabs(token);
+      
+      setLabs(res);
     };
 
     const fetchSuggestions = async () => {
-      const res = await fetch("/api/skills");
-      const data = await res.json();
-      setSkillSuggestions(data);
+      const res = await getSkills(); 
+      
+      setSkillSuggestions(res);
     };
 
     const fetchKeywordSuggestions = async () => {
-      const res = await fetch("/api/keywords");
-      const data = await res.json();
-      setKeywordSuggestions(data);
+      const res = await getInterests();
+      
+      setKeywordSuggestions(res);
     };
 
     fetchLabs();
