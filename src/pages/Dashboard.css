@@ -46,16 +46,6 @@
     font-size: 12px;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
 
 .card-body {
     padding: 1rem; 
