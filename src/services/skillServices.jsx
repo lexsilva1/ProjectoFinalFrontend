@@ -59,4 +59,21 @@ export const deleteSkill = async (token, skillDto) => {
     const result = await response.text();
     return result;
 };
+export const createSkillForProject = async (token, skill) => {
+    const response = await fetch(baseURL + 'skills/createSkill', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(skill)
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    return result;
+}
 

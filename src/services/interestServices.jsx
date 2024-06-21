@@ -59,3 +59,20 @@ export const deleteInterest = async (token, interestDto) => {
     const result = await response.text();
     return result;
 };
+export const createKeyword = async (token, keywordDto) => {
+    const response = await fetch(baseURL + 'interests/createKeyword', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(keywordDto)
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    const result = await response.json();
+    return result;
+}
