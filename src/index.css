@@ -52,12 +52,28 @@ code {
 }
 
 .btn-primary {
-  --bs-btn-color: var(--contrast-color);
-  --bs-btn-bg: var(--primary-color);
-  border: none;
+  background-color: var(--contrast-color)!important;
+  color: var(--primary-color)!important;
+  border: var(--contrast-color)!important;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--details-color)!important;
+  color: var(--contrast-color)!important;
+  border: var(--contrast-color)!important;
+}
+
+.btn-secondary {
+  background-color: var(--details-color)!important;
+  color: var(--contrast-color)!important;
+  border: var(--contrast-color)!important;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+
 }
 
 .btn {
@@ -75,14 +91,7 @@ code {
   font-family: Arial, sans-serif;
   
 }
-/*.modal-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background-color: var(--secondary-color);
-}*/
+
 .modal-footer {
   display: flex;
   justify-content: center;

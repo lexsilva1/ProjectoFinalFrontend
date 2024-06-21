@@ -143,8 +143,8 @@ const Profile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    let finalImageURL = user.image;
-
+    let finalImageURL = profile.userPhoto || Avatar;
+  
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
@@ -153,7 +153,7 @@ const Profile = () => {
         console.error("Error uploading image:", error);
       }
     }
-
+  
     if (formValues.firstName && formValues.lastName && formValues.labLocation) {
       const userUpdate = {
         firstName: formValues.firstName,
@@ -163,10 +163,21 @@ const Profile = () => {
         userPhoto: finalImageURL,
         bio: formValues.bio,
       };
-
+  
       try {
         await updateUser(user.id, userUpdate, token);
         setEditMode(false);
+    
+        userStore.setState((prevState) => ({
+          ...prevState,
+          user: {
+            ...prevState.user,
+            firstName: userUpdate.firstName,
+            lastName: userUpdate.lastName,
+            image: userUpdate.userPhoto +`?${new Date().getTime()}`,
+          },
+        }));
+  
         const updatedUser = await findUserById(token, userId);
         setProfile(updatedUser);
       } catch (error) {
@@ -435,7 +446,7 @@ const Profile = () => {
                           <div>
                             {selectedSkills.map((skill, index) => (
                               <span key={index} className="user-pill">
-                                {skill.name}
+                                {skill}
                               </span>
                             ))}
                           </div>
@@ -457,7 +468,7 @@ const Profile = () => {
                           <div>
                             {selectedInterests.map((interest, index) => (
                               <span key={index} className="user-pill">
-                                {interest.name}
+                                {interest}
                               </span>
                             ))}
                           </div>

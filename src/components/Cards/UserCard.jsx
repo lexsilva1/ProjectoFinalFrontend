@@ -14,7 +14,7 @@ const UserCard = ({ user }) => {
         <h2 className="user-name">{`${firstName} ${lastName}`}</h2>
       </div>
       <div className="user-actions">
-        <Button variant="primary">Send Message</Button>
+        <Button className="btn-primary">Send Message</Button>
         {!privacy && 
           <Link to={`/profile/${user.userId}`}>
             <Button variant="secondary">View Profile</Button>
