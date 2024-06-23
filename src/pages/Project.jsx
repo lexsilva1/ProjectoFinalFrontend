@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
-import avatarProject from "../multimedia/Images/avatarProject.png";
+import avatarProject from "../multimedia/Images/avatarProject.jpg";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
 import Sidebar from "../components/SideBar";

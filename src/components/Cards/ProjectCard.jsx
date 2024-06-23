@@ -4,8 +4,17 @@ import avatarProject from "../../multimedia/Images/avatarProject.jpg";
 import "./ProjectCard.css";
 import { Link } from 'react-router-dom';
 import { Badge } from "react-bootstrap";
+import userStore from "../../stores/userStore";
 
 const ProjectCard = ({ project, isLoggedIn }) => {
+
+  const currentUser = userStore((state) => state.user);
+const isMember = project.teamMembers?.some(
+  (member) => member.userId === currentUser.id
+);
+
+
+
   return (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
       <div className="project-card-card shadow-lg">
@@ -53,7 +62,9 @@ const ProjectCard = ({ project, isLoggedIn }) => {
           
           </div>
           {isLoggedIn && (
-            <Link to={`/project/${project.name}`} className="project-card-btn project-card-btn-primary">Open Project</Link>
+            <Link to={`/project/${project.name}`} className="project-card-btn project-card-btn-primary">
+              {isMember ? "Open Project" : "See Details"}
+            </Link>
           )}
         </div>
       </div>
