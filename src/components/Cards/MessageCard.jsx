@@ -30,7 +30,7 @@ const MessageCard = ({ message }) => {
         <Card className="mail-message-card" onClick={handleClick}>
             <Card.Body>
                 <Row className="align-items-center">
-                    <Col xs={3} className="d-flex align-items-center">
+                    <Col xs={4} className="d-flex align-items-center">
                         <img src={message.senderImage || Avatar} alt="avatar" className="rounded-circle shadow-1-strong mail-avatar" />
                         <Card.Title className="fw-bold mb-0 mail-sender">{message.sender}</Card.Title>
                     </Col>

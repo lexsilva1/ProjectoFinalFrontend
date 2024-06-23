@@ -2,7 +2,6 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Avatar from '../../multimedia/Images/Avatar.jpg';
-import userStore from '../../stores/userStore';
 import './ConversationCard.css';
 
 const ConversationCard = ({ conversation }) => {
@@ -10,12 +9,14 @@ const ConversationCard = ({ conversation }) => {
 
     return (
         <ListGroup.Item className="custom-d-flex">
-            <img src={conversation.sender.image || Avatar} alt="avatar"
-                className="custom-rounded-circle align-self-start ms-3 shadow-1-strong" width="60" />
             <Card className="w-100">
-                <Card.Header className="d-flex justify-content-between p-3">
-                    <p className="fw-bold mb-0">{name}</p>
-                    <p className="text-muted small mb-0"><i className="far fa-clock"></i> {conversation.time}</p>
+                <Card.Header className="d-flex align-items-center p-3">
+                    <img src={conversation.sender.image || Avatar} alt="avatar"
+                        className="custom-rounded-circle shadow-1-strong me-3" width="30" />
+                    <div>
+                        <p className="fw-bold mb-0">{name}</p>
+                        <p className="text-muted small mb-0"><i className="far fa-clock"></i> {conversation.time}</p>
+                    </div>
                 </Card.Header>
                 <Card.Body>
                     <p className="mb-0">

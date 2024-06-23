@@ -22,3 +22,8 @@
     flex-direction: row-reverse;
     justify-content: flex-end;
   }
+
+  .w-100 {
+    margin:0px;
+    margin-bottom: 10px;
+  }
