@@ -16,7 +16,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center; /* Alterado de 'right' para 'center' */
+    align-items: center; 
     max-width: 100%;
     padding: 0.5rem;
 }
@@ -92,3 +92,69 @@
     flex-direction: column;
 }
 
+/* ProjectCard.css */
+
+.project-card-status {
+    position: relative;
+    width: 90%;
+    border-radius: 5px;
+    border: 1px solid var(--contrast-color);
+    margin: 10px auto;
+    color: var(--contrast-color);
+    font-size: 0.8rem;
+    z-index: 1;
+    padding: 0.2rem;
+    text-align: left;
+  }
+  
+  .project-card-status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 5px;
+  }
+  
+  
+  .project-card-status-planning .project-card-status-bar {
+    width: 20%;
+    background-color: #f0ad4e; 
+    clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 0% 100%);
+    z-index: -1;
+  }
+  
+  .project-card-status-ready .project-card-status-bar {
+    width: 40%;
+    background-color: #5bc0de; 
+    clip-path: polygon(0% 0%, 100% 0%, 60% 100%, 0% 100%);
+    z-index: -1;
+  }
+  
+  .project-card-status-approved .project-card-status-bar {
+    width: 60%;
+    background-color: #5cb85c; 
+    clip-path: polygon(0% 0%, 100% 0%, 40% 100%, 0% 100%);
+    z-index: -1;
+  }
+  
+  .project-card-status-in-progress .project-card-status-bar {
+    width: 80%;
+    background-color: #9370db; 
+    clip-path: polygon(0% 0%, 100% 0%, 20% 100%, 0% 100%);
+    z-index: -1;
+  }
+  
+  .project-card-status-cancelled .project-card-status-bar {
+    width: 100%;
+    background-color: #d9534f; 
+    clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 0% 100%);
+    z-index: -1;
+  }
+  
+  .project-card-status-finished .project-card-status-bar {
+    width: 100%;
+    background-color: #6c757d; 
+    clip-path: polygon(0% 0%, 100% 0%, 0% 100%, 0% 100%);
+    z-index: -1;
+  }
+  

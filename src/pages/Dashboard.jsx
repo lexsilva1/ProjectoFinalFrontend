@@ -9,12 +9,12 @@ import PDFExportButton from '../components/PDFExportButton'; // Importando o com
 import './Dashboard.css';
 
 const COLORS = {
-    'Planning': '#87CEEB', // Azul claro
-    'In Progress': '#FFA500', // Laranja
-    'Ready': '#32CD32', // Verde
-    'Approved': '#00008B', // Roxo
-    'Cancelled': '#FF4500', // Vermelho
-    'Completed': '#006400' // Verde escuro
+    'Planning': '#f0ad4e', 
+    'In Progress': '#9370db',
+    'Ready': '#5bc0de', 
+    'Approved': '#5cb85c', 
+    'Cancelled': '#d9534f', 
+    'Completed': '#6c757d' 
 };
 
 const STATUS_ORDER = ['Planning', 'In Progress', 'Ready', 'Approved', 'Cancelled', 'Completed'];
