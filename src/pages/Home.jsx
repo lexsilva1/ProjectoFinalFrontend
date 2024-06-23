@@ -9,12 +9,12 @@ import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import { getProjects } from "../services/projectServices";
 import ProjectCard from "../components/Cards/ProjectCard";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaChevronUp, FaChevronDown  } from "react-icons/fa";
 import InfoBox from "../components/InfoBoxs/InfoBox";
 import Footer from "../components/Footer";
 import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
 import SetPasswordModal from "../components/Modals/SetPasswordModal";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import InfoBox2 from "../components/InfoBoxs/InfoBox2";
 import InfoBox3 from "../components/InfoBoxs/InfoBox3";
 import InfoBox4 from "../components/InfoBoxs/InfoBox4";
@@ -29,8 +29,11 @@ const Home = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento dos projetos
+  const [isLoading, setIsLoading] = useState(true); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState("");
   const location = useLocation();
+  const [sortDirection, setSortDirection] = useState("");
 
   useEffect(() => {
     const token = location.pathname.split("/")[2];
@@ -81,6 +84,80 @@ const Home = () => {
     setShowLoginModal(false);
   };
 
+  const handleSortChange = (event) => {
+    const selectedOption = event.target.value;
+    setSortOption(selectedOption);
+
+    // Exemplo de lógica para alternar a direção da ordenação
+    // Isso pode precisar ser ajustado com base na sua lógica específica
+    if (sortOption === selectedOption && sortDirection !== 'desc') {
+      setSortDirection('desc');
+    } else {
+      setSortDirection('asc');
+    }
+  };
+
+  const handleSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const sortProjects = (projects) => {
+    switch (sortOption) {
+      case "createdDate":
+        return projects.sort((a, b) =>
+          sortDirection === "asc"
+            ? new Date(a.createdDate) - new Date(b.createdDate)
+            : new Date(b.createdDate) - new Date(a.createdDate)
+        );
+      case "openSlots":
+        return projects.sort((a, b) => {
+          const aOpenSlots =
+            a.maxTeamMembers -
+            a.teamMembers.filter((member) => member.approvalStatus === "MEMBER")
+              .length;
+          const bOpenSlots =
+            b.maxTeamMembers -
+            b.teamMembers.filter((member) => member.approvalStatus === "MEMBER")
+              .length;
+          return sortDirection === "asc"
+            ? aOpenSlots - bOpenSlots
+            : bOpenSlots - aOpenSlots;
+        });
+      case "status":
+        const statusOrder = [
+          "Planning",
+          "Ready",
+          "Approved",
+          "In Progress",
+          "Finished",
+          "Cancelled",
+        ];
+        return projects.sort((a, b) =>
+          sortDirection === "asc"
+            ? statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+            : statusOrder.indexOf(b.status) - statusOrder.indexOf(a.status)
+        );
+      default:
+        return projects;
+    }
+  };
+
+  const filterProjects = (projects) => {
+    return projects.filter((project) => {
+      const matchesSearchTerm =
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.interests.some(interest => interest.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        project.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      return matchesSearchTerm;
+    });
+  };
+
+  const displayedProjects = sortProjects(filterProjects(projects));
+
+
+
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}></div>
@@ -128,7 +205,9 @@ const Home = () => {
               <FaSearch />
               <input
                 type="search"
-                placeholder="Search..."
+                placeholder="Search projects..."
+                value={searchTerm}
+                onChange={handleSearchTermChange}
                 style={{
                   border: "none",
                   marginLeft: "0.5rem",
@@ -138,23 +217,36 @@ const Home = () => {
                 }}
               />
             </div>
-            <select
-              style={{
-                borderRadius: "10px",
-                height: "2rem",
-                width: "10rem",
-                margin: "2rem",
-              }}
-            >
-              <option value="">Sort by...</option>
-              {/* Add your sorting options here */}
-            </select>
+            <div style={{ display: "flex", alignItems: "center" }}>
+  <select
+    value={sortOption}
+    onChange={handleSortChange}
+    style={{ borderRadius: "10px", height: "2rem", width: "10rem", margin: "2rem" }}
+  >
+    <option value="">Sort by...</option>
+    <option value="createdDate">Date Created</option>
+    <option value="openSlots">Open Slots</option>
+    <option value="status">Project Status</option>
+  </select>
+  {sortOption && (
+    <>
+      <FaChevronUp
+        onClick={() => setSortDirection('asc')}
+        style={{ marginLeft: "0.5rem", cursor: "pointer" }}
+      />
+      <FaChevronDown
+        onClick={() => setSortDirection('desc')}
+        style={{ marginLeft: "0.5rem", cursor: "pointer" }}
+      />
+    </>
+  )}
+</div>
           </div>
-          {isLoading ? ( // Mostra indicador de carregamento enquanto os projetos estão sendo carregados
+          {isLoading ? ( 
             <p>Loading...</p>
           ) : (
             <div className="project-grid">
-              {projects.map((project) => (
+              {displayedProjects.map((project) => (
                 <div className="project-card-container" key={project.name}>
                   <ProjectCard
                     project={project}
@@ -176,3 +268,4 @@ const Home = () => {
 };
 
 export default Home;
+
