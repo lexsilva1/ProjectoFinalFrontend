@@ -10,14 +10,14 @@ import userStore from "../stores/userStore";
 import { getProjects } from "../services/projectServices";
 import ProjectCard from "../components/Cards/ProjectCard";
 import { FaSearch } from "react-icons/fa";
-import InfoBox from "../components/InfoBox";
+import InfoBox from "../components/InfoBoxs/InfoBox";
 import Footer from "../components/Footer";
 import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
 import SetPasswordModal from "../components/Modals/SetPasswordModal";
 import { useNavigate, useLocation } from "react-router-dom";
-import InfoBox2 from "../components/InfoBox2";
-import InfoBox3 from "../components/InfoBox3";
-import InfoBox4 from "../components/InfoBox4";
+import InfoBox2 from "../components/InfoBoxs/InfoBox2";
+import InfoBox3 from "../components/InfoBoxs/InfoBox3";
+import InfoBox4 from "../components/InfoBoxs/InfoBox4";
 import './Home.css';
 
 const Home = () => {

@@ -304,12 +304,15 @@ const Profile = () => {
             <Card className="profile-card">
               <Card.Body>
                 {isOwnProfile && (
-                  <div className="privacy-icon">
-                    <Button variant="outline-secondary" onClick={togglePrivacy}>
-                      {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
-                    </Button>
-                  </div>
-                )}
+                 <div className="privacy-icon">
+                 <Button className= "iconPrivacy" variant="outline-secondary" onClick={togglePrivacy}>
+                   {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                 </Button>
+                 <span className="privacy-text">
+                   {profile?.isPrivate ? "Private Profile" : "Public Profile"}
+                 </span>
+               </div>
+             )}
                 <Row>
                   <Col md={3} className="text-center mb-3">
                     <Image

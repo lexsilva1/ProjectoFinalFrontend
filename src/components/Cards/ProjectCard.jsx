@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import avatarProject from "../../multimedia/Images/avatarProject.png";
+import avatarProject from "../../multimedia/Images/avatarProject.jpg";
 import "./ProjectCard.css";
 import { Link } from 'react-router-dom';
 import { Badge } from "react-bootstrap";
