@@ -301,7 +301,7 @@ const Profile = () => {
             <Sidebar />
           </div>
 
-          <Col md={9} className="profile-main-content">
+          <Col md={12} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
                 {isOwnProfile && (
@@ -354,7 +354,7 @@ const Profile = () => {
                     </h2>
                     <hr />
                     <Row>
-                      <Col md={4}>
+                      <Col md={4} >
                         {editMode ? (
                           <Form>
                             <Form.Group>
@@ -438,8 +438,8 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4}>
-                        <h4 style={{ fontSize: "1.2rem" }}>Skills</h4>
+                      <Col md={4} style={{ marginLeft: "0px"}}>
+                        <h4 style={{ fontSize: "1rem" }}>Skills</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -461,7 +461,7 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4 style={{ fontSize: "1.2rem" }}>Interests</h4>
+                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>Interests</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="interests-typeahead"
@@ -484,8 +484,8 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4}>
-                        <h4 style={{ fontSize: "1.2rem" }}>Projects</h4>
+                      <Col md={4} style={{ display: "flex", flexDirection: "column", paddingLeft: "8rem" }}>
+                        <h4 style={{ fontSize: "1rem" }}>Projects</h4>
                         {profile?.projects?.length > 0 ? (
                           profile.projects.map((project, index) => (
                             <div key={index}>

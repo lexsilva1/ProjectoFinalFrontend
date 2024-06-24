@@ -12,6 +12,7 @@
     position: relative;
     width: 100%;
     max-width: 300px;
+    
   }
   
   .search-icon {
@@ -24,7 +25,7 @@
   .search-input input {
     width: calc(100% - 40px);
     padding: 10px 10px 10px 40px;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     border-radius: 20px;
   }
   
@@ -32,7 +33,7 @@
     width: 100%;
     max-width: 200px;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     border-radius: 20px;
   }
   

@@ -8,18 +8,22 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    
+    transition: transform 0.3s ease; 
+}
+
+.project-card-card:hover {
+    transform: scale(1.05);
 }
 
 .project-content-container {
+    flex-grow: 1; 
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
     align-items: center; 
     max-width: 100%;
     padding: 0.5rem;
 }
+
 
 .project-card-card-title {
     font-family: 'Spline Sans', sans-serif;
@@ -80,6 +84,7 @@
     width: 60%;
     align-items: center;
     justify-content: center;
+
 }
 
 .project-card-btn:hover {
@@ -87,12 +92,18 @@
     color: var(--contrast-color);
 }
 .project-card-card-body {
-    height: 74%;
     display: flex;
     flex-direction: column;
+    height: 100%;
+}
+.project-card-btn-container {
+    margin-top: auto; /* Push the button container to the bottom */
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
-/* ProjectCard.css */
 
 .project-card-status {
     position: relative;

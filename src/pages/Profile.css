@@ -1,27 +1,23 @@
 .profile-container {
-  
-  min-height: 100vh;
-  padding: 5rem;
- 
+  padding: 2rem;
+  width: 100%;
 }
 
 .profile-row {
   margin-top: 2rem;
+
 }
+
 
 .profile-card {
   border: none !important;
   box-shadow: none !important;
   border-radius: 15px;
-  width: 90% !important;
-  min-height: 500px;
   background-color: transparent !important;
-}
+  padding-top: 3rem; 
+  width: auto !important;
+  min-height: 80vh;
 
-
-.profile-header h2 {
-  margin: 0;
-  font-size: 2rem;
 }
 
 .profile-image {
@@ -30,31 +26,13 @@
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #fff;
-  margin-bottom: -75px;
+  margin-bottom: 1rem;
 }
 
-.privacy-icon {
-  position: absolute;
-  right: 20px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
+.profile-name {
+  font-size: 2rem;
+  font-weight: bold;
 }
-
-.iconPrivacy {
-  font-size: 1.5rem;
-  color: var(--dark-color);
-  cursor: pointer;
-  border: none;
-}
-
-
-.iconPrivacy:hover {
-  color: var(--contrast-color);
-  background-color: transparent;
-}
-
-
 
 .profile-edit-button {
   color: var(--dark-color);
@@ -63,11 +41,12 @@
   padding: 0.5rem 1rem;
   font-size: 1.5rem;
   cursor: pointer;
+  background-color: transparent;
 }
 
 .profile-edit-button:hover {
-color: var(--contrast-color);
-background-color: transparent;
+  color: var(--contrast-color);
+  background-color: transparent;
 }
 
 .profile-main-content {
@@ -80,7 +59,6 @@ background-color: transparent;
   border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .profile-section h4 {
@@ -97,7 +75,7 @@ background-color: transparent;
 
 .user-pill {
   display: inline-block;
-  background-color: var(--contrast-color);
+  background-color: #007bff;
   color: white;
   border-radius: 50px;
   padding: 0.3rem 1rem;
@@ -113,4 +91,36 @@ background-color: transparent;
   margin-bottom: 1rem;
 }
 
+.privacy-icon {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  display: flex;
+  align-items: center;
+}
 
+.iconPrivacy {
+  font-size: 1.5rem;
+  color: var(--dark-color);
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.iconPrivacy:hover {
+  color: var(--contrast-color);
+  background-color: transparent;
+}
+
+.privacy-text {
+  font-size: 1rem;
+
+}
+
+form {
+  margin-top: 1rem;
+}
+
+form .form-group {
+  margin-bottom: 1rem;
+}

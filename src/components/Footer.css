@@ -3,15 +3,25 @@
     color: #fff;
     z-index: 10000;
     bottom: 0;
-    height: 200px;
+    height: 350px;
     width: 100%;
 }
 
 
-
 .footer h5 {
+    font-size: 1.2em; 
+    margin-bottom: 10px;
+    margin-top: 30px;
+    font-family: 'Outfit', sans-serif;
+
+}
+
+.rights {
     font-size: 0.8em; 
     margin-bottom: 10px;
+    font-family: 'Outfit', sans-serif;
+    margin-top: 10%;
+    
 }
 
 .footer ul {
@@ -20,13 +30,16 @@
 }
 
 .footer ul li {
-    font-size: 0.5em; 
+    font-size: 0.8em; 
     margin-bottom: 5px;
+    color: var(--details-color);
+    font-family: 'Outfit', sans-serif;
 }
 
 .footer p {
-    font-size: 0.5em; 
+    font-size: 1em; 
     margin-bottom: 5px;
+    color: var(--details-color);
    
 }
 

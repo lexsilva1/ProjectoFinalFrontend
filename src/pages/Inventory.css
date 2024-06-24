@@ -22,8 +22,8 @@
 }
 
 .inventory-table th {
-  background-color: var(--contrast-color);
-  color: #ffffff;
+  background-color: var(--details-color);
+  color: var(--dark-color );
 }
 
 .inventory-table tbody tr:nth-of-type(odd) {
@@ -55,7 +55,7 @@
   padding: 10px 20px !important;
   font-size: 1rem;
   cursor: pointer;
-  margin-left: 10px !important; /* Ajuste para mover o botão para a esquerda */
+  margin-left: 10px !important; 
 }
 
 .buttonViewStats {
@@ -82,4 +82,47 @@
 
 .pagination .page-link {
   color: var(--dark-color); 
+}
+
+.buttonViewStats {
+  background-color: var(--contrast-color)!important;
+  color: var(--details-color)!important;
+  border: none;
+  border-radius: 20px !important;
+  font-size: 1rem;
+  margin-left: auto!important; 
+  height: 50px;
+}
+
+.buttonViewStats:hover {
+  background-color: var(--details-color)!important;
+  color: var(--contrast-color)!important;
+}
+
+.buttonAddResource {
+  background-color: var(--contrast-color)!important;
+  color: var(--details-color)!important;
+  border: none;
+  border-radius: 20px !important;
+  font-size: 1rem;
+  margin-left: 10px !important; 
+  margin-right: 20px !important;
+  height: 50px;
+  width: auto!important;
+  
+}
+
+.buttonAddResource:hover {
+  background-color: var(--details-color)!important;
+  color: var(--contrast-color)!important;
+}
+
+.inventory-container .d-flex .input-group {
+  margin-right: 20px; /* Ajuste o valor conforme necessário */
+}
+.inventory-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 20px; /* Adjust gap as needed */
 }
