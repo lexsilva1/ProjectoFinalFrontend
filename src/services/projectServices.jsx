@@ -72,7 +72,9 @@ export const getProjectByName = async (token, projectName) => {
 }
 
 export const createProject = async (token, projectDto) => {
-    const response = await fetch(projectsURL, {
+    try{
+        console.log("sending projectDto",projectDto);
+    const response = await fetch(projectsURL+"/", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +88,11 @@ export const createProject = async (token, projectDto) => {
     }
   
     return response.json();
-  };
+  } catch (error) {
+    console.error("HTTP error!", error);
+    throw new Error(`An error occurred: ${error.message}`);
+  }
+};
 
   export const getStatistics = async (token) => {
     const response = await fetch(`${projectsURL}/statistics`, {
