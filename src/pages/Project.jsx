@@ -17,6 +17,8 @@ const Project = () => {
   const { projectName } = useParams();
   const [project, setProject] = useState({});
   const [activeTab, setActiveTab] = useState("info");
+  const [projectSkills, setProjectSkills] = useState ([])
+  const [projectKeywords, setProjectKeywords] = useState([])
   const token = Cookies.get("authToken");
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const Project = () => {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
       const projectData = await getProjectByName(token, encodedProjectName);
+
       setProject(projectData);
     };
 
@@ -44,6 +47,10 @@ const Project = () => {
   const isMember = project.teamMembers?.some(
     (member) => member.userId === currentUser.id
   );
+
+
+  
+
 
   
 

@@ -58,6 +58,8 @@ const handleSubmit = async (e) => {
               <p><strong>Project Name:</strong> {inputs.name}</p>
               <p><strong>Location:</strong> {inputs.location}</p>
               <p><strong>Description:</strong> {inputs.description}</p>
+              <p><strong>Start Date:</strong>{inputs.startDate}</p>
+              <p><strong>End Date:</strong>{inputs.endDate}</p>
               <p><strong>Number of Slots:</strong> {inputs.slots}</p>
               <p><strong>Skills:</strong> {skillList.join(", ")}</p>
               <p><strong>Keywords:</strong> { interestList.join(", ")}</p>
