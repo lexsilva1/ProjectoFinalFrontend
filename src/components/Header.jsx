@@ -77,7 +77,7 @@ const Header = () => {
                 alt={`${user.firstName} ${user.lastName}`}
                 className="user-avatar"
               />
-              <span className="user-name">{`${user.firstName}`}</span>
+              <span className="user-name-header">{`${user.firstName}`}</span>
             </div>
             <Button variant="outline" className="button" onClick={handleLogout}>
               {t("Logout")}

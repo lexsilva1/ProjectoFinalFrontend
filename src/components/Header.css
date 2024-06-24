@@ -98,7 +98,7 @@
     object-fit: cover;
   }
   
-  .user-name {
+  .user-name-header {
     color: var(--dark-color);
   }
 
