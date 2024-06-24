@@ -29,6 +29,7 @@ function App() {
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/PasswordReset/:token" element={<Home />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/messages/:userId" element={<Messages />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </>

@@ -4,13 +4,13 @@
     padding: 1rem;
     margin-bottom: 1rem;
     background-color: white;
-    min-height: 100vh;
+    height: 110vh;
 }
 
   
   .message-sidebar-container {
     background-color: var(--secondary-color);
-    height: 100vh;
+    height: 110vh;
     padding-top: 1rem;
     border-right: 1px solid #ddd;
   }

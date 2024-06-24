@@ -7,12 +7,15 @@ import useStore from '../../stores/userStore';
 import Avatar from '../../multimedia/Images/Avatar.jpg';
 import UserList from '../UserList';
 import { set } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const MessageCard = ({ message }) => {
 
     const setSelectedUserMessages = useStore(state => state.setSelectedUserMessages);
     const userList=useStore(state=>state.userList);
     const setUserList=useStore(state=>state.setUserList);
+    const navigate = useNavigate();
+
     const handleClick = () => {
         setSelectedUserMessages(message.id);
         
@@ -22,7 +25,7 @@ const MessageCard = ({ message }) => {
             }
             return user;
         });
-        
+        navigate(`/messages/${message.id}`);
         setUserList(newUserList);
         console.log(newUserList);
     }

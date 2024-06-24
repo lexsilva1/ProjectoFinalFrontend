@@ -9,6 +9,8 @@ import { getMessages, getLastMessages, sendMessage } from '../services/messageSe
 import userStore from '../stores/userStore';
 import Cookies from 'js-cookie';
 import MessageSidebar from '../components/MessageSidebar';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Messages.css';
 
 const Messages = () => {
@@ -16,15 +18,15 @@ const Messages = () => {
   const setSelectedMessages = userStore((state) => state.setSelectedMessages);
   const selectedUserMessages = userStore((state) => state.selectedUserMessages);
   const token = Cookies.get("authToken");
+  const navigate = useNavigate();
+
   const resetSelectedUserMessages = () => {
+    navigate("/messages");
     userStore.setState({ selectedUserMessages: null });
   };
+  console.log(selectedUserMessages);
 
-  useEffect(() => {
-    return () => {
-      userStore.setState({ selectedUserMessages: null });
-    };
-  }, []);
+
 
   useEffect(() => {
     getLastMessages(token).then((messages) => {
