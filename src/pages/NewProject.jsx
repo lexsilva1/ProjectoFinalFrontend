@@ -13,16 +13,18 @@ import { getInterests } from "../services/interestServices";
 import { getSkills } from "../services/skillServices";
 import { projectPhotoUpload, createProject } from "../services/projectServices";
 import { set } from "react-hook-form";
+import userstore from "../stores/userStore"
 
 const NewProject = () => {
   const token = Cookies.get("authToken");
+   
   const [step, setStep] = useState(1);
   const [avatar, setAvatar] = useState(null);
   const [inputs, setInputs] = useState({
     name: "",
     location: "",
     description: "",
-    slots: 0,
+    slots: 1,
     skills: [],
     interests: [],
     materials: [],

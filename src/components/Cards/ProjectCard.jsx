@@ -27,10 +27,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
     }
   };
 
-const skills = project.skills;
-const skillNames = skills.map((skill) => skill.name);
-const interests = project.interests;
-const interestNames = interests.map((interest) => interest.name);
+
   
 
   return (
@@ -53,7 +50,7 @@ const interestNames = interests.map((interest) => interest.name);
             <p className="project-card-card-text">
               <strong>Keywords:</strong>
               {project.interests &&
-                interestNames.map((interest, index) => (
+                project.interests.map((interest, index) => (
                   <Badge
                     key={`${project.id}-keyword-${index}`}
                     className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2"
@@ -66,7 +63,7 @@ const interestNames = interests.map((interest) => interest.name);
             <p className="project-card-card-text">
               <strong>Skills:</strong>
               {project.skills &&
-                skillNames.map((skill, index) => (
+                project.skills.map((skill, index) => (
                   <Badge
                     key={`${project.id}-skill-${index}`}
                     className="project-card-badge project-card-badge-light mr-2 mb-2 px-2"
