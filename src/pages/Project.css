@@ -1,10 +1,39 @@
+.card-text-project {
+    font-size: 1rem;
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-team-member {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+
+}
+
+.project-team-member-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.project-team-member-name {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
 .container {
     margin: 10rem auto; 
-    width: 80%; 
+    width: 100%; 
 }
 
 .card {
-    width: 100%; 
+    width: 100%!important; 
     height: auto;
     background-color: white;
     border: 1px solid var(--primary-color);
@@ -18,14 +47,9 @@
     text-align: center;
 }
 
-.card-text-project {
-    font-size: 1rem;
-    margin-bottom: 40px;
-}
-
 .badge-dark, .badge-light {
-    margin-right: 0.3rem;
-    margin-bottom: 0.3rem;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
     color: black;
     background-color: white;
     border: 0.2px solid rgb(209, 209, 209);
@@ -44,27 +68,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza o conteúdo horizontalmente */
-    margin-top: 6rem; /* Adicionar uma margem superior para separação visual */
-}
-
-.project-team-member {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-right: 10px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-.project-team-member-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    align-items: center; 
+    margin-top: 6rem; 
 }
 
 .nav-tabs {
@@ -78,9 +83,37 @@
 
 .nav-tabs .nav-link {
     width: 33.2%;
-    margin-bottom: -1px; /* Ajusta a margem inferior para sobrepor a borda do card */
+    margin-bottom: -1px; 
 }
 
 .nav-tabs .nav-link.active {
-    border-color: #ddd #ddd #fff; /* Remove a borda inferior da aba ativa */
+    border-color: #ddd #ddd #fff;
 }
+
+.btn-project-apply {
+    background-color: var(--contrast-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 20px !important;
+    padding: 10px 20px !important;
+    font-size: 1rem;
+    cursor: pointer;
+    height: 50px;
+    width: 300px!important;
+    margin: 20px;
+    align-items: center;
+    transition: transform 0.3s ease; 
+}
+
+.btn-project-apply:hover {
+    background-color: var(--details-color);
+    color: var(--contrast-color);
+    transform: scale(1.1);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 100%; /* Opcional: ajuste a altura conforme necessário */
+  }
