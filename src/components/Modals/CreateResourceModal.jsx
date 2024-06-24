@@ -4,20 +4,20 @@ import "./CreateResourceModal.css";
 import { createResource } from "../../services/resourcesServices";
 import Cookies from "js-cookie";
 
+const initialState = {
+  name: '',
+  description: '',
+  type: '',
+  supplier: '',
+  stock: '',
+  brand: '',
+  supplierContact: '',
+  observations: ''
+};
+
 const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
   const token = Cookies.get("authToken");
-
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    type: '',
-    supplier: '',
-    stock: '',
-    brand: '',
-    supplierContact: '',
-    observations: ''
-  });
-
+  const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState({});
 
   const onChange = (e) => {
@@ -40,11 +40,16 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
     try {
       const response = await createResource(token, formData);
       console.log("Response from createResource:", response);
-      fetchResources(); // Refresh the resource list
-      toggle(); // Close the modal
+      fetchResources(); 
+      handleClose();
     } catch (error) {
       console.error('An error occurred:', error);
     }
+  };
+
+  const handleClose = () => {
+    toggle(); 
+    setFormData(initialState); 
   };
 
   return (
@@ -97,16 +102,17 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
                   />
                 </FormGroup>
                 <FormGroup>
-                  <Label for="stock">Quantity</Label>
-                  <Input
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={onChange}
-                    invalid={!!errors.stock}
-                  />
-                  <FormFeedback>{errors.stock}</FormFeedback>
-                </FormGroup>
+  <Label for="stock">Quantity</Label>
+  <Input
+    type="number"
+    name="stock"
+    value={formData.stock}
+    onChange={onChange}
+    invalid={!!errors.stock}
+    min="0" // This prevents negative numbers
+  />
+  <FormFeedback>{errors.stock}</FormFeedback>
+</FormGroup>
               </Col>
               <Col md={6}>
                 <FormGroup>
