@@ -9,6 +9,7 @@ import UsersModal from "../Modals/UsersModal";
 import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
 
+
 const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users }) => {
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
