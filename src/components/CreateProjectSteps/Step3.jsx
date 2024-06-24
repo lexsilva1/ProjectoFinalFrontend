@@ -1,9 +1,39 @@
 import React from "react";
 import { Row, Col, FormGroup, Label, Button } from "reactstrap";
+import { createProject } from "../../services/projectServices";
+import Cookies from "js-cookie";
 
-const Step3 = ({ inputs, prevStep, handleSubmit }) => {
+const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
+console.log(inputs);
 
+const token = Cookies.get("authToken");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  // Validation
+  if (inputs.slots <= 0) {
+    setError("Number of slots must be greater than zero.");
+    return;
+  }
+  const response = await createProject(token, inputs);
+  if (response.ok) {
+    setInputs({
+      name: "",
+      location: "",
+      description: "",
+      slots: 0,
+      skills: [],
+      interests: [],
+      materials: [],
+      imageUpload: null,
+      
+      teamMembers: [],
+    });
+    setStep(1);
+  } else {
+    setError("An error occurred. Please try again.");
 
+  }
+};
 
   const interestList = [];
   if(inputs.interests){

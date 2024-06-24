@@ -24,11 +24,21 @@ const UsersModal = ({ show, handleClose, inputs, setInputs }) => {
   );
 
   const handleAdd = (userToAdd) => {
-    const updatedTeamMembers = [...(inputs.teamMembers || []), userToAdd];
+    console.log(userToAdd);
+    const projectMember = {
+      userId: userToAdd.userId,
+      firstName: userToAdd.firstName,
+      lastName: userToAdd.lastName,
+      isProjectManager: false,
+      userPhoto: userToAdd.userPhoto,
+    };
+    
+    const updatedTeamMembers = [...(inputs.teamMembers || []), projectMember];
     setInputs({ ...inputs, teamMembers: updatedTeamMembers });
     users.splice(users.indexOf(userToAdd), 1);
     handleClose();
-  };
+  }
+
 
   return (
     <Modal show={show} onHide={handleClose} className="users-modal large-modal">

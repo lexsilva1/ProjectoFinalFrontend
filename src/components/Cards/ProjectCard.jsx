@@ -53,7 +53,7 @@ const interestNames = interests.map((interest) => interest.name);
             <p className="project-card-card-text">
               <strong>Keywords:</strong>
               {project.interests &&
-                project.interests.map((interest, index) => (
+                interestNames.map((interest, index) => (
                   <Badge
                     key={`${project.id}-keyword-${index}`}
                     className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2"
@@ -66,7 +66,7 @@ const interestNames = interests.map((interest) => interest.name);
             <p className="project-card-card-text">
               <strong>Skills:</strong>
               {project.skills &&
-                project.skills.map((skill, index) => (
+                skillNames.map((skill, index) => (
                   <Badge
                     key={`${project.id}-skill-${index}`}
                     className="project-card-badge project-card-badge-light mr-2 mb-2 px-2"
@@ -79,44 +79,7 @@ const interestNames = interests.map((interest) => interest.name);
             <p className="project-card-card-text">
               <strong>Description:</strong> {project.description}
             </p>
-            
-        <div className="project-content-container">
-          <h5 className="project-card-card-title"> {project.name}</h5>
-          <p className="project-card-card-text">
-            <strong>Status: </strong> {project.status}
-          </p>
           
-          <p className="project-card-card-text">
-            <strong>Keywords:</strong>
-            {project.interests &&
-              interestNames.map((interest, index) => (
-                <Badge
-                  key={`${project.id}-keyword-${index}`}
-                  className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2"
-                >
-                  {interest}
-                </Badge>
-              ))}
-          </p>
-          
-          <p className="project-card-card-text">
-            <strong>Skills:</strong>
-            {project.skills &&
-              skillNames.map((skill, index) => (
-                <Badge
-                  key={`${project.id}-skill-${index}`}
-                  className="project-card-badge project-card-badge-light mr-2 mb-2 px-2"
-                >
-                  {skill}
-                </Badge>
-              ))}
-          </p>
-          <p className="project-card-card-text">
-            <strong>Description: </strong>
-            {project.description}
-          </p>
-          
-          </div>
           
           {isLoggedIn && (() => {
             const currentUser = userStore((state) => state.user);

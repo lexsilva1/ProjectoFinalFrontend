@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 
-const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, setInputs }) => {
+const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, avatar }) => {
   return (
     <>
       <Row>
@@ -59,7 +59,7 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, s
               className="short-input"
             />
             <img
-              src={inputs.avatar}
+              src={avatar}
               alt="Project Avatar"
               className="avatar"
             />

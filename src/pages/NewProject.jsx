@@ -11,10 +11,13 @@ import Step3 from "../components/CreateProjectSteps/Step3";
 import { getLabs } from "../services/labServices";
 import { getInterests } from "../services/interestServices";
 import { getSkills } from "../services/skillServices";
+import { projectPhotoUpload, createProject } from "../services/projectServices";
+import { set } from "react-hook-form";
 
 const NewProject = () => {
   const token = Cookies.get("authToken");
   const [step, setStep] = useState(1);
+  const [avatar, setAvatar] = useState(null);
   const [inputs, setInputs] = useState({
     name: "",
     location: "",
@@ -23,8 +26,8 @@ const NewProject = () => {
     skills: [],
     interests: [],
     materials: [],
-    imageUpload: null,
-    avatar: "",
+    
+    projectPhoto: "",
     teamMembers: [],
   });
 
@@ -70,9 +73,11 @@ const NewProject = () => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setInputs({ ...inputs, avatar: reader.result });
+     setAvatar(reader.result);
     };
     reader.readAsDataURL(file);
+    const url = projectPhotoUpload(token,inputs.name, file);
+    setInputs({ ...inputs, projectPhoto: url });
   };
 
   const addField = (field) => {
@@ -120,41 +125,11 @@ const NewProject = () => {
     setStep(step - 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Validation
-    if (inputs.slots <= 0) {
-      setError("Number of slots must be greater than zero.");
-      return;
-    }
-    // Prepare form data
-    const formData = new FormData();
-    for (const key in inputs) {
-      if (Array.isArray(inputs[key])) {
-        formData.append(key, JSON.stringify(inputs[key]));
-      } else {
-        formData.append(key, inputs[key]);
-      }
-    }
+
 
 
     // Send request
-    try {
-      const res = await fetch("/api/projects", {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        // Handle success
-      } else {
-        // Handle errors
-        const errorData = await res.json();
-        setError(errorData.message || "An error occurred.");
-      }
-    } catch (err) {
-      setError("An error occurred while submitting the form.");
-    }
-  };
+  
 
   const renderStep = () => {
     switch (step) {
@@ -166,6 +141,7 @@ const NewProject = () => {
             handleInputChange={handleInputChange}
             handleImageUpload={handleImageUpload}
             nextStep={nextStep}
+            avatar={avatar}
           />
         );
       case 2:
@@ -192,9 +168,10 @@ const NewProject = () => {
         return (
           <Step3
             inputs={inputs}
-            
             prevStep={prevStep}
-            handleSubmit={handleSubmit}
+            setInputs={setInputs}
+            setStep={setStep}
+            setError={setError}
           />
         );
       default:
@@ -212,7 +189,7 @@ const NewProject = () => {
         <Card>
           <CardHeader>Create New Project</CardHeader>
           <CardBody>
-            <Form onSubmit={handleSubmit}>{renderStep()}</Form>
+            <Form >{renderStep()}</Form>
           </CardBody>
         </Card>
       </Container>
