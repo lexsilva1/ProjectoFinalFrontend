@@ -34,8 +34,7 @@ const Profile = () => {
   const [skillTypes, setSkillTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [projects, setProjects] = useState([]);
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
-    useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const isOwnProfile = user?.id == userId;
 
   const [formValues, setFormValues] = useState({
@@ -144,7 +143,7 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = profile.userPhoto || Avatar;
-  
+
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
@@ -153,7 +152,7 @@ const Profile = () => {
         console.error("Error uploading image:", error);
       }
     }
-  
+
     if (formValues.firstName && formValues.lastName && formValues.labLocation) {
       const userUpdate = {
         firstName: formValues.firstName,
@@ -163,21 +162,21 @@ const Profile = () => {
         userPhoto: finalImageURL,
         bio: formValues.bio,
       };
-  
+
       try {
         await updateUser(user.id, userUpdate, token);
         setEditMode(false);
-    
+
         userStore.setState((prevState) => ({
           ...prevState,
           user: {
             ...prevState.user,
             firstName: userUpdate.firstName,
             lastName: userUpdate.lastName,
-            image: userUpdate.userPhoto +`?${new Date().getTime()}`,
+            image: userUpdate.userPhoto + `?${new Date().getTime()}`,
           },
         }));
-  
+
         const updatedUser = await findUserById(token, userId);
         setProfile(updatedUser);
       } catch (error) {
@@ -304,15 +303,21 @@ const Profile = () => {
             <Card className="profile-card">
               <Card.Body>
                 {isOwnProfile && (
-                 <div className="privacy-icon">
-                 <Button className= "iconPrivacy" variant="outline-secondary" onClick={togglePrivacy}>
-                   {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
-                 </Button>
-                 <span className="privacy-text">
-                   {profile?.isPrivate ? "Private Profile" : "Public Profile"}
-                 </span>
-               </div>
-             )}
+                  <div className="privacy-icon">
+                    <Button
+                      className="iconPrivacy"
+                      variant="outline-secondary"
+                      onClick={togglePrivacy}
+                    >
+                      {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                    </Button>
+                    <span className="privacy-text">
+                      {profile?.isPrivate
+                        ? "Private Profile"
+                        : "Public Profile"}
+                    </span>
+                  </div>
+                )}
                 <Row>
                   <Col md={3} className="text-center mb-3">
                     <Image
