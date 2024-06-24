@@ -99,7 +99,10 @@ const NewProject = () => {
     };
     reader.readAsDataURL(file);
     const url = projectPhotoUpload(token,inputs.name, file).then((res) => {
+      console.log(res);
     setInputs({ ...inputs, projectPhoto: res });
+    
+
   });
 }
 

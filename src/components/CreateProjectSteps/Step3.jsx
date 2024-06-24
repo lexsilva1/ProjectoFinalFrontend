@@ -2,11 +2,12 @@ import React from "react";
 import { Row, Col, FormGroup, Label, Button } from "reactstrap";
 import { createProject } from "../../services/projectServices";
 import Cookies from "js-cookie";
-
+import userstore from "../../stores/userStore";
 const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
-console.log(inputs);
+console.log(inputs.projectPhoto);
 
 const token = Cookies.get("authToken");
+const user = userstore((state) => state.user);
 const handleSubmit = async (e) => {
   e.preventDefault();
   // Validation
@@ -14,7 +15,50 @@ const handleSubmit = async (e) => {
     setError("Number of slots must be greater than zero.");
     return;
   }
-  const response = await createProject(token, inputs);
+  if(inputs.startDate >= inputs.endDate){
+    setError("End date must be after start date.");
+    return;
+  }
+  if(inputs.teamMembers.length === 0){
+    setError("You must add at least one team member.");
+    return;
+  }
+  let projectUsers = [];
+  inputs.teamMembers.forEach((member) => {
+    if(member.userId===user.id){
+      projectUsers.push(member);
+    }else{
+      let projectUser = {
+        userId: member.userId,
+        isProjectManager: false,
+        approvalStatus: "INVITED",
+        firstName: member.firstName,
+        lastName: member.lastName,
+        userPhoto: member.userPhoto,
+        nickname: member.nickname,
+      };
+      projectUsers.push(projectUser);
+    }
+  });
+
+ let projectDto = {
+    name: inputs.name,
+    lab: inputs.location,
+    description: inputs.description,
+    startDate: inputs.startDate,
+    endDate: inputs.endDate,
+    slots: inputs.slots,
+    skills: inputs.skills,
+    interests: inputs.interests,
+    billOfMaterials: inputs.materials,
+    image: inputs.projectPhoto,
+    teamMembers: projectUsers,
+  };
+
+
+    
+
+  const response = await createProject(token, projectDto);
   if (response.ok) {
     setInputs({
       name: "",
