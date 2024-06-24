@@ -6,7 +6,7 @@ import Avatar from "../../multimedia/Images/Avatar.jpg";
 import userStore from "../../stores/userStore";
 import "./UsersModal.css";
 
-const UsersModal = ({ show, handleClose, onAdd }) => {
+const UsersModal = ({ show, handleClose, inputs, setInputs }) => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const token = Cookies.get("authToken");
@@ -20,15 +20,25 @@ const UsersModal = ({ show, handleClose, onAdd }) => {
   }, [currentUser]);
 
   const filteredUsers = users.filter((user) =>
-    `${user.firstName} ${user.lastName}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    `${user.firstName} ${user.lastName}`.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleAdd = (userToAdd) => {
-    onAdd(userToAdd);
+    console.log(userToAdd);
+    const projectMember = {
+      userId: userToAdd.userId,
+      firstName: userToAdd.firstName,
+      lastName: userToAdd.lastName,
+      isProjectManager: false,
+      userPhoto: userToAdd.userPhoto,
+    };
+    
+    const updatedTeamMembers = [...(inputs.teamMembers || []), projectMember];
+    setInputs({ ...inputs, teamMembers: updatedTeamMembers });
+    users.splice(users.indexOf(userToAdd), 1);
     handleClose();
-  };
+  }
+
 
   return (
     <Modal show={show} onHide={handleClose} className="users-modal large-modal">
@@ -74,3 +84,4 @@ const UsersModal = ({ show, handleClose, onAdd }) => {
 };
 
 export default UsersModal;
+

@@ -22,6 +22,7 @@ export const getInterestTypes = async () => {
 
     const types = await response.json();
     return types;
+    console.log(types);
 }
 
 export const createInterest = async (token, interestDto) => {
