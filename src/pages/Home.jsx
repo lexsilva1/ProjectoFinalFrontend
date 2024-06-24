@@ -88,8 +88,7 @@ const Home = () => {
     const selectedOption = event.target.value;
     setSortOption(selectedOption);
 
-    // Exemplo de lógica para alternar a direção da ordenação
-    // Isso pode precisar ser ajustado com base na sua lógica específica
+
     if (sortOption === selectedOption && sortDirection !== 'desc') {
       setSortDirection('desc');
     } else {
@@ -198,8 +197,9 @@ const Home = () => {
                 alignItems: "center",
                 border: "1px solid",
                 padding: "0.5rem",
-                borderRadius: "10px",
-                height: "2rem",
+                borderRadius: "20px",
+                height: "2.5rem",
+                backgroundColor: "white"
               }}
             >
               <FaSearch />
@@ -211,9 +211,10 @@ const Home = () => {
                 style={{
                   border: "none",
                   marginLeft: "0.5rem",
-                  height: "150%",
+                  height: "2.5rem",
                   outline: "none",
                   WebkitAppearance: "none",
+                  backgroundColor: "transparent",
                 }}
               />
             </div>
@@ -221,7 +222,7 @@ const Home = () => {
   <select
     value={sortOption}
     onChange={handleSortChange}
-    style={{ borderRadius: "10px", height: "2rem", width: "10rem", margin: "2rem" }}
+    style={{ borderRadius: "20px", height: "2.5rem", width: "10rem", margin: "2rem", backgroundColor: "trasparent"}}
   >
     <option value="">Sort by...</option>
     <option value="createdDate">Date Created</option>

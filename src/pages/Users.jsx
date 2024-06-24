@@ -14,6 +14,7 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOption, setFilterOption] = useState("name");
   const token = Cookies.get("authToken");
+  const user = userStore((state) => state.user);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -33,14 +34,34 @@ const Users = () => {
 
   const filterUsers = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
+    const currentUserId = user.id;
     return users.filter((user) => {
+      if (user.userId === currentUserId) {
+        return false;
+      }
       switch (filterOption) {
         case "name":
-          return user.firstName && user.firstName.toLowerCase().includes(lowercasedFilter);
+          return (
+            (user.firstName &&
+             user.firstName.toLowerCase().includes(lowercasedFilter)) ||
+            (user.lastName &&
+             user.lastName.toLowerCase().includes(lowercasedFilter))
+          );
         case "skill":
-          return user.skills && user.skills.some((skill) => skill && skill.toLowerCase().includes(lowercasedFilter));
+          return (
+            user.skills &&
+            user.skills.some(
+              (skill) => skill && skill.toLowerCase().includes(lowercasedFilter)
+            )
+          );
         case "interest":
-          return user.interests && user.interests.some((interest) => interest && interest.toLowerCase().includes(lowercasedFilter));
+          return (
+            user.interests &&
+            user.interests.some(
+              (interest) =>
+                interest && interest.toLowerCase().includes(lowercasedFilter)
+            )
+          );
         default:
           return false;
       }
@@ -49,11 +70,12 @@ const Users = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Lógica de submissão (se necessário)
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       <Header />
       <div style={{ display: "flex", flex: "1" }}>
         <Sidebar />

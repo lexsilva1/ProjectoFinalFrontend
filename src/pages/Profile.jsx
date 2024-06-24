@@ -34,8 +34,7 @@ const Profile = () => {
   const [skillTypes, setSkillTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [projects, setProjects] = useState([]);
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
-    useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const isOwnProfile = user?.id == userId;
 
   const [formValues, setFormValues] = useState({
@@ -144,7 +143,7 @@ const Profile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = profile.userPhoto || Avatar;
-  
+
     if (image) {
       try {
         const response = await uploadUserPhoto(image, token);
@@ -153,7 +152,7 @@ const Profile = () => {
         console.error("Error uploading image:", error);
       }
     }
-  
+
     if (formValues.firstName && formValues.lastName && formValues.labLocation) {
       const userUpdate = {
         firstName: formValues.firstName,
@@ -163,21 +162,21 @@ const Profile = () => {
         userPhoto: finalImageURL,
         bio: formValues.bio,
       };
-  
+
       try {
         await updateUser(user.id, userUpdate, token);
         setEditMode(false);
-    
+
         userStore.setState((prevState) => ({
           ...prevState,
           user: {
             ...prevState.user,
             firstName: userUpdate.firstName,
             lastName: userUpdate.lastName,
-            image: userUpdate.userPhoto +`?${new Date().getTime()}`,
+            image: userUpdate.userPhoto + `?${new Date().getTime()}`,
           },
         }));
-  
+
         const updatedUser = await findUserById(token, userId);
         setProfile(updatedUser);
       } catch (error) {
@@ -302,19 +301,25 @@ const Profile = () => {
             <Sidebar />
           </div>
 
-          <Col md={9} className="profile-main-content">
+          <Col md={12} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
                 {isOwnProfile && (
-                 <div className="privacy-icon">
-                 <Button className= "iconPrivacy" variant="outline-secondary" onClick={togglePrivacy}>
-                   {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
-                 </Button>
-                 <span className="privacy-text">
-                   {profile?.isPrivate ? "Private Profile" : "Public Profile"}
-                 </span>
-               </div>
-             )}
+                  <div className="privacy-icon">
+                    <Button
+                      className="iconPrivacy"
+                      variant="outline-secondary"
+                      onClick={togglePrivacy}
+                    >
+                      {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                    </Button>
+                    <span className="privacy-text">
+                      {profile?.isPrivate
+                        ? "Private Profile"
+                        : "Public Profile"}
+                    </span>
+                  </div>
+                )}
                 <Row>
                   <Col md={3} className="text-center mb-3">
                     <Image
@@ -349,7 +354,7 @@ const Profile = () => {
                     </h2>
                     <hr />
                     <Row>
-                      <Col md={4}>
+                      <Col md={4} >
                         {editMode ? (
                           <Form>
                             <Form.Group>
@@ -433,8 +438,8 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4}>
-                        <h4 style={{ fontSize: "1.2rem" }}>Skills</h4>
+                      <Col md={4} style={{ marginLeft: "0px"}}>
+                        <h4 style={{ fontSize: "1rem" }}>Skills</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -456,7 +461,7 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4 style={{ fontSize: "1.2rem" }}>Interests</h4>
+                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>Interests</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="interests-typeahead"
@@ -479,8 +484,8 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4}>
-                        <h4 style={{ fontSize: "1.2rem" }}>Projects</h4>
+                      <Col md={4} style={{ display: "flex", flexDirection: "column", paddingLeft: "8rem" }}>
+                        <h4 style={{ fontSize: "1rem" }}>Projects</h4>
                         {profile?.projects?.length > 0 ? (
                           profile.projects.map((project, index) => (
                             <div key={index}>

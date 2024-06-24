@@ -43,7 +43,7 @@ const NewProject = () => {
   
 
   useEffect(() => {
-    // Fetch labs, skill suggestions, and keyword suggestions
+ 
     const fetchLabs = async () => {
       const res = await getLabs(token);
       

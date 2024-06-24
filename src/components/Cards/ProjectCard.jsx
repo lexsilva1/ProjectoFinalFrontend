@@ -41,12 +41,12 @@ const ProjectCard = ({ project, isLoggedIn }) => {
         <div className="project-card-card-body">
           <div className="project-content-container">
             <h5 className="project-card-card-title">{project.name}</h5>
-            
+
             <div className={getStatusClass(project.status)}>
               <div className="project-card-status-bar"></div>
               <strong></strong> {project.status}
             </div>
-            
+
             <p className="project-card-card-text">
               <strong>Keywords:</strong>
               {project.interests &&
@@ -59,7 +59,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
                   </Badge>
                 ))}
             </p>
-            
+
             <p className="project-card-card-text">
               <strong>Skills:</strong>
               {project.skills &&
@@ -72,11 +72,11 @@ const ProjectCard = ({ project, isLoggedIn }) => {
                   </Badge>
                 ))}
             </p>
-            
+
             <p className="project-card-card-text">
               <strong>Description:</strong> {project.description}
             </p>
-          
+          </div>
           
           {isLoggedIn && (() => {
             const currentUser = userStore((state) => state.user);
@@ -84,18 +84,18 @@ const ProjectCard = ({ project, isLoggedIn }) => {
               (member) => member.userId === currentUser.id
             );
             return (
-              <Link
-                to={`/project/${project.name}`}
-                className="project-card-btn project-card-btn-primary"
-              >
-                {isMember ? "Open Project" : "See Details"}
-              </Link>
+              <div className="project-card-btn-container">
+                <Link
+                  to={`/project/${project.name}`}
+                  className="project-card-btn project-card-btn-primary"
+                >
+                  {isMember ? "Open Project" : "See Details"}
+                </Link>
+              </div>
             );
           })()}
-          
         </div>
       </div>
-    </div>
     </div>
   );
 };
