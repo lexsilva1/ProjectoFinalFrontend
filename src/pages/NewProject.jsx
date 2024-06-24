@@ -26,7 +26,8 @@ const NewProject = () => {
     skills: [],
     interests: [],
     materials: [],
-    
+    startDate:null,
+    endDate:null,
     projectPhoto: "",
     teamMembers: [],
   });

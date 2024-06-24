@@ -25,7 +25,6 @@ const handleSubmit = async (e) => {
       interests: [],
       materials: [],
       imageUpload: null,
-      
       teamMembers: [],
     });
     setStep(1);

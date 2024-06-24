@@ -64,6 +64,29 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, a
               className="avatar"
             />
           </FormGroup>
+          <FormGroup className="my-form-group">
+            <Label for="startDate">Start Date</Label>
+            <Input
+            type="date"
+            name="startDate"
+            id="startDate"
+            onChange={handleInputChange}
+            className="short-input"
+            value={inputs.startDate}
+            />
+          </FormGroup>
+          <FormGroup className="my-form-group">
+            <Label for="endDate">End Date</Label>
+            <Input
+            type="date"
+            name="endDate"
+            id="endDate"
+            onChange={handleInputChange}
+            className="short-input"
+            value={inputs.endDate}
+            />
+          </FormGroup>
+          
           <Button
             onClick={nextStep}
             color="primary"
