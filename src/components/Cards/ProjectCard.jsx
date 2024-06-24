@@ -136,6 +136,7 @@ const interestNames = interests.map((interest) => interest.name);
         </div>
       </div>
     </div>
+    </div>
   );
 };
 
