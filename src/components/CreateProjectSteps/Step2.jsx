@@ -9,7 +9,7 @@ import UsersModal from "../Modals/UsersModal";
 import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
 
-const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs }) => {
+const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users }) => {
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -273,6 +273,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs }) => {
                     }}
                   />
                   {member.firstName} {member.lastName}
+                  {!member.isProjectManager ?
                   <Button
                     onClick={() => removeTeamMember(index)}
                     color="danger"
@@ -281,6 +282,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs }) => {
                   >
                     Remove
                   </Button>
+                  : null}
                 </li>
               ))}
             </ul>
@@ -348,6 +350,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs }) => {
         handleClose={handleCloseUsersModal}
         inputs={inputs}
         setInputs={setInputs}
+        users={users}
       />
     </>
   );
