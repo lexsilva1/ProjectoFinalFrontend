@@ -12,12 +12,20 @@ import { getLabs } from "../services/labServices";
 import { getInterests } from "../services/interestServices";
 import { getSkills } from "../services/skillServices";
 import { projectPhotoUpload, createProject } from "../services/projectServices";
-import { set } from "react-hook-form";
+import { findAllUsers } from "../services/userServices";
 import userstore from "../stores/userStore"
 
 const NewProject = () => {
   const token = Cookies.get("authToken");
-   
+  const user = userstore((state)=>state.user)
+  const creator = {
+    userId: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    isProjectManager: true,
+    userPhoto: user.image,
+    approvalStatus: "MEMBER",
+  };
   const [step, setStep] = useState(1);
   const [avatar, setAvatar] = useState(null);
   const [inputs, setInputs] = useState({
@@ -31,13 +39,13 @@ const NewProject = () => {
     startDate:null,
     endDate:null,
     projectPhoto: "",
-    teamMembers: [],
+    teamMembers: [creator],
   });
 
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
   const [labs, setLabs] = useState([]);
-
+  const [users, setUsers] = useState([]);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [error, setError] = useState("");
   
@@ -48,6 +56,16 @@ const NewProject = () => {
       const res = await getLabs(token);
       
       setLabs(res);
+    };
+    const fetchUsers = async () => {
+      const res = await findAllUsers(token);
+      const otherUsers = [];
+      res.forEach((user) => {
+        if(user.userId !== creator.userId){
+          otherUsers.push(user);
+        }
+      });
+      setUsers(otherUsers);
     };
 
     const fetchSuggestions = async () => {
@@ -65,6 +83,7 @@ const NewProject = () => {
     fetchLabs();
     fetchSuggestions();
     fetchKeywordSuggestions();
+    fetchUsers();
   }, []);
 
   const handleInputChange = (e) => {
@@ -79,9 +98,10 @@ const NewProject = () => {
      setAvatar(reader.result);
     };
     reader.readAsDataURL(file);
-    const url = projectPhotoUpload(token,inputs.name, file);
-    setInputs({ ...inputs, projectPhoto: url });
-  };
+    const url = projectPhotoUpload(token,inputs.name, file).then((res) => {
+    setInputs({ ...inputs, projectPhoto: res });
+  });
+}
 
   const addField = (field) => {
     setInputs({
@@ -117,6 +137,9 @@ const NewProject = () => {
   const removeTeamMember = (index) => {
     const newTeamMembers = [...inputs.teamMembers];
     newTeamMembers.splice(index, 1);
+    const newUsers = [...users];
+    newUsers.push(inputs.teamMembers[index]);
+    setUsers(newUsers);
     setInputs({ ...inputs, teamMembers: newTeamMembers });
   };
 
@@ -160,7 +183,7 @@ const NewProject = () => {
             handleInputChange={handleInputChange}
             handleKeyPress={handleKeyPress}
             handleOpenResourcesModal={handleOpenResourcesModal}
-           
+            users={users}
             removeTeamMember={removeTeamMember}
             error={error}
             prevStep={prevStep}
