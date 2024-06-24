@@ -2,23 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
-import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../../services/skillServices";
-import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../../services/interestServices";
+import { getSkills, createSkillForProject, getSkillTypes } from "../../services/skillServices";
+import { getInterests, createKeyword, getInterestTypes } from "../../services/interestServices";
 import TypeModal from "../Modals/TypeModal";
 import UsersModal from "../Modals/UsersModal";
 import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
 
-const Step2 = ({
-  inputs: inputsProp,
-  handleDelete,
-  handleArrayChange,
-  handleOpenUserModal,
-  removeTeamMember,
-  prevStep,
-  nextStep,
-  setInputs: setInputsFromProps,
-}) => {
+const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs }) => {
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -26,19 +17,14 @@ const Step2 = ({
   const [skillTypes, setSkillTypes] = useState([]);
   const [interestTypes, setInterestTypes] = useState([]);
   const [showTypeModal, setShowTypeModal] = useState(false);
-  const [inputs, setInputs] = useState({
-    ...inputsProp,
-    slots: inputsProp.slots || 0, 
-    materials: inputsProp.materials || [],
-  });
+
   const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const [selectedType, setSelectedType] = useState("");
   const [showUsersModal, setShowUsersModal] = useState(false);
-  const [teamMembers, setTeamMembers] = useState([]);
+  const [teamMembers, setTeamMembers] = useState(inputs.teamMembers || []);
   const token = Cookies.get("authToken");
   const [error, setError] = useState("");
   const [showResourcesModal, setShowResourcesModal] = useState(false);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,95 +52,99 @@ const Step2 = ({
     fetchData();
   }, [token]);
 
-  const handleSkillChange = async (selected) => {
-    setSelectedSkills(selected);
-    const newSkills = selected.filter(
-      (skill) => !inputs.skills.some((s) => s.name === skill.name)
-    );
-    const removedSkills = inputs.skills.filter(
-      (skill) => !selected.some((s) => s.name === skill.name)
-    );
+  const handleOpenModal = (type) => {
+    setSelectedType(type);
+    setShowTypeModal(true);
+  };
 
+  const handleCloseModal = () => {
+    setShowTypeModal(false);
+  };
 
-    for (const skill of newSkills) {
-      try {
-        if (!skills.some((s) => s.name === skill.name)) {
-          setShowTypeModal(true);
-          const skillTypeSelected = await new Promise((resolve) => {
-            setResolveOnSkillTypeSelected(() => resolve);
-          });
-          setShowTypeModal(false);
-          skill.skillType = skillTypeSelected;
-          skill.projectId = 0;
-          skill.id = null;
-          delete skill.customOption;
-          const result = await createSkill(token, skill);
-          setSkills((prevSkills) => [...prevSkills, result]);
-        } else {
-          await createSkill(token, skill);
+  const handleSkillsChange = async (selected) => {
+    if (selected.length > selectedSkills.length) {
+      const newSkills = selected.filter(
+        (skill) => !selectedSkills.some((s) => s.name === skill.name)
+      );
+      for (const skill of newSkills) {
+        try {
+          if (!skills.some((s) => s.name === skill.name)) {
+            setSelectedType("skill");
+            const skillTypeSelected = new Promise((resolve) => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenModal(selectedType);
+            skill.skillType = await skillTypeSelected;
+            skill.projetcId = 0;
+            skill.id = null;
+            delete skill.customOption;
+            const result = await createSkillForProject(token, skill);
+            setSelectedSkills((prevSkills) => [...prevSkills, result]);
+            setSelectedType("");
+          } else {
+            // handle existing skill
+          }
+        } catch (error) {
+          console.error("Error creating skill:", error);
         }
-      } catch (error) {
-        console.error("Error creating skill:", error);
+      }
+    } else if (selected.length < selectedSkills.length) {
+      const removedSkills = selectedSkills.filter(
+        (skill) => !selected.some((s) => s.name === skill.name)
+      );
+      for (const skill of removedSkills) {
+        try {
+          // handle skill removal
+        } catch (error) {
+          console.error("Error deleting skill:", error);
+        }
       }
     }
-
-  
-    for (const skill of removedSkills) {
-      try {
-        await deleteSkill(token, skill);
-      } catch (error) {
-        console.error("Error deleting skill:", error);
-      }
-    }
-
     setInputs({ ...inputs, skills: selected });
   };
 
-  const handleInterestChange = async (selected) => {
-    setSelectedInterests(selected);
-    const newInterests = selected.filter(
-      (interest) =>
-        !inputs.interests ||
-        !inputs.interests.some((i) => i.name === interest.name)
-    );
-    const removedInterests = inputs.interests
-      ? inputs.interests.filter(
-          (interest) => !selected.some((i) => i.name === interest.name)
-        )
-      : [];
-
-    for (const interest of newInterests) {
-      try {
-        if (!interests.some((i) => i.name === interest.name)) {
-          setShowTypeModal(true);
-          const interestTypeSelected = await new Promise((resolve) => {
-            setResolveOnSkillTypeSelected(() => resolve);
-          });
-          setShowTypeModal(false);
-          interest.interestType = interestTypeSelected;
-          interest.projectId = 0;
-          interest.id = null;
-          delete interest.customOption;
-          const result = await createInterest(token, interest);
-          setInterests((prevInterests) => [...prevInterests, result]);
-        } else {
-          await createInterest(token, interest);
+  const handleInterestsChange = async (selected) => {
+    if (selected.length > selectedInterests.length) {
+      const newInterests = selected.filter(
+        (interest) => !selectedInterests.some((i) => i.name === interest.name)
+      );
+      for (const interest of newInterests) {
+        try {
+          if (!interests.some((i) => i.name === interest.name)) {
+            setSelectedType("interest");
+            const interestTypeSelected = new Promise((resolve) => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenModal(selectedType);
+            interest.interestType = await interestTypeSelected;
+            interest.projectId = 0;
+            interest.id = null;
+            delete interest.customOption;
+            const result = await createKeyword(token, interest);
+            setInterests((prevInterests) => [...prevInterests, result]);
+            setSelectedType("");
+          } else {
+            // handle existing interest
+          }
+        } catch (error) {
+          console.error("Error creating interest:", error);
         }
-      } catch (error) {
-        console.error("Error creating interest:", error);
+      }
+    } else if (selected.length < selectedInterests.length) {
+      const removedInterests = selectedInterests.filter(
+        (interest) => !selected.some((i) => i.name === interest.name)
+      );
+      for (const interest of removedInterests) {
+        try {
+          // handle interest removal
+        } catch (error) {
+          console.error("Error deleting interest:", error);
+        }
       }
     }
-
-    for (const interest of removedInterests) {
-      try {
-        await deleteInterest(token, interest);
-      } catch (error) {
-        console.error("Error deleting interest:", error);
-      }
-    }
-
     setInputs({ ...inputs, interests: selected });
   };
+
   const handleOpenUsersModal = () => {
     if (!inputs.slots) {
       setError("Please define the number of slots first.");
@@ -163,6 +153,7 @@ const Step2 = ({
       setError("");
     }
   };
+
   const handleCloseUsersModal = () => {
     setShowUsersModal(false);
   };
@@ -172,6 +163,7 @@ const Step2 = ({
       setError("You have reached the maximum number of slots.");
     } else {
       setTeamMembers([...teamMembers, selectedUser]);
+      setInputs({ ...inputs, teamMembers: [...teamMembers, selectedUser] });
       handleCloseUsersModal();
       setError("");
     }
@@ -183,10 +175,6 @@ const Step2 = ({
       resolveOnSkillTypeSelected(type);
       setResolveOnSkillTypeSelected(null);
     }
-  };
-
-  const handleCloseTypeModal = () => {
-    setShowTypeModal(false);
   };
 
   const handleKeyPress = (event) => {
@@ -227,12 +215,13 @@ const Step2 = ({
             <Typeahead
               id="skills-typeahead"
               labelKey="name"
+              multiple
+              onChange={handleSkillsChange}
               options={skills}
-              placeholder="Choose your skills..."
-              selected={selectedSkills}
-              onChange={handleSkillChange}
               allowNew
               newSelectionPrefix="Add a new skill: "
+              placeholder="Choose your skills..."
+              selected={inputs.skills}
             />
           </FormGroup>
           <FormGroup className="my-form-group">
@@ -240,12 +229,13 @@ const Step2 = ({
             <Typeahead
               id="interests-typeahead"
               labelKey="name"
+              multiple
+              onChange={handleInterestsChange}
               options={interests}
-              placeholder="Choose your interests..."
-              selected={selectedInterests}
-              onChange={handleInterestChange}
               allowNew
               newSelectionPrefix="Add a new interest: "
+              placeholder="Choose your interests..."
+              selected={inputs.interests}
             />
           </FormGroup>
         </Col>
@@ -265,25 +255,13 @@ const Step2 = ({
           </FormGroup>
           <FormGroup>
             <Label>Team Members</Label>
-            <Button
-  onClick={handleOpenUsersModal}
-  color="primary"
-  className="modal-button"
->
-  Add Team Members
-</Button>
-<UsersModal
-  show={showUsersModal}  
-  handleClose={handleCloseUsersModal} 
-  onAdd={handleUserSelect}
-/>
+            <Button onClick={handleOpenUsersModal} color="primary" className="modal-button">
+              Add Team Members
+            </Button>
             {error && <p className="error-message">{error}</p>}
             <ul className="list-group">
-              {teamMembers.map((member, index) => (
-                <li
-                  key={index}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
+              {inputs.teamMembers.map((member, index) => (
+                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                   <img
                     src={member.userPhoto || Avatar}
                     alt={`${member.firstName} ${member.lastName}`}
@@ -317,10 +295,10 @@ const Step2 = ({
               Add Materials
             </Button>
             <ResourcesModal
-  show={showResourcesModal}
-  handleClose={handleCloseResourcesModal}
-  handleSelect={handleSelect} // Certifique-se de passar essa prop corretamente
-/>
+              show={showResourcesModal}
+              handleClose={handleCloseResourcesModal}
+              handleSelect={handleSelect}
+            />
             <ul className="list-group">
               {inputs.materials.map((material, index) => (
                 <li
@@ -359,15 +337,21 @@ const Step2 = ({
       </div>
       <TypeModal
         show={showTypeModal}
-        onHide={handleCloseTypeModal}
+        onHide={handleCloseModal}
         title={`Add ${selectedType}`}
         type={selectedType}
         types={selectedType === "skill" ? skillTypes : interestTypes}
         onTypeSelect={onTypeSelect}
       />
-   
+      <UsersModal
+        show={showUsersModal}
+        handleClose={handleCloseUsersModal}
+        inputs={inputs}
+        setInputs={setInputs}
+      />
     </>
   );
 };
 
 export default Step2;
+

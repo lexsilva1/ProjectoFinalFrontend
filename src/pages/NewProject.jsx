@@ -11,7 +11,7 @@ import Step3 from "../components/CreateProjectSteps/Step3";
 import { getLabs } from "../services/labServices";
 import { getInterests } from "../services/interestServices";
 import { getSkills } from "../services/skillServices";
-import { get } from "react-hook-form";
+
 const NewProject = () => {
   const token = Cookies.get("authToken");
   const [step, setStep] = useState(1);
@@ -20,20 +20,21 @@ const NewProject = () => {
     location: "",
     description: "",
     slots: 0,
-    skills: [""],
-    keywords: [""],
+    skills: [],
+    interests: [],
     materials: [],
     imageUpload: null,
     avatar: "",
+    teamMembers: [],
   });
 
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
   const [labs, setLabs] = useState([]);
-  const [showUserModal, setShowUserModal] = useState(false);
+
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [error, setError] = useState("");
-  const [teamMembers, setTeamMembers] = useState([]);
+  
 
   useEffect(() => {
     // Fetch labs, skill suggestions, and keyword suggestions
@@ -99,18 +100,16 @@ const NewProject = () => {
     }
   };
 
-  const handleOpenUserModal = () => {
-    setShowUserModal(true);
-  };
+
 
   const handleOpenResourcesModal = () => {
     setShowResourcesModal(true);
   };
 
   const removeTeamMember = (index) => {
-    const newTeam = [...teamMembers];
-    newTeam.splice(index, 1);
-    setTeamMembers(newTeam);
+    const newTeamMembers = [...inputs.teamMembers];
+    newTeamMembers.splice(index, 1);
+    setInputs({ ...inputs, teamMembers: newTeamMembers });
   };
 
   const nextStep = () => {
@@ -137,8 +136,7 @@ const NewProject = () => {
         formData.append(key, inputs[key]);
       }
     }
-    // Add team members to form data
-    formData.append("teamMembers", JSON.stringify(teamMembers));
+
 
     // Send request
     try {
@@ -173,6 +171,7 @@ const NewProject = () => {
       case 2:
         return (
           <Step2
+          setInputs={setInputs}
             inputs={inputs}
             skillSuggestions={skillSuggestions}
             keywordSuggestions={keywordSuggestions}
@@ -181,9 +180,8 @@ const NewProject = () => {
             handleArrayChange={handleArrayChange}
             handleInputChange={handleInputChange}
             handleKeyPress={handleKeyPress}
-            handleOpenUserModal={handleOpenUserModal}
             handleOpenResourcesModal={handleOpenResourcesModal}
-            teamMembers={teamMembers}
+           
             removeTeamMember={removeTeamMember}
             error={error}
             prevStep={prevStep}
@@ -194,7 +192,7 @@ const NewProject = () => {
         return (
           <Step3
             inputs={inputs}
-            teamMembers={teamMembers}
+            
             prevStep={prevStep}
             handleSubmit={handleSubmit}
           />
@@ -218,11 +216,7 @@ const NewProject = () => {
           </CardBody>
         </Card>
       </Container>
-      <UsersModal
-        isOpen={showUserModal}
-        toggle={() => setShowUserModal(!showUserModal)}
-        setTeamMembers={setTeamMembers}
-      />
+
       <ResourcesModal
         isOpen={showResourcesModal}
         toggle={() => setShowResourcesModal(!showResourcesModal)}

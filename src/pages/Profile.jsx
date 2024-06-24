@@ -276,6 +276,8 @@ const Profile = () => {
       }
     }
     setSelectedInterests(selected);
+    console.log("profile selectedInterests",selectedInterests);
+    console.log("profile selected",selected);
   };
 
   const togglePrivacy = async () => {

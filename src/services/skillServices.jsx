@@ -9,7 +9,7 @@ export const getSkills = async () => {
     }
 
     const skills = await response.json();
-    console.log(skills);
+    
     return skills;
 };
 export const getSkillTypes = async () => {
@@ -22,6 +22,7 @@ export const getSkillTypes = async () => {
 
     const types = await response.json();
     return types;
+    console.log(types);
 };
 
 export const createSkill = async (token, skill) => {
@@ -60,6 +61,7 @@ export const deleteSkill = async (token, skillDto) => {
     return result;
 };
 export const createSkillForProject = async (token, skill) => {
+    console.log(skill);
     const response = await fetch(baseURL + 'skills/createSkill', {
         method: 'POST',
         headers: {
@@ -73,7 +75,7 @@ export const createSkillForProject = async (token, skill) => {
         throw new Error('Network response was not ok');
     }
 
-    const result = await response.json();
-    return result;
+    const newSkill = await response.json();
+    return newSkill;
 }
 

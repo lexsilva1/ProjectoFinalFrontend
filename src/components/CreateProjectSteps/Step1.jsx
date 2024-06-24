@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 
-const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep }) => {
+const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, setInputs }) => {
   return (
     <>
       <Row>
@@ -14,6 +14,8 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep })
               id="name"
               onChange={handleInputChange}
               className="short-input"
+              value={inputs.name}
+
             />
           </FormGroup>
           <FormGroup className="my-form-group">
@@ -24,6 +26,7 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep })
               id="location"
               onChange={handleInputChange}
               className="short-input"
+              value={inputs.location}
             >
               <option value="">Select a laboratory</option>
               {labs.map((lab, index) => (
@@ -41,6 +44,7 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep })
               id="description"
               onChange={handleInputChange}
               className="short-input textarea-input"
+              value={inputs.description}
             />
           </FormGroup>
         </Col>
