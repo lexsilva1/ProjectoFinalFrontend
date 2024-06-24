@@ -1,12 +1,16 @@
-.sidebar-container {
-    background-color: var(--primary-color);
-    height: 100vh;
-    padding-top: 1rem;
-  }
+.messages-container {
+    border: 3px solid var(--details-color);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: white;
+    height: 110vh;
+}
+
   
   .message-sidebar-container {
     background-color: var(--secondary-color);
-    height: 100vh;
+    height: 110vh;
     padding-top: 1rem;
     border-right: 1px solid #ddd;
   }

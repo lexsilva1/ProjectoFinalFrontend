@@ -6,6 +6,7 @@
     margin-bottom: 0px !important;
     border-radius: 0px;
     margin-left: 0px;
+    height: 100px;
 }
 
 .mail-message-card:hover {
@@ -16,7 +17,7 @@
 .mail-sender {
     font-size: 0.75rem;
     font-weight: bold;
-    margin-left: 10px; /* Add some space between the image and the name */
+    margin-left: 10px; 
 }
 
 .mail-datetime {
@@ -25,7 +26,7 @@
     right: 0;
     font-size: 12px;
     color: #999;
-    margin-right: 10px; /* Add some space between the text and the right edge */
+    margin-right: 10px; 
 }
 
 .mail-is-read {
@@ -41,6 +42,11 @@
 
 .mail-avatar {
     width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    
+
 }
 
 .mail-content {

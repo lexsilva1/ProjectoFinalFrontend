@@ -7,6 +7,7 @@ import UserCard from "../components/Cards/UserCard";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
 import { findAllUsers } from "../services/userServices";
+import './Users.css';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -52,44 +53,34 @@ const Users = () => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
       <div style={{ display: "flex", flex: "1" }}>
         <Sidebar />
         <div style={{ flex: "1", overflow: "auto" }}>
           <BannerUsers />
-          <form onSubmit={handleSubmit} style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px", paddingLeft: "10%" }}>
-            <div style={{ width: "40%", position: "relative", maxWidth: "300px" }}>
-              <FaSearch style={{ position: "absolute", top: "15px", left: "10px" }} />
+          <form onSubmit={handleSubmit} className="search-form">
+            <div className="search-input">
+              <FaSearch className="search-icon" />
               <input
                 type="text"
                 placeholder="Search"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                style={{ width: "100%", padding: "10px 10px 10px 40px", borderRadius: "20px" }}
                 autoFocus
               />
             </div>
             <select
               value={filterOption}
               onChange={(e) => setFilterOption(e.target.value)}
-              style={{ width: "60%", padding: "10px", maxWidth: "200px", borderRadius: "20px", marginLeft: "20px" }}
+              className="filter-select"
             >
               <option value="name">Search by Name</option>
               <option value="skill">Search by Skill</option>
               <option value="interest">Search by Interest</option>
             </select>
-            <button type="submit" style={{ display: "none" }}>Submit</button>
           </form>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "20px",
-              padding: "10px",
-              paddingLeft: "120px",
-            }}
-          >
+          <div className="users-grid">
             {filterUsers().map((user) => (
               <UserCard key={user.userId} user={user} />
             ))}

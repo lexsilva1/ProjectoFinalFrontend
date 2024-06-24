@@ -1,3 +1,4 @@
+
 .infoBox {
     position: sticky;
     top: 0;
@@ -11,14 +12,18 @@
     justify-content: center;
     text-align: center;
     font-family: 'Spline Sans', sans-serif;
-    font-weight: 200; 
+    font-weight: 200;
+  
 }
+
 
 .title {
     font-size: 3em;
     line-height: 0.8;
     font-family: 'Spline Sans', sans-serif;
-    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
+    font-weight: 200; 
+    animation: fadeIn 3s ease-out; 
+    animation-fill-mode: forwards;
 }
 
 .title-bottom-margin {
@@ -30,11 +35,15 @@
     margin: 0;
     color: white;
     font-family: 'Spline Sans', sans-serif;
-    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
+    font-weight: 200; 
+    animation: fadeIn 3s ease-out; 
+    animation-fill-mode: forwards;
 }
 
 .ending {
     font-size: 2em;
     margin-top: 20px;
-    font-weight: 200; /* Adicionado para tornar o texto mais "fino" */
+    font-weight: 200; 
+    animation: fadeIn 3s ease-out; 
+    animation-fill-mode: forwards;
 }

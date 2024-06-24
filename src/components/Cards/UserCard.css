@@ -16,15 +16,16 @@
 }
 
 .user-image {
-  width: 80px; 
-  height: 80px; 
+  width: 100px; 
+  height: 100px; 
   border-radius: 50%;
   object-fit: cover;
+  margin-left: 20px; /* Move image to the right */
 }
 
 .user-name {
-  margin: 10px 0;
-  font-size: 1em; 
+  margin: 20px 0 20px 20px; /* Adjusted margins for spacing and alignment */
+  font-size: 1.2em; /* Slightly larger font */
 }
 
 .user-actions {
@@ -33,4 +34,9 @@
   gap: 10px;
   margin-top: 20px; 
   margin-left: 50px; 
+}
+
+.btn-primary, .btn-secondary {
+  width: 130px; 
+  text-align: center; 
 }

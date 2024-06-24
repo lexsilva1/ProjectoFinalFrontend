@@ -1,6 +1,6 @@
 import React from 'react';
 import './InfoBox.css';
-import logo3 from '../multimedia/Images/logo3.png';
+import logo3 from '../../multimedia/Images/logo3.png';
 
 const InfoBox = () => {
     return (
