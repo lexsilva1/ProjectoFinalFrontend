@@ -11,6 +11,7 @@ import userStore from "../stores/userStore";
 import { getProjectByName } from "../services/projectServices";
 import UserCard from "../components/Cards/UserCard";
 import ProjectTeamTab from "../components/ProjectTeamTab";
+import ExecutionPlan from "../components/ExecutionPlan";
 import { useTranslation } from "react-i18next";
 
 const Project = () => {
@@ -23,11 +24,30 @@ const Project = () => {
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "Planning":
+        return "project-card-status project-card-status-planning";
+      case "Ready":
+        return "project-card-status project-card-status-ready";
+      case "Approved":
+        return "project-card-status project-card-status-approved";
+      case "In Progress":
+        return "project-card-status project-card-status-in-progress";
+      case "Cancelled":
+        return "project-card-status project-card-status-cancelled";
+      case "Finished":
+        return "project-card-status project-card-status-finished";
+      default:
+        return "project-card-status";
+    }
+  };
+
   const isUserMember = project.teamMembers?.some(
     (member) => member.approvalStatus === "MEMBER"
   );
-  
+
   const teamMembers = project.teamMembers?.filter(
     (member) => member.approvalStatus === "MEMBER"
   );
@@ -49,11 +69,13 @@ const Project = () => {
 
   const renderInfoTabContent = () => {
     const approvedMembers = project.teamMembers
-      ? project.teamMembers.filter((member) => member.approvalStatus === 'MEMBER')
+      ? project.teamMembers.filter(
+          (member) => member.approvalStatus === "MEMBER"
+        )
       : [];
 
     const slotsAvailable = project.maxTeamMembers - approvedMembers.length;
-    
+
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -64,7 +86,10 @@ const Project = () => {
         <div className="card-body">
           <h2 className="card-title">{project.name}</h2>
           <p className="card-text-project">
-            <strong>Status:</strong> {project.status}
+            <div className={getStatusClass(project.status)}>
+              <div className="project-card-status-bar"></div>
+              <strong></strong> {project.status}
+            </div>
           </p>
           <p className="card-text-project">
             <strong>Laboratory:</strong> {project.lab}
@@ -105,7 +130,10 @@ const Project = () => {
               <div className="card-text-project">
                 {teamMembers &&
                   teamMembers.map((member, index) => (
-                    <div key={`${project.id}-member-${index}`} className="project-team-member">
+                    <div
+                      key={`${project.id}-member-${index}`}
+                      className="project-team-member"
+                    >
                       <img
                         src={member.userPhoto ? member.userPhoto : Avatar}
                         alt={`${member.firstName} ${member.lastName}`}
@@ -127,26 +155,47 @@ const Project = () => {
           )}
           {isMember && (
             <div>
-              <p className="card-text-project">
-                <strong>Materials:</strong>
-              </p>
-              {project.billOfMaterials &&
-                project.billOfMaterials.map((material, index) => (
-                  <div key={`${material.id}-${index}`}>
-                    <p>
-                      <strong>Name:</strong> {material.name}
-                    </p>
-                    <p>
-                      <strong>Quantity:</strong> {material.quantity}
-                    </p>
-                  </div>
-                ))}
+              <p className="card-text-project"></p>
+              <div className="table-responsive" style={{ width: "400px" }}>
+                <table className="table table-sm">
+                  <thead>
+                    <tr>
+                      <th
+                        colSpan="2"
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "var(--details-color",
+                        }}
+                      >
+                        Materials
+                      </th>
+                    </tr>
+                    <tr>
+                      <th style={{ width: "20%", backgroundColor: "#f0f0f0" }}>
+                        Name
+                      </th>
+                      <th style={{ width: "10%", backgroundColor: "#f0f0f0" }}>
+                        Quantity
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {project.billOfMaterials &&
+                      project.billOfMaterials.map((material, index) => (
+                        <tr key={`${material.id}-${index}`}>
+                          <td>{material.name}</td>
+                          <td>{material.quantity}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           {!isMember && slotsAvailable && (
             <div class="button-container">
-            <button class="btn-project-apply">Apply</button>
-          </div>
+              <button class="btn-project-apply">Apply</button>
+            </div>
           )}
         </div>
       </div>
@@ -160,8 +209,7 @@ const Project = () => {
   const renderExecutionPlanTabContent = () => {
     return (
       <div className="card shadow-lg w-100">
-        <h2>Execution Plan for {project.name}</h2>
-        {/* Conteúdo do plano de execução */}
+        <ExecutionPlan project={project} />
       </div>
     );
   };
