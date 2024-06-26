@@ -9,7 +9,6 @@ import Profile from './pages/Profile';
 import Project from './pages/Project';
 import Inventory from './pages/Inventory';
 import { useEffect } from 'react';
-
 import userStore from './stores/userStore';
 import Messages from './pages/Messages';
 import Dashboard from './pages/Dashboard';

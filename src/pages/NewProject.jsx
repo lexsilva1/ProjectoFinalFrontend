@@ -36,8 +36,8 @@ const NewProject = () => {
     skills: [],
     interests: [],
     materials: [],
-    startDate:null,
-    endDate:null,
+    startDate: "",
+    endDate: "",
     projectPhoto: "",
     teamMembers: [creator],
   });
@@ -48,13 +48,10 @@ const NewProject = () => {
   const [users, setUsers] = useState([]);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [error, setError] = useState("");
-  
 
   useEffect(() => {
- 
     const fetchLabs = async () => {
       const res = await getLabs(token);
-      
       setLabs(res);
     };
     const fetchUsers = async () => {
@@ -70,13 +67,11 @@ const NewProject = () => {
 
     const fetchSuggestions = async () => {
       const res = await getSkills(); 
-      
       setSkillSuggestions(res);
     };
 
     const fetchKeywordSuggestions = async () => {
       const res = await getInterests();
-      
       setKeywordSuggestions(res);
     };
 
@@ -100,11 +95,9 @@ const NewProject = () => {
     reader.readAsDataURL(file);
     const url = projectPhotoUpload(token,inputs.name, file).then((res) => {
       console.log(res);
-    setInputs({ ...inputs, projectPhoto: res });
-    
-
-  });
-}
+      setInputs({ ...inputs, projectPhoto: res });
+    });
+  }
 
   const addField = (field) => {
     setInputs({
@@ -131,8 +124,6 @@ const NewProject = () => {
     }
   };
 
-
-
   const handleOpenResourcesModal = () => {
     setShowResourcesModal(true);
   };
@@ -154,12 +145,6 @@ const NewProject = () => {
     setStep(step - 1);
   };
 
-
-
-
-    // Send request
-  
-
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -176,7 +161,7 @@ const NewProject = () => {
       case 2:
         return (
           <Step2
-          setInputs={setInputs}
+            setInputs={setInputs}
             inputs={inputs}
             skillSuggestions={skillSuggestions}
             keywordSuggestions={keywordSuggestions}
@@ -210,15 +195,15 @@ const NewProject = () => {
 
   return (
     <>
-    <div style={{ position: 'absolute', top: 0, width: '100%' }}>
-      <Header />
-    </div>
+      <div style={{ position: 'absolute', top: 0, width: '100%' }}>
+        <Header />
+      </div>
       <Sidebar />
       <Container>
         <Card>
           <CardHeader>Create New Project</CardHeader>
           <CardBody>
-            <Form >{renderStep()}</Form>
+            <Form>{renderStep()}</Form>
           </CardBody>
         </Card>
       </Container>

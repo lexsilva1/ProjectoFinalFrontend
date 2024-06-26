@@ -57,11 +57,14 @@ const Step1 = ({ inputs, labs, handleInputChange, handleImageUpload, nextStep, a
               id="imageUpload"
               onChange={handleImageUpload}
               className="short-input"
+              accept="image/*"
+              style={{ maxWidth: "100%" }}
             />
             <img
               src={avatar}
               alt="Project Avatar"
               className="avatar"
+              style={{ maxWidth: "100%" }}
             />
           </FormGroup>
           <FormGroup className="my-form-group">
