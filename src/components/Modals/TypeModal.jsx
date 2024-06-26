@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Dropdown } from 'react-bootstrap';
 
-const TypeModal = ({ show, onHide, title, type, types, onTypeSelect }) => {
+const TypeModal = ({ show, onHide, title, types, onTypeSelect }) => {
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>

@@ -10,6 +10,7 @@ import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
 
 
+
 const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users }) => {
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
@@ -63,89 +64,138 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
   };
 
   const handleSkillsChange = async (selected) => {
-    if (selected.length > selectedSkills.length) {
-      const newSkills = selected.filter(
-        (skill) => !selectedSkills.some((s) => s.name === skill.name)
-      );
+    let skillToAdd = {};
+    const newSkills = selected.filter(
+      (skill) => !selectedSkills.some((s) => s.name === skill.name)
+    );
+  
+    const removedSkills = selectedSkills.filter(
+      (skill) => !selected.some((s) => s.name === skill.name)
+    );
+  
+    try {
+      // Process new skills
       for (const skill of newSkills) {
-        try {
-          if (!skills.some((s) => s.name === skill.name)) {
-            setSelectedType("skill");
-            const skillTypeSelected = new Promise((resolve) => {
-              setResolveOnSkillTypeSelected(() => resolve);
-            });
-            handleOpenModal(selectedType);
-            skill.skillType = await skillTypeSelected;
-            skill.projetcId = 0;
-            skill.id = null;
-            delete skill.customOption;
-            const result = await createSkillForProject(token, skill);
-            setSelectedSkills((prevSkills) => [...prevSkills, result]);
-            setSelectedType("");
-          } else {
-            // handle existing skill
+        if (!skills.some((s) => s.name === skill.name)) {
+          const skillTypeSelected = new Promise((resolve) => {
+            setResolveOnSkillTypeSelected(() => resolve);
+          });
+  
+          handleOpenModal('skill');
+          const skillType = await skillTypeSelected;
+          const newSkill = {
+            ...skill,
+            skillType,
+            projetcId: 0,
+            id: null,
+          };
+  
+          delete newSkill.customOption;
+  
+          const createdSkill = await createSkillForProject(token, newSkill);
+          console.log(createdSkill);
+          skillToAdd = {
+            name: createdSkill.name,
+            skillType: createdSkill.skillType,
+            projectId: 0,
+            id: createdSkill.id,
           }
-        } catch (error) {
-          console.error("Error creating skill:", error);
+          setSelectedSkills((prevSkills) => [...prevSkills, skillToAdd]);
+          setInputs((prevInputs) => ({
+            ...prevInputs,
+            skills: [...prevInputs.skills, skillToAdd],
+          }));
+          console.log(skillToAdd)
+          console.log(selectedSkills)
+          console.log(inputs.skills);
         }
       }
-    } else if (selected.length < selectedSkills.length) {
-      const removedSkills = selectedSkills.filter(
-        (skill) => !selected.some((s) => s.name === skill.name)
-      );
+  
+      // Process removed skills
       for (const skill of removedSkills) {
-        try {
-          // handle skill removal
-        } catch (error) {
-          console.error("Error deleting skill:", error);
-        }
+        // Handle skill removal logic here if needed
+        // Example: await removeSkillForProject(token, skill.id);
       }
+  
+      // Update the inputs with the selected skills
+      const updatedSkills = selectedSkills.filter(
+        (skill) => !removedSkills.includes(skill)
+      ).concat(newSkills);
+      
+      setSelectedSkills(updatedSkills);
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        skills: updatedSkills,
+      }));
+    } catch (error) {
+      console.error("Error processing skills:", error);
     }
-    setInputs({ ...inputs, skills: selected });
   };
-
+  
+  
+  
   const handleInterestsChange = async (selected) => {
-    if (selected.length > selectedInterests.length) {
-      const newInterests = selected.filter(
-        (interest) => !selectedInterests.some((i) => i.name === interest.name)
-      );
+    const newInterests = selected.filter(
+      (interest) => !selectedInterests.some((i) => i.name === interest.name)
+    );
+  
+    const removedInterests = selectedInterests.filter(
+      (interest) => !selected.some((i) => i.name === interest.name)
+    );
+  
+    try {
+      // Process new interests
       for (const interest of newInterests) {
-        try {
-          if (!interests.some((i) => i.name === interest.name)) {
-            setSelectedType("interest");
-            const interestTypeSelected = new Promise((resolve) => {
-              setResolveOnSkillTypeSelected(() => resolve);
-            });
-            handleOpenModal(selectedType);
-            interest.interestType = await interestTypeSelected;
-            interest.projectId = 0;
-            interest.id = null;
-            delete interest.customOption;
-            const result = await createKeyword(token, interest);
-            setInterests((prevInterests) => [...prevInterests, result]);
-            setSelectedType("");
-          } else {
-            // handle existing interest
-          }
-        } catch (error) {
-          console.error("Error creating interest:", error);
+        if (!interests.some((i) => i.name === interest.name)) {
+          const interestTypeSelected = new Promise((resolve) => {
+            setResolveOnSkillTypeSelected(() => resolve);
+          });
+  
+          handleOpenModal('interest');
+          const interestType = await interestTypeSelected;
+          const newInterest = {
+            name: interest.name,
+            interestType,
+            projectId: 0,
+            id: null,
+          };
+  
+          const createdInterest = await createKeyword(token, newInterest);
+          
+          setSelectedInterests((prevInterests) => [...prevInterests, createdInterest]);
+          setInputs((prevInputs) => ({
+            ...prevInputs,
+            interests: [...prevInputs.interests, createdInterest],
+          }));
         }
       }
-    } else if (selected.length < selectedInterests.length) {
-      const removedInterests = selectedInterests.filter(
-        (interest) => !selected.some((i) => i.name === interest.name)
-      );
+  
+      // Process removed interests (if needed)
       for (const interest of removedInterests) {
-        try {
-          // handle interest removal
-        } catch (error) {
-          console.error("Error deleting interest:", error);
-        }
+        // Handle interest removal logic here if needed
+        // Example: await removeInterestForProject(token, interest.id);
       }
+  
+      // Update the inputs with the selected interests
+      const updatedInterests = selected.filter(
+        (interest) => !removedInterests.some((i) => i.name === interest.name)
+      );
+      
+      setSelectedInterests(updatedInterests);
+      setInputs((prevInputs) => ({
+        ...prevInputs,
+        interests: updatedInterests,
+      }));
+    } catch (error) {
+      console.error("Error processing interests:", error);
     }
-    setInputs({ ...inputs, interests: selected });
   };
+  
 
+  
+  
+
+  
   const handleOpenUsersModal = () => {
     if (!inputs.slots) {
       setError("Please define the number of slots first.");
@@ -342,7 +392,6 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
         show={showTypeModal}
         onHide={handleCloseModal}
         title={`Add ${selectedType}`}
-        type={selectedType}
         types={selectedType === "skill" ? skillTypes : interestTypes}
         onTypeSelect={onTypeSelect}
       />

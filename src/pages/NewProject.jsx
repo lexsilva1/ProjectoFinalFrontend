@@ -24,7 +24,7 @@ const NewProject = () => {
     lastName: user.lastName,
     isProjectManager: true,
     userPhoto: user.image,
-    approvalStatus: "MEMBER",
+    approvalStatus: "CREATOR",
   };
   const [step, setStep] = useState(1);
   const [avatar, setAvatar] = useState(null);

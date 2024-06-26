@@ -87,7 +87,7 @@ export const createProject = async (token, projectDto) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
   
-    return response.json();
+    return response.text();
   } catch (error) {
     console.error("HTTP error!", error);
     throw new Error(`An error occurred: ${error.message}`);

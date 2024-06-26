@@ -3,10 +3,12 @@ import { Row, Col, FormGroup, Label, Button } from "reactstrap";
 import { createProject } from "../../services/projectServices";
 import Cookies from "js-cookie";
 import userstore from "../../stores/userStore";
+import { useNavigate } from "react-router-dom";
 
 const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
   console.log(inputs.projectPhoto);
-
+  console.log(inputs.skills);
+  const navigate = useNavigate();
   const token = Cookies.get("authToken");
   const user = userstore((state) => state.user);
 
@@ -64,18 +66,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
       const response = await createProject(token, projectDto);
       if (response.ok) {
         console.log("Project created successfully.", response);
-        setInputs({
-          name: "",
-          location: "",
-          description: "",
-          slots: 0,
-          skills: [],
-          interests: [],
-          materials: [],
-          imageUpload: '',
-          teamMembers: [],
-        });
-        setStep(1);
+        navigate("/")
       } else {
         setError("An error occurred. Please try again.");
       }
