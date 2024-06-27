@@ -1,44 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FrappeGantt } from 'frappe-gantt-react';
-import CreateTaskModal from '../components/Modals/CreateTaskModal';
+import { format } from 'date-fns';
+import CreateTaskModal from './Modals/CreateTaskModal'; // Se necessário
+import { getTasks } from '../services/projectServices';
+import Cookies from 'js-cookie';
 
-const ExecutionPlan = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: '1',
-      name: 'Análise de Requisitos',
-      start: '2023-01-01',
-      end: '2023-01-05',
-      progress: 100,
-    },
-    {
-      id: '2',
-      name: 'Design',
-      start: '2023-01-06',
-      end: '2023-01-08',
-      progress: 60,
-    },
-  ]);
+const ExecutionPlan = ({ name, startDate, endDate }) => {
+  const token = Cookies.get('authToken');
+  const [tasks, setTasks] = useState([]);
+    const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await getTasks(token, name);
+        const tasksData = response.tasks || [];
+        setTasks(Array.isArray(tasksData) ? tasksData : []);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        setTasks([]);
+      }
+    };
+    fetchTasks();
+  }, [name, token]);
 
-  const addTask = (newTask) => {
-    setTasks([...tasks, newTask]);
+  // Prepara as tarefas formatadas para o FrappeGantt
+  const formattedTasks = tasks.map(task => ({
+    id: task.id,
+    name: task.title,
+    start: format(new Date(task.startDate), 'yyyy-MM-dd'),
+    end: format(new Date(task.endDate), 'yyyy-MM-dd'),
+    progress: 0,
+    dependencies: '',
+  }));
+
+  // Prepara o período do projeto se as datas estiverem disponíveis
+  const projectPeriod = startDate && endDate ? [{
+    id: 'project-period',
+    name: 'Project Period',
+    start: format(new Date(startDate), 'yyyy-MM-dd'),
+    end: format(new Date(endDate), 'yyyy-MM-dd'),
+    progress: 0,
+    dependencies: '',
+  }] : [];
+
+  // Une o período do projeto com as tarefas formatadas
+  const allTasks = [...projectPeriod, ...formattedTasks];
+
+  const addTask = (task) => {
+    setTasks([...tasks, task]);
   };
 
   return (
-    <div>
-      <button onClick={() => setIsModalOpen(true)}>Add Task</button>
-      <FrappeGantt tasks={tasks} />
-      {isModalOpen && (
-        <CreateTaskModal
-          closeModal={() => setIsModalOpen(false)}
-          addTask={addTask}
-        />
-      )}
+    <div className="execution-plan">
+      <FrappeGantt
+        tasks={allTasks}
+        viewMode="Day"
+        barHeight={40}
+        onClick={task => console.log(task)}
+        onDateChange={(task, start, end) => console.log(task, start, end)}
+        onProgressChange={(task, progress) => console.log(task, progress)}
+      />
+     
+      <button className="btn btn-primary mt-3" onClick={() => setShowCreateTaskModal(true)}>
+        Add Task
+      </button>
+      {showCreateTaskModal && <CreateTaskModal closeModal={() => setShowCreateTaskModal(false)} addTask={addTask} projectName={name}/>}
     </div>
   );
 };
 
 export default ExecutionPlan;
-

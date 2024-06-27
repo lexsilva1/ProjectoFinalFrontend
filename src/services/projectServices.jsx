@@ -160,6 +160,42 @@ export const projectPhotoUpload = async (token, projectName, photo) => {
     return response.text();
 }
 
+export const createTask = async (token, projectName, taskDto) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/createTask`, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(taskDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+export const getTasks = async (token, projectName) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/tasks`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        const data = await response.json();
+        return data;
+      }
+};
+
+
+
+
+
 
 
 
