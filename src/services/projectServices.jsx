@@ -176,7 +176,7 @@ export const projectPhotoUpload = async (token, projectName, photo) => {
 }
 
 export const createTask = async (token, projectName, taskDto) => {
-    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/createTask`, { 
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/tasks`, { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
