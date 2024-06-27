@@ -41,6 +41,10 @@ const NewProject = () => {
     projectPhoto: "",
     teamMembers: [creator],
   });
+const setInputs2 = (inputs3) => {
+  //if(inputs3.skills?.length > 0 )debugger;
+  setInputs(inputs3)
+}
 
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
@@ -161,7 +165,7 @@ const NewProject = () => {
       case 2:
         return (
           <Step2
-            setInputs={setInputs}
+            setInputs={setInputs2}
             inputs={inputs}
             skillSuggestions={skillSuggestions}
             keywordSuggestions={keywordSuggestions}

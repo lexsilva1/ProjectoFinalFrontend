@@ -19,7 +19,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
   const [skillTypes, setSkillTypes] = useState([]);
   const [interestTypes, setInterestTypes] = useState([]);
   const [showTypeModal, setShowTypeModal] = useState(false);
-
+  const [resolveOnInterestTypeSelected, setResolveOnInterestTypeSelected] = useState(null);
   const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const [selectedType, setSelectedType] = useState("");
   const [showUsersModal, setShowUsersModal] = useState(false);
@@ -64,7 +64,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
   };
 
   const handleSkillsChange = async (selected) => {
-    let skillToAdd = {};
+    
     const newSkills = selected.filter(
       (skill) => !selectedSkills.some((s) => s.name === skill.name)
     );
@@ -72,7 +72,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     const removedSkills = selectedSkills.filter(
       (skill) => !selected.some((s) => s.name === skill.name)
     );
-  
+    const newlyCreatedSkills = [];
     try {
       // Process new skills
       for (const skill of newSkills) {
@@ -84,7 +84,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
           handleOpenModal('skill');
           const skillType = await skillTypeSelected;
           const newSkill = {
-            ...skill,
+            name: skill.name,
             skillType,
             projetcId: 0,
             id: null,
@@ -94,20 +94,12 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
   
           const createdSkill = await createSkillForProject(token, newSkill);
           console.log(createdSkill);
-          skillToAdd = {
-            name: createdSkill.name,
-            skillType: createdSkill.skillType,
-            projectId: 0,
-            id: createdSkill.id,
-          }
-          setSelectedSkills((prevSkills) => [...prevSkills, skillToAdd]);
-          setInputs((prevInputs) => ({
-            ...prevInputs,
-            skills: [...prevInputs.skills, skillToAdd],
-          }));
-          console.log(skillToAdd)
-          console.log(selectedSkills)
-          console.log(inputs.skills);
+    
+          newlyCreatedSkills.push(createdSkill);
+          newSkills.splice(newSkills.indexOf(skill), 1);
+
+          
+
         }
       }
   
@@ -117,10 +109,10 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
         // Example: await removeSkillForProject(token, skill.id);
       }
   
-      // Update the inputs with the selected skills
+      
       const updatedSkills = selectedSkills.filter(
         (skill) => !removedSkills.includes(skill)
-      ).concat(newSkills);
+      ).concat(newSkills).concat(newlyCreatedSkills);
       
       setSelectedSkills(updatedSkills);
       setInputs((prevInputs) => ({
@@ -143,12 +135,13 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
       (interest) => !selected.some((i) => i.name === interest.name)
     );
   
+    const newlyCreatedInterests = [];
     try {
       // Process new interests
       for (const interest of newInterests) {
         if (!interests.some((i) => i.name === interest.name)) {
           const interestTypeSelected = new Promise((resolve) => {
-            setResolveOnSkillTypeSelected(() => resolve);
+            setResolveOnInterestTypeSelected(() => resolve);
           });
   
           handleOpenModal('interest');
@@ -160,13 +153,13 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
             id: null,
           };
   
+          delete newInterest.customOption;
+  
           const createdInterest = await createKeyword(token, newInterest);
-          
-          setSelectedInterests((prevInterests) => [...prevInterests, createdInterest]);
-          setInputs((prevInputs) => ({
-            ...prevInputs,
-            interests: [...prevInputs.interests, createdInterest],
-          }));
+          console.log(createdInterest);
+  
+          newlyCreatedInterests.push(createdInterest);
+          newInterests.splice(newInterests.indexOf(interest), 1);
         }
       }
   
@@ -176,11 +169,10 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
         // Example: await removeInterestForProject(token, interest.id);
       }
   
-      // Update the inputs with the selected interests
-      const updatedInterests = selected.filter(
-        (interest) => !removedInterests.some((i) => i.name === interest.name)
-      );
-      
+      const updatedInterests = selectedInterests.filter(
+        (interest) => !removedInterests.includes(interest)
+      ).concat(newInterests).concat(newlyCreatedInterests);
+  
       setSelectedInterests(updatedInterests);
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -225,6 +217,9 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     if (resolveOnSkillTypeSelected) {
       resolveOnSkillTypeSelected(type);
       setResolveOnSkillTypeSelected(null);
+    }else if (resolveOnInterestTypeSelected) {
+      resolveOnInterestTypeSelected(type);
+      setResolveOnInterestTypeSelected(null);
     }
   };
 
