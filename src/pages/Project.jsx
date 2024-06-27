@@ -9,7 +9,6 @@ import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import { getProjectByName } from "../services/projectServices";
-import UserCard from "../components/Cards/UserCard";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import { useTranslation } from "react-i18next";
@@ -18,8 +17,6 @@ const Project = () => {
   const { projectName } = useParams();
   const [project, setProject] = useState({});
   const [activeTab, setActiveTab] = useState("info");
-  const [projectSkills, setProjectSkills] = useState([]);
-  const [projectKeywords, setProjectKeywords] = useState([]);
   const token = Cookies.get("authToken");
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
@@ -56,12 +53,11 @@ const Project = () => {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
       const projectData = await getProjectByName(token, encodedProjectName);
-
       setProject(projectData);
     };
 
     fetchProject();
-  }, [projectName]);
+  }, [projectName, token]);
 
   const isMember = project.teamMembers?.some(
     (member) => member.userId === currentUser.id
@@ -193,8 +189,8 @@ const Project = () => {
             </div>
           )}
           {!isMember && slotsAvailable && (
-            <div class="button-container">
-              <button class="btn-project-apply">Apply</button>
+            <div className="button-container">
+              <button className="btn-project-apply">Apply</button>
             </div>
           )}
         </div>
@@ -209,7 +205,11 @@ const Project = () => {
   const renderExecutionPlanTabContent = () => {
     return (
       <div className="card shadow-lg w-100">
-        <ExecutionPlan project={project} />
+        <ExecutionPlan
+          name={project.name}
+          startDate={project.startDate}
+          endDate={project.endDate}
+        />
       </div>
     );
   };

@@ -11,7 +11,7 @@
     bottom: auto !important;
     margin-right: -50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 600px;
+    width: 700px;
     height: 580px;
     padding: 20px;
     border-radius: 8px;
@@ -24,6 +24,7 @@
     align-items: center;
     border-bottom: 1px solid #e0e0e0;
     margin-bottom: 20px;
+    position: relative; 
   }
   
   .modal-create-task-header h2 {
@@ -38,6 +39,8 @@
   }
   
   .modal-create-task-body {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
   }
   
@@ -79,5 +82,62 @@
   .create-button {
     background-color: #5aac44;
     color: #fff;
+  }
+
+  .task-actions {
+    position: absolute;
+    right: 20px; /* Adjust based on your layout */
+    top: 0; /* Align with the top of the header */
+    display: flex;
+    gap: 10px; /* Maintain some space between buttons */
+  }
+
+.members-box {
+  position: absolute;
+  right: 0;
+  top: 25%; 
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  width: 200px;
+  z-index: 1000;
+  display: none; 
+}
+
+/* Additional CSS to show the members-box when Members button is clicked */
+/* This requires toggling a class or style in your JavaScript to display the box */
+.show-members-box {
+    display: block;
+  }
+  
+  .members-box div {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+ 
+  }
+  
+  .members-box div img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .modal-content-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .modal-info, .task-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .task-actions {
+    justify-content: flex-start;
+    padding-left: 20px; 
+    margin-top: 20%;
   }
   
