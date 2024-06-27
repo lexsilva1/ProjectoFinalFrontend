@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import Avatar from '../../multimedia/Images/Avatar.jpg';
 import { FaSearch } from "react-icons/fa";
 
-// Custom styles for the modal
+
 const customStyles = {
   content: {
     top: '50%',

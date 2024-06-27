@@ -8,7 +8,7 @@ import MembersModal from "./MembersModal";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import "./CreateTaskModal.css";
-import { set } from "date-fns";
+import { set, format } from "date-fns";
 
 const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
   const [projectMembers, setProjectMembers] = useState([]);
@@ -60,16 +60,18 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
   };
 
   const handleSelectUser = (user, type) => {
+    console.log("Selected User ID:", user.userId); 
     if (type === "responsible") {
       setSelectedResponsible(user);
-      setResponsibleId(user.id);
+      setResponsibleId(user.userId); 
     } else if (type === "member") {
-      if (!selectedMembers.some((member) => member.id === user.id)) {
-        setSelectedMembers([...selectedMembers, user]);
+      if (!selectedMembers.some((member) => member.userId === user.userId)) {
+        setSelectedMembers(users => [...users, user]);
       }
     }
     setIsMembersModalOpen(false);
   };
+  
 
   const handleSelectDependency = (taskId) => {
     if (!dependencies.includes(taskId)) {
@@ -85,21 +87,31 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
       .map((task) => <div key={task.id}>{task.title}</div>);
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newTask = {
+  
+    const taskDto = {
       title,
       externalExecutors,
       description,
+      projectName,
       responsibleId,
-      startDate,
-      endDate,
-      creationDate,
       dependencies,
-      users,
+      users: selectedMembers.map(member => member.userId), 
+      startDate: startDate ? format(startDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null,
+    endDate: endDate ? format(endDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null
     };
-    addTask(newTask);
-    closeModal();
+  
+    console.log('Task DTO:', taskDto); 
+  
+    try {
+      const response = await createTask(token, projectName, taskDto);
+      addTask(response.task);
+      closeModal();
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
   };
 
   return (
