@@ -6,8 +6,7 @@ import userstore from "../../stores/userStore";
 import { useNavigate } from "react-router-dom";
 
 const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
-  console.log(inputs.projectPhoto);
-  console.log(inputs.skills);
+
   const navigate = useNavigate();
   const token = Cookies.get("authToken");
   const user = userstore((state) => state.user);
@@ -61,14 +60,14 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
     };
 
     console.log("Submitting Project DTO:", projectDto);
-
+debugger;
     try {
       const response = await createProject(token, projectDto);
-      if (response.ok) {
+      if (response !== 'created') {
+        setError("An error occurred. Please try again.");
+      } else {
         console.log("Project created successfully.", response);
         navigate("/")
-      } else {
-        setError("An error occurred. Please try again.");
       }
     } catch (error) {
       console.error("HTTP error!", error);
