@@ -8,7 +8,7 @@ import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
-import { getProjectByName } from "../services/projectServices";
+import { getProjectByName, projectApplication } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import { useTranslation } from "react-i18next";
@@ -71,6 +71,15 @@ const Project = () => {
       : [];
 
     const slotsAvailable = project.maxTeamMembers - approvedMembers.length;
+
+    const handleApply = async () => {
+      const response = await projectApplication(token, project.name);
+      if (response === "applied") {
+        navigate("/");
+      }else{
+        alert("You have already applied to this project");
+      }
+    }
 
     return (
       <div className="card shadow-lg w-100">
@@ -190,7 +199,7 @@ const Project = () => {
           )}
           {!isMember && slotsAvailable && (
             <div className="button-container">
-              <button className="btn-project-apply">Apply</button>
+              <button className="btn-project-apply" onClick={handleApply}>Apply</button>
             </div>
           )}
         </div>
