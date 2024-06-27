@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getProjectByName } from "../../services/projectServices";
+import { getProjectByName, createTask } from "../../services/projectServices";
 import Cookies from "js-cookie";
 import MembersModal from "./MembersModal";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import "./CreateTaskModal.css";
+import { set } from "date-fns";
 
-const CreateTaskModal = ({ closeModal, addTask, projectName }) => {
+const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
   const [projectMembers, setProjectMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +28,7 @@ const CreateTaskModal = ({ closeModal, addTask, projectName }) => {
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedResponsible, setSelectedResponsible] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [selectionType, setSelectionType] = useState("");
 
   const fetchProjectDetails = async () => {
     try {
@@ -45,23 +48,41 @@ const CreateTaskModal = ({ closeModal, addTask, projectName }) => {
   }, [projectName]);
 
   useEffect(() => {
-    const filtered = projectMembers.filter(member =>
+    const filtered = projectMembers.filter((member) =>
       member.firstName.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredMembers(filtered);
   }, [searchTerm, projectMembers]);
 
-  const handleMembersClick = () => {
-    setIsMembersModalOpen(!isMembersModalOpen);
+  const handleMembersClick = (type) => {
+    setSelectionType(type);
+    setIsMembersModalOpen(true);
   };
 
   const handleSelectUser = (user, type) => {
-    if (type === 'responsible') {
+    if (type === "responsible") {
       setSelectedResponsible(user);
-    } else if (type === 'member') {
-      setSelectedMembers([...selectedMembers, user]);
+      setResponsibleId(user.id);
+    } else if (type === "member") {
+      if (!selectedMembers.some((member) => member.id === user.id)) {
+        setSelectedMembers([...selectedMembers, user]);
+      }
     }
     setIsMembersModalOpen(false);
+  };
+
+  const handleSelectDependency = (taskId) => {
+    if (!dependencies.includes(taskId)) {
+      setDependencies([...dependencies, taskId]);
+    } else {
+      setDependencies(dependencies.filter((id) => id !== taskId));
+    }
+  };
+
+  const renderDependencyNames = () => {
+    return tasks
+      .filter((task) => dependencies.includes(task.id))
+      .map((task) => <div key={task.id}>{task.title}</div>);
   };
 
   const handleSubmit = (e) => {
@@ -94,8 +115,8 @@ const CreateTaskModal = ({ closeModal, addTask, projectName }) => {
           &times;
         </button>
       </div>
-      <div className="modal-content-container"> 
-        <div className="modal-info"> 
+      <div className="modal-content-container">
+        <div className="modal-info">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Title</label>
@@ -131,47 +152,87 @@ const CreateTaskModal = ({ closeModal, addTask, projectName }) => {
             </button>
           </form>
         </div>
-        <div style={{marginRight: "200px", marginTop: "20px"}}>
-          {selectedResponsible && (
-            <div>
-              <label>Responsible:</label>
-              <img src={selectedResponsible.photo || Avatar} alt={selectedResponsible.firstName} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
-              <span>{selectedResponsible.firstName} {selectedResponsible.lastName}</span>
+        <div
+          className="members-selection"
+          style={{ marginRight: "220px", marginTop: "12px" }}
+        >
+          <div className="responsible-section">
+            <label>Responsible</label>
+            <button
+              type="button"
+              className="action-button"
+              onClick={() => handleMembersClick("responsible")}
+            >
+              Responsible
+            </button>
+            {selectedResponsible && (
+              <div className="selected-user">
+                <img
+                  src={selectedResponsible.photo || Avatar}
+                  alt={selectedResponsible.firstName}
+                  className="user-avatar"
+                />
+                <span>
+                  {selectedResponsible.firstName} {selectedResponsible.lastName}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="members-section" style={{ marginTop: "40px" }}>
+            <label>Members</label>
+            <button
+              type="button"
+              className="action-button"
+              onClick={() => handleMembersClick("member")}
+            >
+              Members
+            </button>
+            {selectedMembers.map((member) => (
+              <div key={member.id} className="selected-user">
+                <img
+                  src={member.photo || Avatar}
+                  alt={member.firstName}
+                  className="user-avatar"
+                />
+                <span>
+                  {member.firstName} {member.lastName}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="external-executors">
+            <label>External Executors</label>
+            <input
+              type="text"
+              value={externalExecutors}
+              onChange={(e) => setExternalExecutors(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <DropdownButton id="dropdown-basic-button" title="Dependencies">
+              {tasks.map((task) => (
+                <Dropdown.Item
+                  key={task.id}
+                  onClick={() => handleSelectDependency(task.id)}
+                >
+                  {task.title}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+            <div className="selected-dependencies">
+              {renderDependencyNames()}
             </div>
-          )}
-          <label>Members:</label>
-          {selectedMembers.map(member => (
-            <div key={member.id}>
-              <img src={member.photo || Avatar} alt={member.firstName} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
-              <span>{member.firstName} {member.lastName}</span>
-            </div>
-          ))}
-        </div>
-        <div className="task-actions" > 
-          <button 
-            type="button" 
-            className="action-button"
-            onClick={() => handleMembersClick('responsible')}
-          >
-            Responsible
-          </button>
-          <button
-            type="button"
-            className="action-button"
-            onClick={() => handleMembersClick('member')}
-          >
-            Members
-          </button>
-          <button type="button" className="action-button">
-            Dependencies
-          </button>
+          </div>
         </div>
       </div>
       <MembersModal
         isOpen={isMembersModalOpen}
         onRequestClose={() => setIsMembersModalOpen(false)}
         members={filteredMembers}
-        handleSelectUser={handleSelectUser} 
+        handleSelectUser={handleSelectUser}
+        selectionType={selectionType}
       />
     </Modal>
   );

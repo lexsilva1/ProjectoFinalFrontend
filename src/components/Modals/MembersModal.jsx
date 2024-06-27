@@ -19,7 +19,7 @@ const customStyles = {
   },
 };
 
-const MembersModal = ({ isOpen, onRequestClose, members, handleSelectUser }) => {
+const MembersModal = ({ isOpen, onRequestClose, members, handleSelectUser, selectionType }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filtrar membros com base no termo de pesquisa
@@ -73,7 +73,7 @@ const MembersModal = ({ isOpen, onRequestClose, members, handleSelectUser }) => 
               style={{width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px'}}
             />
             <span style={{marginRight: 'auto'}}>{member.firstName} {member.lastName}</span>
-            <button onClick={() => handleSelectUser(member, 'member')}>Add</button> 
+            <button onClick={() => handleSelectUser(member, selectionType)}>Add</button> 
           </div>
         ))}
       </div>

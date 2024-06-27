@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { FrappeGantt } from 'frappe-gantt-react';
 import { format } from 'date-fns';
-import CreateTaskModal from './Modals/CreateTaskModal'; // Se necessário
+import CreateTaskModal from './Modals/CreateTaskModal'; // Certifique-se do caminho correto
 import { getTasks } from '../services/projectServices';
 import Cookies from 'js-cookie';
 
 const ExecutionPlan = ({ name, startDate, endDate }) => {
   const token = Cookies.get('authToken');
   const [tasks, setTasks] = useState([]);
-    const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
+  const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -65,7 +65,8 @@ const ExecutionPlan = ({ name, startDate, endDate }) => {
       <button className="btn btn-primary mt-3" onClick={() => setShowCreateTaskModal(true)}>
         Add Task
       </button>
-      {showCreateTaskModal && <CreateTaskModal closeModal={() => setShowCreateTaskModal(false)} addTask={addTask} projectName={name}/>}
+      
+      {showCreateTaskModal && <CreateTaskModal closeModal={() => setShowCreateTaskModal(false)} addTask={addTask} projectName={name} tasks={tasks} />}
     </div>
   );
 };
