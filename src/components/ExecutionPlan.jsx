@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FrappeGantt } from 'frappe-gantt-react';
 import { format } from 'date-fns';
 import CreateTaskModal from './Modals/CreateTaskModal'; // Certifique-se do caminho correto
 import { getTasks } from '../services/projectServices';
 import Cookies from 'js-cookie';
+import { Chart } from 'react-google-charts';
 
 const ExecutionPlan = ({ name, startDate, endDate }) => {
   const token = Cookies.get('authToken');
@@ -24,28 +24,32 @@ const ExecutionPlan = ({ name, startDate, endDate }) => {
     fetchTasks();
   }, [name, token]);
 
-  // Prepara as tarefas formatadas para o FrappeGantt
-  const formattedTasks = tasks.map(task => ({
-    id: task.id,
-    name: task.title,
-    start: format(new Date(task.startDate), 'yyyy-MM-dd'),
-    end: format(new Date(task.endDate), 'yyyy-MM-dd'),
-    progress: 0,
-    dependencies: '',
-  }));
+  // Prepara as tarefas formatadas para o Google Gantt Chart
+  const formattedTasks = tasks.map(task => [
+    task.title,
+    task.title,
+    null,
+    new Date(task.startDate),
+    new Date(task.endDate),
+    null,
+    0,
+    null,
+  ]);
 
-  // Prepara o período do projeto se as datas estiverem disponíveis
-  const projectPeriod = startDate && endDate ? [{
-    id: 'project-period',
-    name: 'Project Period',
-    start: format(new Date(startDate), 'yyyy-MM-dd'),
-    end: format(new Date(endDate), 'yyyy-MM-dd'),
-    progress: 0,
-    dependencies: '',
-  }] : [];
-
-  // Une o período do projeto com as tarefas formatadas
-  const allTasks = [...projectPeriod, ...formattedTasks];
+  // Estrutura de dados inicial para o Google Gantt Chart
+  const chartData = [
+    [
+      { type: 'string', label: 'Task ID' },
+      { type: 'string', label: 'Task Name' },
+      { type: 'string', label: 'Resource' },
+      { type: 'date', label: 'Start Date' },
+      { type: 'date', label: 'End Date' },
+      { type: 'number', label: 'Duration' },
+      { type: 'number', label: 'Percent Complete' },
+      { type: 'string', label: 'Dependencies' },
+    ],
+    ...formattedTasks,
+  ];
 
   const addTask = (task) => {
     setTasks([...tasks, task]);
@@ -53,13 +57,16 @@ const ExecutionPlan = ({ name, startDate, endDate }) => {
 
   return (
     <div className="execution-plan">
-      <FrappeGantt
-        tasks={allTasks}
-        viewMode="Day"
-        barHeight={40}
-        onClick={task => console.log(task)}
-        onDateChange={(task, start, end) => console.log(task, start, end)}
-        onProgressChange={(task, progress) => console.log(task, progress)}
+      <Chart
+        width={'100%'}
+        height={'400px'}
+        chartType="Gantt"
+        loader={<div>Loading Chart</div>}
+        data={chartData}
+        options={{
+          height: 400,
+        }}
+        rootProps={{ 'data-testid': '1' }}
       />
      
       <button className="btn btn-primary mt-3" onClick={() => setShowCreateTaskModal(true)}>
