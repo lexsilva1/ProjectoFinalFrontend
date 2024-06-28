@@ -6,19 +6,21 @@ import Avatar from "../../multimedia/Images/Avatar.jpg";
 import userStore from "../../stores/userStore";
 import "./UsersModal.css";
 
-const UsersModal = ({ show, handleClose, inputs, setInputs, users }) => {
+const UsersModal = ({ show, handleClose, inputs, setInputs, users, onAddUser }) => {
  
   const [search, setSearch] = useState("");
   const token = Cookies.get("authToken");
-
-
-
 
   const filteredUsers = users.filter((user) =>
     `${user.firstName} ${user.lastName}`.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleAdd = (userToAdd) => {
+    if (onAddUser) {
+      onAddUser(userToAdd);
+    }
+
+
     console.log(userToAdd);
     const projectMember = {
       userId: userToAdd.userId,

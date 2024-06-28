@@ -124,6 +124,23 @@ export const projectApplication = async (token, projectName) => {
 
     return response.text();
 }
+
+export const inviteUser = async (token, projectName, userId) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/invite?userId=${encodeURIComponent(userId)}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+};
+
 export const manageInvitesApplications = async (token, projectName, userId, operationType, notificationId) => {
     const queryParams = new URLSearchParams({ userId, operationType, notificationId }).toString();
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/accept?${queryParams}`, {

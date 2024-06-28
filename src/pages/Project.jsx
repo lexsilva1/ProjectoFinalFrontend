@@ -66,7 +66,7 @@ const Project = () => {
   const renderInfoTabContent = () => {
     const approvedMembers = project.teamMembers
       ? project.teamMembers.filter(
-          (member) => member.approvalStatus === "MEMBER"
+          (member) => member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
         )
       : [];
 
