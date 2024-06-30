@@ -42,7 +42,7 @@ const NewProject = () => {
     teamMembers: [creator],
   });
 const setInputs2 = (inputs3) => {
-  //if(inputs3.skills?.length > 0 )debugger;
+  
   setInputs(inputs3)
 }
 

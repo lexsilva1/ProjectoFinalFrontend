@@ -99,8 +99,8 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
       responsibleId,
       dependencies,
       users: selectedMembers.map(member => member.userId), 
-      startDate: startDate ? format(startDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null,
-    endDate: endDate ? format(endDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null
+      start: startDate ? format(startDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null,
+    end: endDate ? format(endDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null
     };
   
     console.log('Task DTO:', taskDto); 

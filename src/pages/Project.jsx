@@ -59,6 +59,20 @@ const Project = () => {
     fetchProject();
   }, [projectName, token]);
 
+  const projectTask = {
+    id: project.id,
+    name: project.name,
+    start: project.startDate,
+    end: project.endDate,
+    progress: 50,
+    dependencies: [],
+    isDisabled: false,
+    styles: {
+      progressColor: "#ffbb54",
+      progressSelectedColor: "#ff9e0d",
+    },
+    type: "project",
+  }
   const isMember = project.teamMembers?.some(
     (member) => member.userId === currentUser.id
   );
@@ -218,6 +232,7 @@ const Project = () => {
           name={project.name}
           startDate={project.startDate}
           endDate={project.endDate}
+          projectTask={projectTask}
         />
       </div>
     );

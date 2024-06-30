@@ -223,6 +223,22 @@ export const getTasks = async (token, projectName) => {
         return data;
       }
 };
+export const updateTask = async (token, projectName, taskDto) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/tasks`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(taskDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
 
 
 
