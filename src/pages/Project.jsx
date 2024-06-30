@@ -11,6 +11,7 @@ import userStore from "../stores/userStore";
 import { getProjectByName, projectApplication } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
+import ChatIcon from "../components/ChatIcon";
 import { useTranslation } from "react-i18next";
 
 const Project = () => {
@@ -254,6 +255,7 @@ const Project = () => {
   return (
     <>
       <Header />
+      {isMember && <ChatIcon />}
       <div className="app-container">
         <Sidebar />
         <div className="project-container">

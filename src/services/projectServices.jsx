@@ -238,7 +238,7 @@ export const updateTask = async (token, projectName, taskDto) => {
     }
 
     return response.json();
-}
+};
 
 
 
