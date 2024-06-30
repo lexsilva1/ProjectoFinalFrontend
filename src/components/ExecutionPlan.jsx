@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import { add, format, set } from 'date-fns';
 import CreateTaskModal from './Modals/CreateTaskModal'; // Certifique-se do caminho correto
 import { getTasks, updateTask } from '../services/projectServices';
 import Cookies from 'js-cookie';
@@ -76,9 +76,17 @@ const onDateChange = async (task) => { // preciso de ver isto melhor
     if (t.id === task.id) {
       t.start = format(task.start, 'yyyy-MM-dd\'T\'HH:mm:ss');
       t.end = format(task.end, 'yyyy-MM-dd\'T\'HH:mm:ss');
+      tasks[tasks.indexOf(t)] = t;
+      tasks.reduce((acc, t) => {
+        acc[t.id] = t;
+        return acc;
+      }
+      , {});
+      addTask(t);
     }
     await updateTask(token, name, t).then(() => {
-      setUpdatedPing(!updatedPing);
+      setTasks(tasks);
+     // setUpdatedPing(!updatedPing);
     });
   });
 };
