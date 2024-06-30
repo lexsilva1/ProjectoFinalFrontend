@@ -12,6 +12,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const [viewMode, setViewMode] = useState('Day'); // ['Day', 'Week', 'Month'
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [updatedPing, setUpdatedPing] = useState(false);
+  const [projectProgress, setProjectProgress] = useState(0);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -22,6 +23,16 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
         console.log('Tasks Data:', tasksData);
         const sortedTasks = tasksData.sort((a, b) => new Date(a.start) - new Date(b.start));
         setTasks(sortedTasks);
+        let projectProgress = 0;
+        let completedTasks = 0;
+        tasksData.forEach((task) => {
+          if (task.status === 'COMPLETED') {
+            completedTasks++;
+          }
+        });
+        projectProgress = (completedTasks / tasksData.length) * 100;
+        setProjectProgress(projectProgress);
+
         
       } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -35,6 +46,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     const date = new Date(dateString);
     return isNaN(date) ? new Date() : date;
   };
+  
 
   // Prepara as tarefas formatadas para o Google Gantt Chart
 let tasksFormatted = tasks.map((task) => {
@@ -43,9 +55,10 @@ let tasksFormatted = tasks.map((task) => {
     name: task.title,
     start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
     end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
-    progress: 50,
+    
+    progress: task.status === 'COMPLETED' ? 100 :(task.status === 'IN_PROGRESS' ? 50 : 0), // Adjust as necessary
     dependencies: task.dependencies,
-    isDisabled: false, // Adjust as necessary
+    isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED' ? true : false, // Adjust as necessary
     styles: { 
       progressColor: '#ffbb54', 
       progressSelectedColor: '#ff9e0d' 
@@ -58,12 +71,12 @@ let tasksFormatted = tasks.map((task) => {
     name: projectTask.name,
     start: parseDate(new Date(projectTask.start).toISOString().slice(0, 10)),
     end: parseDate(new Date(projectTask.end).toISOString().slice(0, 10)),
-    progress: 50,
+    progress: projectProgress,
     dependencies: projectTask.dependencies,
     isDisabled: false, // Adjust as necessary
     styles: { 
-      progressColor: '#ffbb54', 
-      progressSelectedColor: '#ff9e0d' 
+      progressColor: '#2e6b75', 
+      progressSelectedColor: '#2e6b75', 
     },
     type: 'project',
   };
@@ -90,8 +103,66 @@ const onDateChange = async (task) => { // preciso de ver isto melhor
     });
   });
 };
-  
+const onProgressChange = async (task) => {
+  debugger;
+  tasks.forEach(async (t) => {
+    if (t.id === task.id) {
+    if(task.dependencies.length > 0){
+      
+        const dependenciesCompleted = task.dependencies.every(dependencyId => {
+          const dependencyTask = tasks.find(t => t.id === dependencyId);
+          return dependencyTask && dependencyTask.status === 'COMPLETED';
+        });
 
+        if (dependenciesCompleted) {
+          if (task.progress === 100) {
+            t.status = 'COMPLETED';
+          } else if (task.progress > 0 && task.progress < 100) {
+            t.status = 'IN_PROGRESS';
+          } else {
+            t.status = 'NOT_STARTED';
+          }
+
+          tasks[tasks.indexOf(t)] = t;
+          tasks.reduce((acc, t) => {
+            acc[t.id] = t;
+            return acc;
+          }, {});
+          addTask(t);
+        }else{
+          
+          tasksFormatted.forEach((t) => {
+            if (t.id === task.id) {
+              t.progress = 0;
+              alert('You cannot complete this task because it has dependencies that are not completed');
+            }
+          });
+        }
+      }else{
+        if (task.progress === 100) {
+          t.status = 'COMPLETED';
+        } else if (task.progress > 0 && task.progress < 100) {
+          t.status = 'IN_PROGRESS';
+        } else {
+          t.status = 'NOT_STARTED';
+        }
+
+        tasks[tasks.indexOf(t)] = t;
+        tasks.reduce((acc, t) => {
+          acc[t.id] = t;
+          return acc;
+        }, {});
+        addTask(t);
+      }
+    }
+    await updateTask(token, name, t).then(() => {
+      setTasks(tasks);
+      //setUpdatedPing(!updatedPing);
+    });
+  });
+};
+  
+const rtl = false;
 
   const addTask = (task) => {
     setTasks([...tasks, task]);
@@ -116,6 +187,9 @@ const onDateChange = async (task) => { // preciso de ver isto melhor
           tasks={tasksFormatted}
           viewMode={viewMode}
           onDateChange={(task) => onDateChange(task)}
+          onProgressChange={(task) => onProgressChange(task)}
+          onTaskDelete={(task) => console.log('Task deleted:', task)} 
+          rtl={rtl}
         />
       ) : (
         <div>No tasks available</div>
