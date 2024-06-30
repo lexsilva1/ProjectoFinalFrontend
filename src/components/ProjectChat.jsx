@@ -7,7 +7,7 @@ const ProjectChat = ({ isOpen, onClose }) => {
     top: 0,
     height: '100%',
     width: '350px',
-    transition: 'right 0.3s ease-in-out',
+    transition: 'right 0.5s ease-in-out',
     backgroundColor: 'transparent',
     zIndex: 1050,
     
