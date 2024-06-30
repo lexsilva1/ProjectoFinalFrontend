@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getProjectByName, createTask } from "../../services/projectServices";
+import { getProjectByName, createTask, updateTask } from "../../services/projectServices";
 import Cookies from "js-cookie";
 import MembersModal from "./MembersModal";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
@@ -10,25 +10,55 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import "./CreateTaskModal.css";
 import { set, format } from "date-fns";
 
-const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
+const CreateTaskModal = ({
+  closeModal,
+  addTask,
+  projectName,
+  tasks,
+  selectedTask,
+  isEditMode,
+}) => {
   const [projectMembers, setProjectMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [title, setTitle] = useState("");
-  const [externalExecutors, setExternalExecutors] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(selectedTask ? selectedTask.title : "");
+  const [externalExecutors, setExternalExecutors] = useState(
+    selectedTask ? selectedTask.externalExecutors : ""
+  );
+  const [description, setDescription] = useState(
+    selectedTask ? selectedTask.description : ""
+  );
   const [responsibleId, setResponsibleId] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(
+    selectedTask ? new Date(selectedTask.start) : ""
+  );
+  const [endDate, setEndDate] = useState(
+    selectedTask ? new Date(selectedTask.end) : ""
+  );
   const [creationDate, setCreationDate] = useState("");
-  const [dependencies, setDependencies] = useState([]);
+  const [dependencies, setDependencies] = useState(
+    selectedTask ? selectedTask.dependencies : []
+  );
   const [users, setUsers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
   const token = Cookies.get("authToken");
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
-  const [selectedResponsible, setSelectedResponsible] = useState(null);
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [selectedResponsible, setSelectedResponsible] = useState(
+    selectedTask
+      ? projectMembers.find(
+          (member) => member.userId === selectedTask.responsibleId
+        )
+      : null
+  );
+  const [selectedMembers, setSelectedMembers] = useState(
+    selectedTask
+      ? projectMembers.filter((member) =>
+          selectedTask.users.includes(member.userId)
+        )
+      : []
+  );
   const [selectionType, setSelectionType] = useState("");
+  const [status, setStatus] = useState(selectedTask ? selectedTask.status : "NOT_STARTED");
 
   const fetchProjectDetails = async () => {
     try {
@@ -60,18 +90,17 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
   };
 
   const handleSelectUser = (user, type) => {
-    console.log("Selected User ID:", user.userId); 
+    console.log("Selected User ID:", user.userId);
     if (type === "responsible") {
       setSelectedResponsible(user);
-      setResponsibleId(user.userId); 
+      setResponsibleId(user.userId);
     } else if (type === "member") {
       if (!selectedMembers.some((member) => member.userId === user.userId)) {
-        setSelectedMembers(users => [...users, user]);
+        setSelectedMembers((users) => [...users, user]);
       }
     }
     setIsMembersModalOpen(false);
   };
-  
 
   const handleSelectDependency = (taskId) => {
     if (!dependencies.includes(taskId)) {
@@ -87,10 +116,9 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
       .map((task) => <div key={task.id}>{task.title}</div>);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const taskDto = {
       title,
       externalExecutors,
@@ -98,31 +126,72 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
       projectName,
       responsibleId,
       dependencies,
-      users: selectedMembers.map(member => member.userId), 
-      start: startDate ? format(startDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null,
-    end: endDate ? format(endDate, 'yyyy-MM-dd\'T\'HH:mm:ss') : null
+      users: selectedMembers.map((member) => member.userId),
+      start: startDate ? format(startDate, "yyyy-MM-dd'T'HH:mm:ss") : null,
+      end: endDate ? format(endDate, "yyyy-MM-dd'T'HH:mm:ss") : null,
+      status,
     };
-  
-    console.log('Task DTO:', taskDto); 
-  
-    try {
-      const response = await createTask(token, projectName, taskDto);
-      addTask(response.task);
-      closeModal();
-    } catch (error) {
-      console.error('Error creating task:', error);
+
+    if (isEditMode && selectedTask) {
+      try {
+        await updateTask(token, projectName, {
+          ...taskDto,
+          id: selectedTask.id,
+        });
+        console.log(taskDto);
+        addTask({ ...taskDto, id: selectedTask.id });
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    } else {
+      try {
+        const response = await createTask(token, projectName, taskDto);
+        addTask(response.task);
+      } catch (error) {
+        console.error("Error creating task:", error);
+      }
     }
+
+    closeModal();
   };
+
+  useEffect(() => {
+    if (isEditMode && selectedTask) {
+      const responsible = projectMembers.find(
+        (member) => member.userId === selectedTask.responsibleId
+      );
+      setSelectedResponsible(responsible);
+      
+      if (responsible) {
+        setResponsibleId(responsible.userId);
+      }
+  
+      const members = projectMembers.filter((member) =>
+        selectedTask.users.includes(member.userId)
+      );
+      setSelectedMembers(members);
+      setStatus(selectedTask.status);
+    }
+  }, [isEditMode, selectedTask, projectMembers]);
+
+  const renderStatusDropdown = () => (
+    <DropdownButton id="status-dropdown" title="Status">
+      <Dropdown.Item onClick={() => setStatus("NOT_STARTED")}>Not Started</Dropdown.Item>
+      <Dropdown.Item onClick={() => setStatus("IN_PROGRESS")}>In Progress</Dropdown.Item>
+      <Dropdown.Item onClick={() => setStatus("COMPLETED")}>Completed</Dropdown.Item>
+      <Dropdown.Item onClick={() => setStatus("CANCELLED")}>Cancelled</Dropdown.Item>
+    </DropdownButton>
+  );
 
   return (
     <Modal
       isOpen={true}
       onRequestClose={closeModal}
-      contentLabel="Create Task"
+      contentLabel={isEditMode ? "Edit Task" : "Create Task"}
       ariaHideApp={false}
     >
       <div className="modal-create-task-header">
-        <h2>Create Task</h2>
+        <h2>{isEditMode ? "Edit Task" : "Create Task"}</h2>
         <button onClick={closeModal} className="close-button">
           &times;
         </button>
@@ -130,6 +199,9 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
       <div className="modal-content-container">
         <div className="modal-info">
           <form onSubmit={handleSubmit}>
+          <div className="form-group">
+      {renderStatusDropdown()}
+    </div>
             <div className="form-group">
               <label>Title</label>
               <input
@@ -160,7 +232,7 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
               />
             </div>
             <button type="submit" className="submit-button">
-              Create Task
+              {isEditMode ? "Update Task" : "Create Task"}
             </button>
           </form>
         </div>
@@ -212,7 +284,6 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
               </div>
             ))}
           </div>
-
           <div className="external-executors">
             <label>External Executors</label>
             <input
@@ -221,7 +292,6 @@ const CreateTaskModal = ({ closeModal, addTask, projectName, tasks }) => {
               onChange={(e) => setExternalExecutors(e.target.value)}
             />
           </div>
-
           <div className="form-group">
             <DropdownButton id="dropdown-basic-button" title="Dependencies">
               {tasks.map((task) => (

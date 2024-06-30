@@ -6,13 +6,40 @@ import Cookies from 'js-cookie';
 import "gantt-task-react/dist/index.css";
 import { Gantt, Task} from 'gantt-task-react'
 
+
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const token = Cookies.get('authToken');
   const [tasks, setTasks] = useState([]);
-  const [viewMode, setViewMode] = useState('Day'); // ['Day', 'Week', 'Month'
+  const [viewMode, setViewMode] = useState('Day'); 
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [updatedPing, setUpdatedPing] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [projectProgress, setProjectProgress] = useState(0);
+
+  const handleTaskDoubleClick = (task) => {
+    tasks.forEach((t) => {
+      if (t.id === task.id) {
+    setSelectedTask(t);
+      }
+    setIsEditMode(true);
+    setShowTaskModal(true);
+  }
+  );
+};
+
+const handleSaveTask = (updatedTask) => {
+
+  setTasks((prevTasks) => {
+    return prevTasks.map((task) => {
+      if (task.id === updatedTask.id) {
+        return updatedTask;
+      }
+      return task;
+    });
+  });
+};
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -83,7 +110,7 @@ let tasksFormatted = tasks.map((task) => {
   
   tasksFormatted.push(formatedProjectTask);
 
-const onDateChange = async (task) => { // preciso de ver isto melhor
+const onDateChange = async (task) => { 
 
   tasks.forEach(async (t) => {
     if (t.id === task.id) {
@@ -187,6 +214,7 @@ const rtl = false;
           tasks={tasksFormatted}
           viewMode={viewMode}
           onDateChange={(task) => onDateChange(task)}
+          onDoubleClick={(task) => handleTaskDoubleClick(task)}
           onProgressChange={(task) => onProgressChange(task)}
           onTaskDelete={(task) => console.log('Task deleted:', task)} 
           rtl={rtl}
@@ -195,11 +223,20 @@ const rtl = false;
         <div>No tasks available</div>
       )}
      
-      <button className="btn btn-primary mt-3" onClick={() => setShowCreateTaskModal(true)}>
-        Add Task
+     <button className="btn btn-primary mt-3" onClick={() => { setIsEditMode(false); setShowTaskModal(true); }}>
+     Add Task
       </button>
-      
-      {showCreateTaskModal && <CreateTaskModal closeModal={() => setShowCreateTaskModal(false)} addTask={addTask} projectName={name} tasks={tasks} />}
+
+      {showTaskModal && (
+        <CreateTaskModal
+  closeModal={() => setShowTaskModal(false)}
+  addTask={handleSaveTask}
+  projectName={name}
+  tasks={tasks}
+  selectedTask={isEditMode ? selectedTask : null}
+  isEditMode={isEditMode}
+/>
+      )}
     </div>
   );
 };
