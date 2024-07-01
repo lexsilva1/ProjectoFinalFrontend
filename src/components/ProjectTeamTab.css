@@ -12,10 +12,7 @@
     text-align: center;
     margin-bottom: 20px; /* Ajuste conforme necessário */
   }
-  
-  .user-name {
-    margin-top: 10px; /* Ajuste conforme necessário */
-  }
+ 
 
   .header-with-invite {
     display: flex;
@@ -29,6 +26,8 @@
   
   .members-container h4, .invited-container h4, .applied-container h4{
     font-size: 16px; /* Tamanho menor para os títulos */
+    margin-left: 20px;
+    margin-bottom: 20px;
   }
 
 
@@ -55,9 +54,7 @@
     margin-bottom: 10px;
   }
   
-  .user-name {
-    margin-top: 10px;
-  }
+ 
 
   .card-title {
     text-align: center;

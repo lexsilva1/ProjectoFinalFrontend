@@ -240,6 +240,38 @@ export const updateTask = async (token, projectName, taskDto) => {
     return response.json();
 };
 
+export const promoteUser = async (token, projectName, userId) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/promote?userId=${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json(); 
+};
+
+export const demoteUser = async (token, projectName, userId) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/demote?userId=${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
+
 
 
 

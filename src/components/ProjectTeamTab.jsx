@@ -105,7 +105,7 @@ const ProjectTeamTab = ({ project }) => {
         alt={`${member.firstName} ${member.lastName}`}
         className="user-image-project"
       />
-      <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+      <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
       {/* Dropdown para mostrar e alterar o papel */}
       <select 
         className="role-dropdown" 
