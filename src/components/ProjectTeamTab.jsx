@@ -82,6 +82,7 @@ const ProjectTeamTab = ({ project }) => {
     }
   };
 
+
   return (
     <div className="card shadow-lg w-100">
       <div className="header-with-invite">
@@ -184,8 +185,7 @@ const ProjectTeamTab = ({ project }) => {
                   token,
                   project.name,
                   member.userId,
-                  "APPLIED",
-                  member.notificationId
+                  "ACCEPT_APPLICATION",
                 )
               }
             >
@@ -198,7 +198,7 @@ const ProjectTeamTab = ({ project }) => {
                   token,
                   project.name,
                   member.userId,
-                  "APPLIED",
+                  "REJECT",
                   member.notificationId
                 )
               }
