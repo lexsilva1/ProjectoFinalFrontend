@@ -3,6 +3,7 @@ import Avatar from '../multimedia/Images/Avatar.jpg';
 import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications } from '../services/projectServices';
 import './ProjectTeamTab.css';
 import UsersModal from './Modals/UsersModal';
+import userStore from '../stores/userStore';
 import Cookies from 'js-cookie';
 import { findAllUsers } from '../services/userServices';
 
@@ -12,6 +13,13 @@ const ProjectTeamTab = ({ project }) => {
   const [invitedUsers, setInvitedUsers] = useState([]);
   const token = Cookies.get("authToken");
   const [users, setUsers] = useState([]);
+  const currentUser = userStore((state) => state.user);
+  const isCurrentUserProjectManager = project.teamMembers?.find(
+    (member) => member.userId === currentUser.id
+  )?.isProjectManager;
+    
+
+  
   const members =
     project.teamMembers?.filter(
       (member) =>
@@ -153,54 +161,56 @@ const ProjectTeamTab = ({ project }) => {
       </div>
 
       <div className="applied-container">
-        <h4>Applied</h4>
-        <div className="members-list">
-          {applied.map((member, index) => (
-            <div
-              key={`${project.id}-applied-${index}`}
-              className="simple-user-display"
+  <h4>Applied</h4>
+  <div className="members-list">
+    {applied.map((member, index) => (
+      <div
+        key={`${project.id}-applied-${index}`}
+        className="simple-user-display"
+      >
+        <img
+          src={member.userPhoto || Avatar}
+          alt={`${member.firstName} ${member.lastName}`}
+          className="user-image-project"
+        />
+        <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+        {/* Conditionally render Accept and Decline buttons */}
+        {isCurrentUserProjectManager && (
+          <div className="application-actions">
+            <button
+              className="accept-button"
+              onClick={() =>
+                manageInvitesApplications(
+                  token,
+                  project.name,
+                  member.userId,
+                  "APPLIED",
+                  member.notificationId
+                )
+              }
             >
-              <img
-                src={member.userPhoto || Avatar}
-                alt={`${member.firstName} ${member.lastName}`}
-                className="user-image-project"
-              />
-              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-              {/* Accept and Decline buttons */}
-              <div className="application-actions">
-                <button
-                  className="accept-button"
-                  onClick={() =>
-                    manageInvitesApplications(
-                      token,
-                      project.name,
-                      member.userId,
-                      "APPLIED",
-                      member.notificationId
-                    )
-                  }
-                >
-                  Accept
-                </button>
-                <button
-                  className="decline-button"
-                  onClick={() =>
-                    rejectInvitesApplications(
-                      token,
-                      project.name,
-                      member.userId,
-                      "APPLIED",
-                      member.notificationId
-                    )
-                  }
-                >
-                  Decline
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+              Accept
+            </button>
+            <button
+              className="decline-button"
+              onClick={() =>
+                rejectInvitesApplications(
+                  token,
+                  project.name,
+                  member.userId,
+                  "APPLIED",
+                  member.notificationId
+                )
+              }
+            >
+              Decline
+            </button>
+          </div>
+        )}
       </div>
+    ))}
+  </div>
+</div>
     </div>
   );
 };
