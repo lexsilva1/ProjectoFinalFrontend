@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 const Project = () => {
   const { projectName } = useParams();
   const [isChatOpen, setIsChatOpen] = React.useState(false);
-  const toggleChat = () => setIsChatOpen(!isChatOpen);  // Função para alternar o estado do chat
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
   const [project, setProject] = useState({});
   const [activeTab, setActiveTab] = useState("info");
   const token = Cookies.get("authToken");
@@ -27,13 +27,18 @@ const Project = () => {
   const { t } = useTranslation();
   const [status, setStatus] = useState();
   const changeStatus = (newStatus) => {
-    if(newStatus === "In_Progress"){
+    if (newStatus === "In_Progress") {
       newStatus = "In Progress";
     }
     setStatus(newStatus);
-  }
+  };
 
-    const statuses = ['Planning','Ready','Approved', 'In Progress', 'Finished'];
+  const hasUserApplied = project.teamMembers?.some(
+    (member) =>
+      member.userId === currentUser.id && member.approvalStatus === "APPLIED"
+  );
+
+  const statuses = ["Planning", "Ready", "Approved", "In Progress", "Finished"];
   const getStatusClass = (status) => {
     switch (status) {
       case "Planning":
@@ -52,18 +57,18 @@ const Project = () => {
         return "project-card-status";
     }
   };
-const updateStatus = async (status) => {
- if(status === "In Progress"){
-  status = "In_Progress";
- }
+  const updateStatus = async (status) => {
+    if (status === "In Progress") {
+      status = "In_Progress";
+    }
     const response = await updateProjectStatus(token, project.name, status);
     console.log(response);
     if (response === "status updated") {
       changeStatus(status);
-    }else{
+    } else {
       alert("You can't update the status to this value");
     }
-  }
+  };
   const isUserMember = project.teamMembers?.some(
     (member) => member.approvalStatus === "MEMBER"
   );
@@ -96,15 +101,20 @@ const updateStatus = async (status) => {
       progressSelectedColor: "#ff9e0d",
     },
     type: "project",
-  }
+  };
   const isMember = project.teamMembers?.some(
-    (member) => member.userId === currentUser.id
+    (member) =>
+      member.userId === currentUser.id &&
+      (member.approvalStatus === "MEMBER" ||
+        member.approvalStatus === "CREATOR")
   );
 
   const renderInfoTabContent = () => {
     const approvedMembers = project.teamMembers
       ? project.teamMembers.filter(
-          (member) => member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
+          (member) =>
+            member.approvalStatus === "MEMBER" ||
+            member.approvalStatus === "CREATOR"
         )
       : [];
 
@@ -114,10 +124,10 @@ const updateStatus = async (status) => {
       const response = await projectApplication(token, project.name);
       if (response === "applied") {
         navigate("/");
-      }else{
+      } else {
         alert("You have already applied to this project");
       }
-    }
+    };
 
     return (
       <div className="card shadow-lg w-100">
@@ -129,23 +139,21 @@ const updateStatus = async (status) => {
         <div className="card-body">
           <h2 className="card-title">{project.name}</h2>
           <p className="card-text-project">
-          <div className={getStatusClass(status)}>
-      <div className="project-card-status-bar"></div>
-      <div className="status-options">
-        {statuses.map((statusOption) => (
-          <div
-            key={statusOption}
-            className="status-option"
-            onClick={() => updateStatus(statusOption)}
-            style={{ cursor: 'pointer' }}
-          >
-            <strong>{statusOption}</strong>
-          </div>
-        ))}
-      </div>
-    </div>
-  
-
+            <div className={getStatusClass(status)}>
+              <div className="project-card-status-bar"></div>
+              <div className="status-options">
+                {statuses.map((statusOption) => (
+                  <div
+                    key={statusOption}
+                    className="status-option"
+                    onClick={() => updateStatus(statusOption)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <strong>{statusOption}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
           </p>
           <p className="card-text-project">
             <strong>Laboratory:</strong> {project.lab}
@@ -250,7 +258,13 @@ const updateStatus = async (status) => {
           )}
           {!isMember && slotsAvailable && (
             <div className="button-container">
-              <button className="btn-project-apply" onClick={handleApply}>Apply</button>
+              {hasUserApplied ? (
+                <div>You have applied to this project.</div>
+              ) : (
+                <button className="btn-project-apply" onClick={handleApply}>
+                  Apply
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -291,7 +305,7 @@ const updateStatus = async (status) => {
   return (
     <>
       <Header />
-      {isMember && <ChatIcon onChatIconClick={toggleChat} />}  
+      {isMember && <ChatIcon onChatIconClick={toggleChat} />}
       {isChatOpen && <ProjectChat isOpen={isChatOpen} onClose={toggleChat} />}
       <div className="app-container">
         <Sidebar />

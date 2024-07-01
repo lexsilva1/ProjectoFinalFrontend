@@ -173,6 +173,7 @@ export const rejectInvitesApplications = async (token, projectName, userId, oper
 
     return response.json();
 }
+
 export const projectPhotoUpload = async (token, projectName, photo) => {
     const formData = new FormData();
     formData.append('input', photo);

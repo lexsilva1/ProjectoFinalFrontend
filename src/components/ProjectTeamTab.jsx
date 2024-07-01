@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '../multimedia/Images/Avatar.jpg';
-import { inviteUser, promoteUser, demoteUser } from '../services/projectServices';
+import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications } from '../services/projectServices';
 import './ProjectTeamTab.css';
 import UsersModal from './Modals/UsersModal';
 import Cookies from 'js-cookie';
@@ -14,7 +14,9 @@ const ProjectTeamTab = ({ project }) => {
   const [users, setUsers] = useState([]);
   const members =
     project.teamMembers?.filter(
-      (member) => member.approvalStatus === "MEMBER"
+      (member) =>
+        member.approvalStatus === "MEMBER" ||
+        member.approvalStatus === "CREATOR"
     ) || [];
   const invited =
     project.teamMembers?.filter(
@@ -58,7 +60,7 @@ const ProjectTeamTab = ({ project }) => {
   const handleRoleChange = async (event, userId) => {
     const newRole = event.target.value;
     console.log(`Atualizando o papel do usuário ${userId} para ${newRole}`);
-  
+
     try {
       if (newRole === "Project Manager") {
         await promoteUser(token, project.name, userId);
@@ -75,9 +77,9 @@ const ProjectTeamTab = ({ project }) => {
   return (
     <div className="card shadow-lg w-100">
       <div className="header-with-invite">
-      <div className="card-header">
-  <h4 className="card-title">Team Members For {project.name}</h4>
-</div>
+        <div className="card-header">
+          <h4 className="card-title">Team Members For {project.name}</h4>
+        </div>
         <button className="invite-button" onClick={handleOpenModal}>
           Add Team Member
         </button>
@@ -92,41 +94,43 @@ const ProjectTeamTab = ({ project }) => {
         />
       </div>
       <div className="card-slots-avaliable">
-      <p className="card-text-project">
-        <strong>Slots available:</strong>{" "}
-        {project.maxTeamMembers !== undefined &&
-          `${project.maxTeamMembers - members.length}/${
-            project.maxTeamMembers
-          }`}
-      </p>
+        <p className="card-text-project">
+          <strong>Slots available:</strong>{" "}
+          {project.maxTeamMembers !== undefined &&
+            `${project.maxTeamMembers - members.length}/${
+              project.maxTeamMembers
+            }`}
+        </p>
       </div>
 
       <div className="members-container">
-      <h4>Members</h4>
-<div className="members-list">
-  {members.map((member, index) => (
-    <div
-      key={`${project.id}-member-${index}`}
-      className="simple-user-display"
-    >
-      <img
-        src={member.userPhoto || Avatar}
-        alt={`${member.firstName} ${member.lastName}`}
-        className="user-image-project"
-      />
-      <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
-      {/* Dropdown para mostrar e alterar o papel */}
-      <select 
-        className="role-dropdown" 
-        value={member.isProjectManager ? "Project Manager" : "Collaborator"}
-        onChange={(e) => handleRoleChange(e, member.userId)}
-      >
-        <option value="Collaborator">Collaborator</option>
-        <option value="Project Manager">Project Manager</option>
-      </select>
-    </div>
-  ))}
-</div>
+        <h4>Members</h4>
+        <div className="members-list">
+          {members.map((member, index) => (
+            <div
+              key={`${project.id}-member-${index}`}
+              className="simple-user-display"
+            >
+              <img
+                src={member.userPhoto || Avatar}
+                alt={`${member.firstName} ${member.lastName}`}
+                className="user-image-project"
+              />
+              <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
+              {/* Dropdown para mostrar e alterar o papel */}
+              <select
+                className="role-dropdown"
+                value={
+                  member.isProjectManager ? "Project Manager" : "Collaborator"
+                }
+                onChange={(e) => handleRoleChange(e, member.userId)}
+              >
+                <option value="Collaborator">Collaborator</option>
+                <option value="Project Manager">Project Manager</option>
+              </select>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="invited-container">
@@ -162,6 +166,37 @@ const ProjectTeamTab = ({ project }) => {
                 className="user-image-project"
               />
               <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+              {/* Accept and Decline buttons */}
+              <div className="application-actions">
+                <button
+                  className="accept-button"
+                  onClick={() =>
+                    manageInvitesApplications(
+                      token,
+                      project.name,
+                      member.userId,
+                      "APPLIED",
+                      member.notificationId
+                    )
+                  }
+                >
+                  Accept
+                </button>
+                <button
+                  className="decline-button"
+                  onClick={() =>
+                    rejectInvitesApplications(
+                      token,
+                      project.name,
+                      member.userId,
+                      "APPLIED",
+                      member.notificationId
+                    )
+                  }
+                >
+                  Decline
+                </button>
+              </div>
             </div>
           ))}
         </div>

@@ -81,8 +81,12 @@ const ProjectCard = ({ project, isLoggedIn }) => {
           {isLoggedIn && (() => {
             const currentUser = userStore((state) => state.user);
             const isMember = project.teamMembers?.some(
-              (member) => member.userId === currentUser.id
+              (member) =>
+                member.userId === currentUser.id &&
+                (member.approvalStatus === "MEMBER" ||
+                  member.approvalStatus === "CREATOR")
             );
+          
             return (
               <div className="project-card-btn-container">
                 <Link
