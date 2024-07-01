@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '../multimedia/Images/Avatar.jpg';
-import { inviteUser } from '../services/projectServices';
+import { inviteUser, promoteUser, demoteUser } from '../services/projectServices';
 import './ProjectTeamTab.css';
 import UsersModal from './Modals/UsersModal';
 import Cookies from 'js-cookie';
@@ -55,12 +55,21 @@ const ProjectTeamTab = ({ project }) => {
       });
   };
 
-  const handleRoleChange = (event, userId) => {
+  const handleRoleChange = async (event, userId) => {
     const newRole = event.target.value;
-    // Lógica para atualizar o papel do usuário no backend
-    // Isso pode envolver chamar uma API e passar o userId e o novo papel
     console.log(`Atualizando o papel do usuário ${userId} para ${newRole}`);
-    // Atualize o estado local ou faça uma nova busca de usuários após a atualização, se necessário
+  
+    try {
+      if (newRole === "Project Manager") {
+        await promoteUser(token, project.name, userId);
+        console.log(`Usuário ${userId} promovido a Project Manager.`);
+      } else if (newRole === "Collaborator") {
+        await demoteUser(token, project.name, userId);
+        console.log(`Usuário ${userId} rebaixado para Collaborator.`);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar o papel do usuário", error);
+    }
   };
 
   return (

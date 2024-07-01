@@ -287,7 +287,7 @@ export const demoteUser = async (token, projectName, userId) => {
     }
 
     return response.json();
-}
+};
 
 
 
