@@ -8,7 +8,7 @@ import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
-import { getProjectByName, projectApplication } from "../services/projectServices";
+import { getProjectByName, projectApplication, updateProjectStatus } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -22,7 +22,15 @@ const Project = () => {
   const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [status, setStatus] = useState();
+  const changeStatus = (newStatus) => {
+    if(newStatus === "In_Progress"){
+      newStatus = "In Progress";
+    }
+    setStatus(newStatus);
+  }
 
+    const statuses = ['Planning','Ready','Approved', 'In Progress', 'Finished'];
   const getStatusClass = (status) => {
     switch (status) {
       case "Planning":
@@ -41,7 +49,18 @@ const Project = () => {
         return "project-card-status";
     }
   };
-
+const updateStatus = async (status) => {
+ if(status === "In Progress"){
+  status = "In_Progress";
+ }
+    const response = await updateProjectStatus(token, project.name, status);
+    console.log(response);
+    if (response === "status updated") {
+      changeStatus(status);
+    }else{
+      alert("You can't update the status to this value");
+    }
+  }
   const isUserMember = project.teamMembers?.some(
     (member) => member.approvalStatus === "MEMBER"
   );
@@ -55,6 +74,7 @@ const Project = () => {
       const encodedProjectName = encodeURIComponent(projectName);
       const projectData = await getProjectByName(token, encodedProjectName);
       setProject(projectData);
+      setStatus(projectData.status);
     };
 
     fetchProject();
@@ -106,10 +126,23 @@ const Project = () => {
         <div className="card-body">
           <h2 className="card-title">{project.name}</h2>
           <p className="card-text-project">
-            <div className={getStatusClass(project.status)}>
-              <div className="project-card-status-bar"></div>
-              <strong></strong> {project.status}
-            </div>
+          <div className={getStatusClass(status)}>
+      <div className="project-card-status-bar"></div>
+      <div className="status-options">
+        {statuses.map((statusOption) => (
+          <div
+            key={statusOption}
+            className="status-option"
+            onClick={() => updateStatus(statusOption)}
+            style={{ cursor: 'pointer' }}
+          >
+            <strong>{statusOption}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
+  
+
           </p>
           <p className="card-text-project">
             <strong>Laboratory:</strong> {project.lab}

@@ -239,6 +239,23 @@ export const updateTask = async (token, projectName, taskDto) => {
 
     return response.json();
 };
+export const updateProjectStatus = async (token, projectName, status) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/status?status=${encodeURIComponent(status)}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+       
+    });
+
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}
 
 
 

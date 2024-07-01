@@ -118,3 +118,8 @@
     align-items: center; /* Centraliza verticalmente */
     height: 100%; /* Opcional: ajuste a altura conforme necessário */
   }
+  .status-options {
+    display: flex;
+    justify-content: space-around; /* Adjusts the spacing between options */
+    align-items: center; /* Aligns items vertically in the center */
+  }

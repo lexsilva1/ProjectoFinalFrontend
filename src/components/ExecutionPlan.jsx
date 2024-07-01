@@ -74,25 +74,6 @@ const handleSaveTask = (updatedTask) => {
     return isNaN(date) ? new Date() : date;
   };
   
-
-  // Prepara as tarefas formatadas para o Google Gantt Chart
-let tasksFormatted = tasks.map((task) => {
-  return {
-    id: task.id,
-    name: task.title,
-    start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
-    end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
-    
-    progress: task.status === 'COMPLETED' ? 100 :(task.status === 'IN_PROGRESS' ? 50 : 0), // Adjust as necessary
-    dependencies: task.dependencies,
-    isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED' ? true : false, // Adjust as necessary
-    styles: { 
-      progressColor: '#ffbb54', 
-      progressSelectedColor: '#ff9e0d' 
-    },
-   
-  };
-})
   const formatedProjectTask = {
     id: projectTask.id,
     name: projectTask.name,
@@ -107,8 +88,33 @@ let tasksFormatted = tasks.map((task) => {
     },
     type: 'project',
   };
+  let tasksFormatted = [];
+ 
   
-  tasksFormatted.push(formatedProjectTask);
+  // Prepara as tarefas formatadas para o Google Gantt Chart
+  tasksFormatted = tasks.map((task) => {
+   
+  return {
+    id: task.id,
+    name: task.title,
+    start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
+    end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
+    
+    progress: task.status === 'COMPLETED' ? 100 :(task.status === 'IN_PROGRESS' ? 50 : 0), // Adjust as necessary
+    dependencies: task.dependencies,
+    isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED' ? true : false, // Adjust as necessary
+    styles: { 
+      progressColor: '#ffbb54', 
+      progressSelectedColor: '#ff9e0d' 
+    },
+    type: task.title === 'Final Presentation' ? 'milestone' : 'task',
+   
+  };
+ 
+})
+
+tasksFormatted.push(formatedProjectTask);
+ 
 
 const onDateChange = async (task) => { 
 
