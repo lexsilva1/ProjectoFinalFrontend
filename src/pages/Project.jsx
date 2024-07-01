@@ -12,10 +12,13 @@ import { getProjectByName, projectApplication, updateProjectStatus } from "../se
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
+import ProjectChat from "../components/ProjectChat";
 import { useTranslation } from "react-i18next";
 
 const Project = () => {
   const { projectName } = useParams();
+  const [isChatOpen, setIsChatOpen] = React.useState(false);
+  const toggleChat = () => setIsChatOpen(!isChatOpen);  // Função para alternar o estado do chat
   const [project, setProject] = useState({});
   const [activeTab, setActiveTab] = useState("info");
   const token = Cookies.get("authToken");
@@ -288,7 +291,8 @@ const updateStatus = async (status) => {
   return (
     <>
       <Header />
-      {isMember && <ChatIcon />}
+      {isMember && <ChatIcon onChatIconClick={toggleChat} />}  
+      {isChatOpen && <ProjectChat isOpen={isChatOpen} onClose={toggleChat} />}
       <div className="app-container">
         <Sidebar />
         <div className="project-container">

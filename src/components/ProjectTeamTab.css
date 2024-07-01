@@ -12,10 +12,7 @@
     text-align: center;
     margin-bottom: 20px; /* Ajuste conforme necessário */
   }
-  
-  .user-name {
-    margin-top: 10px; /* Ajuste conforme necessário */
-  }
+ 
 
   .header-with-invite {
     display: flex;
@@ -27,9 +24,13 @@
     /* Estilize seu botão conforme necessário */
   }
   
-  .members-container h4 {
+  .members-container h4, .invited-container h4, .applied-container h4{
     font-size: 16px; /* Tamanho menor para os títulos */
+    margin-left: 20px;
+    margin-bottom: 20px;
   }
+
+
   
   .members-list {
     display: flex;
@@ -42,7 +43,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-right: 20px; /* Espaço entre os membros */
+    margin-right: 20px; 
   }
   
   .user-image-project {
@@ -53,6 +54,24 @@
     margin-bottom: 10px;
   }
   
-  .user-name {
+ 
+
+  .card-title {
+    text-align: center;
+  }
+
+  .card-header {
+    width: 100%;
+    text-align: center; 
+    display: flex; 
+    justify-content: center;
+    padding: 10px 0; 
+  }
+
+  .card-slots-avaliable {
+    display: flex;
+    justify-content: right;
+    align-items: center;
     margin-top: 10px;
+    margin-right: 10px;
   }

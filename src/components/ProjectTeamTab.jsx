@@ -55,12 +55,22 @@ const ProjectTeamTab = ({ project }) => {
       });
   };
 
+  const handleRoleChange = (event, userId) => {
+    const newRole = event.target.value;
+    // Lógica para atualizar o papel do usuário no backend
+    // Isso pode envolver chamar uma API e passar o userId e o novo papel
+    console.log(`Atualizando o papel do usuário ${userId} para ${newRole}`);
+    // Atualize o estado local ou faça uma nova busca de usuários após a atualização, se necessário
+  };
+
   return (
     <div className="card shadow-lg w-100">
       <div className="header-with-invite">
-        <h3>Team Members for {project.name}</h3>
+      <div className="card-header">
+  <h4 className="card-title">Team Members For {project.name}</h4>
+</div>
         <button className="invite-button" onClick={handleOpenModal}>
-          Invite
+          Add Team Member
         </button>
         <UsersModal
           show={showModal}
@@ -72,6 +82,7 @@ const ProjectTeamTab = ({ project }) => {
           onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
         />
       </div>
+      <div className="card-slots-avaliable">
       <p className="card-text-project">
         <strong>Slots available:</strong>{" "}
         {project.maxTeamMembers !== undefined &&
@@ -79,24 +90,34 @@ const ProjectTeamTab = ({ project }) => {
             project.maxTeamMembers
           }`}
       </p>
+      </div>
 
       <div className="members-container">
-        <h4>Members</h4>
-        <div className="members-list">
-          {members.map((member, index) => (
-            <div
-              key={`${project.id}-member-${index}`}
-              className="simple-user-display"
-            >
-              <img
-                src={member.userPhoto || Avatar}
-                alt={`${member.firstName} ${member.lastName}`}
-                className="user-image-project"
-              />
-              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-            </div>
-          ))}
-        </div>
+      <h4>Members</h4>
+<div className="members-list">
+  {members.map((member, index) => (
+    <div
+      key={`${project.id}-member-${index}`}
+      className="simple-user-display"
+    >
+      <img
+        src={member.userPhoto || Avatar}
+        alt={`${member.firstName} ${member.lastName}`}
+        className="user-image-project"
+      />
+      <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
+      {/* Dropdown para mostrar e alterar o papel */}
+      <select 
+        className="role-dropdown" 
+        value={member.isProjectManager ? "Project Manager" : "Collaborator"}
+        onChange={(e) => handleRoleChange(e, member.userId)}
+      >
+        <option value="Collaborator">Collaborator</option>
+        <option value="Project Manager">Project Manager</option>
+      </select>
+    </div>
+  ))}
+</div>
       </div>
 
       <div className="invited-container">

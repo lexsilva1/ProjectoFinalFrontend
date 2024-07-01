@@ -33,7 +33,7 @@
 }
 
 .card {
-    width: 100%!important; 
+    width: 100%; 
     height: auto;
     background-color: white;
     border: 1px solid var(--primary-color);
