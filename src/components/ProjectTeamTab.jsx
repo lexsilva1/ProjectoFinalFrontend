@@ -14,10 +14,12 @@ const ProjectTeamTab = ({ project }) => {
   const token = Cookies.get("authToken");
   const [users, setUsers] = useState([]);
   const currentUser = userStore((state) => state.user);
+  const [localTeamMembers, setLocalTeamMembers] = useState(project.teamMembers);
+  
   const isCurrentUserProjectManager = project.teamMembers?.find(
     (member) => member.userId === currentUser.id
   )?.isProjectManager;
-    
+
 
   
   const members =
@@ -51,15 +53,29 @@ const ProjectTeamTab = ({ project }) => {
     fetchUsers();
   }, [token]);
 
+  useEffect(() => {
+    // Assuming project.teamMembers is up-to-date and includes users with all statuses
+    const initialInvitedUsers = project.teamMembers.filter(member => member.approvalStatus === "INVITED");
+    setInvitedUsers(initialInvitedUsers);
+  }, [project.teamMembers]);
+  
   const handleUserAdded = (userToAdd) => {
     console.log(token, project.name, userToAdd.userId);
     inviteUser(token, project.name, userToAdd.userId)
       .then(() => {
-        setInvitedUsers([...invitedUsers, userToAdd]);
+        const newUserInvited = {
+          ...userToAdd,
+          approvalStatus: "INVITED",
+        };
+    
+        setLocalTeamMembers(prevMembers => [...prevMembers, newUserInvited]);
+        setInvitedUsers(prevInvited => [...prevInvited, newUserInvited]);
+    
+        const updatedUsers = users.filter(user => user.userId !== userToAdd.userId);
+        setUsers(updatedUsers);
+    
         handleCloseModal();
-        console.log(token, project.name, userToAdd.userId);
       })
-
       .catch((error) => {
         console.error("Erro ao convidar usuário", error);
       });
@@ -81,6 +97,12 @@ const ProjectTeamTab = ({ project }) => {
       console.error("Erro ao atualizar o papel do usuário", error);
     }
   };
+  const excludedUserIds = [
+    ...members.map(member => member.userId),
+    ...invited.map(invite => invite.userId),
+    ...applied.map(application => application.userId),
+  ];
+  
 
 
   return (
@@ -93,14 +115,14 @@ const ProjectTeamTab = ({ project }) => {
           Add Team Member
         </button>
         <UsersModal
-          show={showModal}
-          handleClose={handleCloseModal}
-          inputs={{}}
-          setInputs={() => {}}
-          users={users}
-          onUserAdded={handleUserAdded}
-          onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
-        />
+  show={showModal}
+  handleClose={handleCloseModal}
+  inputs={{}}
+  setInputs={() => {}}
+  users={users.filter(user => !excludedUserIds.includes(user.userId))} 
+  onUserAdded={handleUserAdded}
+  onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
+/>
       </div>
       <div className="card-slots-avaliable">
         <p className="card-text-project">
@@ -143,23 +165,16 @@ const ProjectTeamTab = ({ project }) => {
       </div>
 
       <div className="invited-container">
-        <h4>Invited</h4>
-        <div className="members-list">
-          {invited.map((member, index) => (
-            <div
-              key={`${project.id}-invited-${index}`}
-              className="simple-user-display"
-            >
-              <img
-                src={member.userPhoto || Avatar}
-                alt={`${member.firstName} ${member.lastName}`}
-                className="user-image-project"
-              />
-              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-            </div>
-          ))}
-        </div>
+  <h4>Invited</h4>
+  <div className="members-list">
+    {invitedUsers.map((member, index) => (
+      <div key={`${project.id}-invited-${index}`} className="simple-user-display">
+        <img src={member.userPhoto || Avatar} alt={`${member.firstName} ${member.lastName}`} className="user-image-project" />
+        <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
       </div>
+    ))}
+  </div>
+</div>
 
       <div className="applied-container">
   <h4>Applied</h4>
