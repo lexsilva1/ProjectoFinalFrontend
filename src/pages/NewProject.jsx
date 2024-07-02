@@ -13,6 +13,7 @@ import { getSkills } from "../services/skillServices";
 import { projectPhotoUpload } from "../services/projectServices";
 import { findAllUsers } from "../services/userServices";
 import userstore from "../stores/userStore"
+import { useTranslation } from "react-i18next";
 import './NewProject.css';
 
 /* Componente NewProject: Responsável por criar um novo projeto, contém as 3 etapas de formulário*/
@@ -20,6 +21,7 @@ import './NewProject.css';
 const NewProject = () => {
   const token = Cookies.get("authToken");
   const user = userstore((state) => state.user);
+  const { t } = useTranslation();
 
   // Define um objeto 'creator' com informações detalhadas do criador do projeto.
   const creator = {
@@ -230,7 +232,7 @@ const NewProject = () => {
       <Sidebar />
       <Container>
         <Card className="project-card">
-        <CardHeader className="CardHeader-create-project blue-card-header">Create New Project</CardHeader>
+        <CardHeader className="CardHeader-create-project blue-card-header">{t("Create New Project")}</CardHeader>
           <CardBody>
             <Form>{renderStep()}</Form>
           </CardBody>

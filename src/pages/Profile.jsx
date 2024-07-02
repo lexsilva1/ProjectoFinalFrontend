@@ -16,6 +16,9 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import TypeModal from "../components/Modals/TypeModal";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
+// Componente Profile: Responsável por exibir o perfil do utilizador logado e permitir a edição do mesmo
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -36,6 +39,7 @@ const Profile = () => {
   const [projects, setProjects] = useState([]);
   const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const isOwnProfile = user?.id == userId;
+  const { t } = useTranslation();
 
   const [formValues, setFormValues] = useState({
     firstName: "",
@@ -45,6 +49,7 @@ const Profile = () => {
     bio: "",
   });
 
+  // Função para obter os dados do utilizador e preencher os campos do formulário
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -94,6 +99,7 @@ const Profile = () => {
     fetchData();
   }, [userId, user, token]);
 
+  // Função para preencher os campos do formulário com os dados do utilizador
   useEffect(() => {
     if (profile) {
       setFormValues({
@@ -112,6 +118,7 @@ const Profile = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
+  // Função para selecionar o tipo de skill ou interesse
   const onTypeSelect = (type) => {
     setSelectedType(type);
     if (resolveOnSkillTypeSelected) {
@@ -120,19 +127,23 @@ const Profile = () => {
     }
   };
 
+  // Função para abrir o modal de adição de skill ou interesse (escolhendo o tipo de skill ou interesse)
   const handleOpenModal = (type) => {
     setModalType(type);
     setShowModal(true);
   };
 
+  // Função para fechar o modal de adição de skill ou interesse
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
+  // Função para fazer o upload da imagem do utilizador
   const handleImageUpload = (e) => {
     const uploadedImage = e.target.files[0];
     setImage(uploadedImage);
 
+  // Preview da imagem (antes de ser feito o upload)
     const reader = new FileReader();
     reader.readAsDataURL(uploadedImage);
     reader.onloadend = () => {
@@ -140,6 +151,7 @@ const Profile = () => {
     };
   };
 
+  // Função para guardar as alterações feitas no perfil do utilizador
   const handleSave = async (e) => {
     e.preventDefault();
     let finalImageURL = profile.userPhoto || Avatar;
@@ -185,6 +197,7 @@ const Profile = () => {
     }
   };
 
+  // Função para atualizar o estado dos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prevValues) => ({
@@ -193,6 +206,7 @@ const Profile = () => {
     }));
   };
 
+  // Função para adicionar ou remover skills
   const handleSkillsChange = async (selected) => {
     if (selected.length > selectedSkills.length) {
       const newSkills = selected.filter(
@@ -235,6 +249,7 @@ const Profile = () => {
     setSelectedSkills(selected);
   };
 
+  // Função para adicionar ou remover interesses
   const handleInterestsChange = async (selected) => {
     if (selected.length > selectedInterests.length) {
       const newInterests = selected.filter(
@@ -275,10 +290,11 @@ const Profile = () => {
       }
     }
     setSelectedInterests(selected);
-    console.log("profile selectedInterests",selectedInterests);
-    console.log("profile selected",selected);
+    console.log("profile selectedInterests", selectedInterests);
+    console.log("profile selected", selected);
   };
 
+  // Função para alterar a privacidade do perfil
   const togglePrivacy = async () => {
     try {
       const newPrivacyStatus = profile.isPrivate ? 0 : 1;
@@ -315,8 +331,8 @@ const Profile = () => {
                     </Button>
                     <span className="privacy-text">
                       {profile?.isPrivate
-                        ? "Private Profile"
-                        : "Public Profile"}
+                        ? t("Private Profile")
+                        : t("Public Profile")}
                     </span>
                   </div>
                 )}
@@ -354,11 +370,11 @@ const Profile = () => {
                     </h2>
                     <hr />
                     <Row>
-                      <Col md={4} >
+                      <Col md={4}>
                         {editMode ? (
                           <Form>
                             <Form.Group>
-                              <Form.Label>First Name:</Form.Label>
+                              <Form.Label>{t("First Name:")}</Form.Label>
                               <Form.Control
                                 type="text"
                                 name="firstName"
@@ -367,7 +383,7 @@ const Profile = () => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>Last Name:</Form.Label>
+                              <Form.Label>{t("Last Name:")}</Form.Label>
                               <Form.Control
                                 type="text"
                                 name="lastName"
@@ -376,7 +392,7 @@ const Profile = () => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>Nickname:</Form.Label>
+                              <Form.Label>{t("Nickname:")}</Form.Label>
                               <Form.Control
                                 type="text"
                                 name="nickname"
@@ -385,7 +401,7 @@ const Profile = () => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>Usual Work Place:</Form.Label>
+                              <Form.Label>{t("Usual Work Place:")}</Form.Label>
                               <Form.Control
                                 as="select"
                                 name="labLocation"
@@ -400,7 +416,7 @@ const Profile = () => {
                               </Form.Control>
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>Bio:</Form.Label>
+                              <Form.Label>{t("Bio:")}</Form.Label>
                               <Form.Control
                                 as="textarea"
                                 rows={3}
@@ -414,32 +430,32 @@ const Profile = () => {
                               type="button"
                               onClick={handleSave}
                             >
-                              Save
+                              {t("Save")}
                             </Button>
                           </Form>
                         ) : (
                           <div>
                             <p>
-                              <strong>First Name:</strong> {profile?.firstName}
+                              <strong>{t("First Name:")}</strong> {profile?.firstName}
                             </p>
                             <p>
-                              <strong>Last Name:</strong> {profile?.lastName}
+                              <strong>{t("Last Name:")}</strong> {profile?.lastName}
                             </p>
                             <p>
-                              <strong>Nickname:</strong> {profile?.nickname}
+                              <strong>{t("Nickname:")}</strong> {profile?.nickname}
                             </p>
                             <p>
-                              <strong>Usual Work Place:</strong>{" "}
+                              <strong>{t("Usual Work Place:")}</strong>{" "}
                               {profile?.labLocation}
                             </p>
                             <p>
-                              <strong>Bio:</strong> {profile?.bio}
+                              <strong>{t("Bio:")}</strong> {profile?.bio}
                             </p>
                           </div>
                         )}
                       </Col>
-                      <Col md={4} style={{ marginLeft: "0px"}}>
-                        <h4 style={{ fontSize: "1rem" }}>Skills</h4>
+                      <Col md={4} style={{ marginLeft: "0px" }}>
+                        <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -449,7 +465,7 @@ const Profile = () => {
                             options={skills}
                             allowNew
                             newSelectionPrefix="Add a new skill: "
-                            placeholder="Choose your skills..."
+                            placeholder= {t("Choose your skills...")}
                             selected={selectedSkills}
                           />
                         ) : (
@@ -461,7 +477,9 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>Interests</h4>
+                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
+                          {t("Interests")}
+                        </h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="interests-typeahead"
@@ -471,7 +489,7 @@ const Profile = () => {
                             options={interests}
                             allowNew
                             newSelectionPrefix="Add a new interest: "
-                            placeholder="Choose your interests..."
+                            placeholder= {t("Choose your interests...")}
                             selected={selectedInterests}
                           />
                         ) : (
@@ -484,8 +502,15 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4} style={{ display: "flex", flexDirection: "column", paddingLeft: "8rem" }}>
-                        <h4 style={{ fontSize: "1rem" }}>Projects</h4>
+                      <Col
+                        md={4}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          paddingLeft: "8rem",
+                        }}
+                      >
+                        <h4 style={{ fontSize: "1rem" }}>{t("Projects")}</h4>
                         {profile?.projects?.length > 0 ? (
                           profile.projects.map((project, index) => (
                             <div key={index}>
@@ -495,7 +520,7 @@ const Profile = () => {
                             </div>
                           ))
                         ) : (
-                          <p>No projects added</p>
+                          <p>{t("No projects added")}</p>
                         )}
                       </Col>
                     </Row>
