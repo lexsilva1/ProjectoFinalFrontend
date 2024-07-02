@@ -21,7 +21,7 @@ const ProjectChat = ({ isOpen, onClose }) => {
   console.log(projectName);
   const { setMessages, messages, sendMessage } = useChatSocket(token, projectName);
   const [message, setMessage] = useState('');
-
+  console.log(messages);
   const handleSendMessage = (event) => {
     event.preventDefault();
     if (message.trim() !== '') {
