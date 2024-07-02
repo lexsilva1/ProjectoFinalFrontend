@@ -109,6 +109,7 @@ const ProjectTeamTab = ({ project }) => {
         setLocalTeamMembers(updatedTeamMembers);
   
         console.log(`User ${userId} removed from project ${project.name}.`);
+        console.log("Updated localTeamMembers:", updatedTeamMembers); // Adicionar este log
       })
       .catch((error) => {
         console.error("Error removing user from project", error);

@@ -320,7 +320,7 @@ export const removeProjectUser = async (token, projectName, userId) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    return response.text();
 }
 
 
