@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '../multimedia/Images/Avatar.jpg';
-import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications } from '../services/projectServices';
+import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications, removeProjectUser } from '../services/projectServices';
 import './ProjectTeamTab.css';
 import UsersModal from './Modals/UsersModal';
 import userStore from '../stores/userStore';
@@ -15,25 +15,23 @@ const ProjectTeamTab = ({ project }) => {
   const [users, setUsers] = useState([]);
   const currentUser = userStore((state) => state.user);
   const [localTeamMembers, setLocalTeamMembers] = useState(project.teamMembers);
-  
-  const isCurrentUserProjectManager = project.teamMembers?.find(
+
+  const isCurrentUserProjectManager = localTeamMembers?.find(
     (member) => member.userId === currentUser.id
   )?.isProjectManager;
 
-
-  
   const members =
-    project.teamMembers?.filter(
+    localTeamMembers?.filter(
       (member) =>
         member.approvalStatus === "MEMBER" ||
         member.approvalStatus === "CREATOR"
     ) || [];
   const invited =
-    project.teamMembers?.filter(
+    localTeamMembers?.filter(
       (member) => member.approvalStatus === "INVITED"
     ) || [];
   const applied =
-    project.teamMembers?.filter(
+    localTeamMembers?.filter(
       (member) => member.approvalStatus === "APPLIED"
     ) || [];
 
@@ -54,10 +52,9 @@ const ProjectTeamTab = ({ project }) => {
   }, [token]);
 
   useEffect(() => {
-    // Assuming project.teamMembers is up-to-date and includes users with all statuses
-    const initialInvitedUsers = project.teamMembers.filter(member => member.approvalStatus === "INVITED");
+    const initialInvitedUsers = localTeamMembers.filter(member => member.approvalStatus === "INVITED");
     setInvitedUsers(initialInvitedUsers);
-  }, [project.teamMembers]);
+  }, [localTeamMembers]);
   
   const handleUserAdded = (userToAdd) => {
     console.log(token, project.name, userToAdd.userId);
@@ -97,13 +94,47 @@ const ProjectTeamTab = ({ project }) => {
       console.error("Erro ao atualizar o papel do usuário", error);
     }
   };
+
   const excludedUserIds = [
     ...members.map(member => member.userId),
     ...invited.map(invite => invite.userId),
     ...applied.map(application => application.userId),
   ];
-  
 
+  const handleRemoveUser = (userId) => {
+    removeProjectUser(token, project.name, userId)
+      .then(() => {
+        // Filter out the removed user from localTeamMembers
+        const updatedTeamMembers = localTeamMembers.filter(member => member.userId !== userId);
+        setLocalTeamMembers(updatedTeamMembers);
+  
+        console.log(`User ${userId} removed from project ${project.name}.`);
+      })
+      .catch((error) => {
+        console.error("Error removing user from project", error);
+      });
+  };
+  
+  const handleAcceptApplication = async (member) => {
+    try {
+      await manageInvitesApplications(
+        token,
+        project.name,
+        member.userId,
+        "ACCEPT_APPLICATION"
+      );
+      console.log(`Application from user ${member.userId} accepted.`);
+  
+      // Atualize o estado para mover o usuário aceito da lista de candidatos para a lista de membros
+      setLocalTeamMembers((prevMembers) =>
+        prevMembers.map((m) =>
+          m.userId === member.userId ? { ...m, approvalStatus: "MEMBER" } : m
+        )
+      );
+    } catch (error) {
+      console.error("Error accepting user application", error);
+    }
+  };
 
   return (
     <div className="card shadow-lg w-100">
@@ -115,14 +146,14 @@ const ProjectTeamTab = ({ project }) => {
           Add Team Member
         </button>
         <UsersModal
-  show={showModal}
-  handleClose={handleCloseModal}
-  inputs={{}}
-  setInputs={() => {}}
-  users={users.filter(user => !excludedUserIds.includes(user.userId))} 
-  onUserAdded={handleUserAdded}
-  onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
-/>
+          show={showModal}
+          handleClose={handleCloseModal}
+          inputs={{}}
+          setInputs={() => {}}
+          users={users.filter(user => !excludedUserIds.includes(user.userId))} 
+          onUserAdded={handleUserAdded}
+          onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
+        />
       </div>
       <div className="card-slots-avaliable">
         <p className="card-text-project">
@@ -148,84 +179,85 @@ const ProjectTeamTab = ({ project }) => {
                 className="user-image-project"
               />
               <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
-              {/* Dropdown para mostrar e alterar o papel */}
-              <select
-                className="role-dropdown"
-                value={
-                  member.isProjectManager ? "Project Manager" : "Collaborator"
-                }
-                onChange={(e) => handleRoleChange(e, member.userId)}
-              >
-                <option value="Collaborator">Collaborator</option>
-                <option value="Project Manager">Project Manager</option>
-              </select>
+              {isCurrentUserProjectManager && currentUser.id !== member.userId ? (
+                <select
+                  className="role-dropdown"
+                  value={member.isProjectManager ? "Project Manager" : "Collaborator"}
+                  onChange={(e) => handleRoleChange(e, member.userId)}
+                >
+                  <option value="Collaborator">Collaborator</option>
+                  <option value="Project Manager">Project Manager</option>
+                </select>
+              ) : (
+                <p className="role-label">{member.isProjectManager ? "Project Manager" : "Collaborator"}</p>
+              )}
+              {isCurrentUserProjectManager && currentUser.id !== member.userId && (
+                <div
+                  className="remove-user-cross"
+                  onClick={() => handleRemoveUser(member.userId)}
+                >
+                  <button>x</button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
       <div className="invited-container">
-  <h4>Invited</h4>
-  <div className="members-list">
-    {invitedUsers.map((member, index) => (
-      <div key={`${project.id}-invited-${index}`} className="simple-user-display">
-        <img src={member.userPhoto || Avatar} alt={`${member.firstName} ${member.lastName}`} className="user-image-project" />
-        <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+        <h4>Invited</h4>
+        <div className="members-list">
+          {invitedUsers.map((member, index) => (
+            <div key={`${project.id}-invited-${index}`} className="simple-user-display">
+              <img src={member.userPhoto || Avatar} alt={`${member.firstName} ${member.lastName}`} className="user-image-project" />
+              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
 
       <div className="applied-container">
-  <h4>Applied</h4>
-  <div className="members-list">
-    {applied.map((member, index) => (
-      <div
-        key={`${project.id}-applied-${index}`}
-        className="simple-user-display"
-      >
-        <img
-          src={member.userPhoto || Avatar}
-          alt={`${member.firstName} ${member.lastName}`}
-          className="user-image-project"
-        />
-        <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-        {/* Conditionally render Accept and Decline buttons */}
-        {isCurrentUserProjectManager && (
-          <div className="application-actions">
-            <button
-              className="accept-button"
-              onClick={() =>
-                manageInvitesApplications(
-                  token,
-                  project.name,
-                  member.userId,
-                  "ACCEPT_APPLICATION",
-                )
-              }
+        <h4>Applied</h4>
+        <div className="members-list">
+          {applied.map((member, index) => (
+            <div
+              key={`${project.id}-applied-${index}`}
+              className="simple-user-display"
             >
-              Accept
-            </button>
-            <button
-              className="decline-button"
-              onClick={() =>
-                rejectInvitesApplications(
-                  token,
-                  project.name,
-                  member.userId,
-                  "REJECT",
-                  member.notificationId
-                )
-              }
-            >
-              Decline
-            </button>
-          </div>
-        )}
+              <img
+                src={member.userPhoto || Avatar}
+                alt={`${member.firstName} ${member.lastName}`}
+                className="user-image-project"
+              />
+              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+              {isCurrentUserProjectManager && (
+                <div className="application-actions">
+                  <button
+                    className="accept-button"
+                    onClick={() => handleAcceptApplication(member)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="decline-button"
+                    onClick={() =>
+                      rejectInvitesApplications(
+                        token,
+                        project.name,
+                        member.userId,
+                        "REJECT",
+                        member.notificationId
+                      )
+                    }
+                  >
+                    Decline
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
     </div>
   );
 };

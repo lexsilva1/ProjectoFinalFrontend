@@ -57,5 +57,13 @@
     "Quantity": "Quantity",
     "Observations": "Observations",
     "Add Resource/Component": "Add Resource/Component",
-    "View Stats": "View Stats"
+    "View Stats": "View Stats",
+    "Keywords:": "Keywords:",
+    "Skills:": "Skills:",
+    "Planning": "Planning",
+    "Ready": "Ready",
+    "Approved": "Approved",
+    "In Progress": "In Progress",
+    "Cancelled": "Cancelled",
+    "Finished": "Finished"
   }
