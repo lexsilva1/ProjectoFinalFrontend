@@ -35,6 +35,8 @@ const Home = () => {
   const [sortOption, setSortOption] = useState("");
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
+  const currentUser = userStore((state) => state.user);
+  
 
   useEffect(() => {
     const token = location.pathname.split("/")[2];
@@ -56,17 +58,26 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     getProjects()
       .then((projectsData) => {
-        setProjects(projectsData);
-        setHasFetchedProjects(true);
-        setIsLoading(false);
+        const userProjects = projectsData.filter((project) =>
+          project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER")
+        );
+        const otherProjects = projectsData.filter((project) =>
+          !project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER")
+        );
+        const combinedProjects = [...userProjects, ...otherProjects];
+        setProjects(combinedProjects);
       })
       .catch((error) => {
         console.error("Error fetching projects:", error);
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [currentUser]);
+
 
   const handleOpenResetPasswordModal = () => {
     setShowLoginModal(false);
