@@ -5,8 +5,6 @@
   font-family: 'Roboto', sans-serif;
 }
 
-
-
 .new-project .content-wrapper {
   flex: 1;
   padding: 80px 20px;
@@ -54,25 +52,12 @@
 
 .project-card {
   width: 100%;
-  min-height: 600px;
+  min-height: 620px;
   background: white;
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
 
-.project-card .card-header {
-  background-color: #697f97;
-  color: white;
-  text-align: center;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.project-card .card-footer {
-  background-color: #f8f9fa;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 
 .array-field {
@@ -120,6 +105,25 @@
 }
 
 .submit-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.blue-card-header {
+  background-color: var(--contrast-color);
+  font-size: 1.5rem;
+  color: white;
+
+}
+
+.previous-button-step2 {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.next-button-step2 {
   position: absolute;
   bottom: 20px;
   right: 20px;

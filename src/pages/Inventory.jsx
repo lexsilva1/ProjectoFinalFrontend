@@ -7,7 +7,11 @@ import Sidebar from '../components/SideBar';
 import { FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch } from 'react-icons/fa';
 import './Inventory.css';
 import CreateResourceModal from '../components/Modals/CreateResourceModal';
+import { useTranslation } from 'react-i18next';
 
+/* Componente Inventory: Responsável por exibir a lista de recursos disponíveis no inventário. 
+Os recursos podem ser ordenados, filtrados e paginados.
+Botões para adicionar um novo recurso e visualizar estatísticas. */
 
 const Inventory = () => {
   const [resources, setResources] = useState([]);
@@ -21,7 +25,9 @@ const Inventory = () => {
   const itemsPerPage = 10; // Número máximo de itens por página
   const token = Cookies.get("authToken");
   const [modalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation();
 
+  // Função para buscar os recursos disponíveis no inventário
   const fetchResources = async () => {
     const resourcesData = await getResources(token);
     console.log(resourcesData);
@@ -32,11 +38,13 @@ const Inventory = () => {
     fetchResources();
   }, [token]);
 
+  // Função para filtrar os recursos de acordo com o termo de procura
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Resetar para a primeira página em uma nova pesquisa
   };
 
+  // Função para ordenar a lista de recursos
   const requestSort = (key) => {
     let direction = "ascending";
     if (
@@ -49,6 +57,7 @@ const Inventory = () => {
     setSortConfig({ key, direction });
   };
 
+  // Função para ordenar e filtrar os recursos
   const sortedResources = React.useMemo(() => {
     let sortableResources = [...resources];
     if (sortConfig !== null) {
@@ -65,6 +74,7 @@ const Inventory = () => {
     return sortableResources;
   }, [resources, sortConfig]);
 
+  // Função para filtrar os recursos de acordo com o termo de procura
   const filteredResources = React.useMemo(() => {
     return sortedResources.filter((resource) =>
       ["name", "brand", "identifier", "supplier"].some(
@@ -78,7 +88,8 @@ const Inventory = () => {
     );
   }, [sortedResources, searchTerm]);
 
-  const currentResources = React.useMemo(() => {
+  // Função para paginar os recursos 
+    const currentResources = React.useMemo(() => {
     const firstIndex = (currentPage - 1) * itemsPerPage;
     const lastIndex = firstIndex + itemsPerPage;
     return filteredResources.slice(firstIndex, lastIndex);
@@ -86,6 +97,7 @@ const Inventory = () => {
 
   const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
 
+  // Função para renderizar a seta de ordenação
   const renderSortArrow = (columnName) => {
     if (sortConfig && sortConfig.key === columnName) {
       return sortConfig.direction === "ascending" ? "▲" : "▼";
@@ -106,25 +118,25 @@ const Inventory = () => {
           <Row className="mb-4">
             <Col className="inventory-header">
               <Col>
-                <h1 className="inventory-title">Inventory</h1>
+                <h1 className="inventory-title">{t("Inventory")}</h1>
               </Col>
               <InputGroup>
-              <div className="search-input">
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={handleSearch}
-                autoFocus
-              />
-            </div>
+                <div className="search-input">
+                  <FaSearch className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    autoFocus
+                  />
+                </div>
               </InputGroup>
               <Button
                 className="buttonAddResource"
                 onClick={() => setModalOpen(true)}
               >
-                Add Resource/Component
+                {t("Add Resource/Component")}
               </Button>
               <Button
                 className="buttonViewStats"
@@ -132,7 +144,7 @@ const Inventory = () => {
                   /* Ação do botão View Stats */
                 }}
               >
-                View Stats
+                {t("View Stats")}
               </Button>
             </Col>
           </Row>
@@ -140,31 +152,31 @@ const Inventory = () => {
             <thead className="thead-dark">
               <tr>
                 <th onClick={() => requestSort("name")}>
-                  <FaTag /> Name {renderSortArrow("name")}
+                  <FaTag /> {t("Name")} {renderSortArrow("name")}
                 </th>
                 <th onClick={() => requestSort("identifier")}>
-                  <FaBarcode /> Identifier {renderSortArrow("identifier")}
+                  <FaBarcode /> {t("Identifier")} {renderSortArrow("identifier")}
                 </th>
                 <th>
-                  <FaRegFileAlt /> Description
+                  <FaRegFileAlt /> {t("Description")}
                 </th>
                 <th onClick={() => requestSort("brand")}>
-                  <FaIndustry /> Brand {renderSortArrow("brand")}
+                  <FaIndustry /> {t("Brand")} {renderSortArrow("brand")}
                 </th>
                 <th>
-                  <FaBoxes /> Type
+                  <FaBoxes /> {t("Type")}
                 </th>
                 <th onClick={() => requestSort("supplier")}>
-                  <FaTruck /> Supplier {renderSortArrow("supplier")}
+                  <FaTruck /> {t("Supplier")} {renderSortArrow("supplier")}
                 </th>
                 <th>
-                  <FaPhone /> Contact
+                  <FaPhone /> {t("Contact")}
                 </th>
                 <th>
-                  <FaWarehouse /> Quantity
+                  <FaWarehouse /> {t("Quantity")}
                 </th>
                 <th>
-                  <FaStickyNote /> Observations
+                  <FaStickyNote /> {t("Observations")}
                 </th>
               </tr>
             </thead>
