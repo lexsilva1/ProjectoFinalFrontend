@@ -142,6 +142,9 @@ export const inviteUser = async (token, projectName, userId) => {
 };
 
 export const manageInvitesApplications = async (token, projectName, userId, operationType, notificationId) => {
+    if(notificationId === undefined) {
+        notificationId = 0;
+    }
     const queryParams = new URLSearchParams({ userId, operationType, notificationId }).toString();
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/accept?${queryParams}`, {
         method: 'POST',
@@ -289,6 +292,20 @@ export const demoteUser = async (token, projectName, userId) => {
 
     return response.json();
 };
+export const fetchProjectUsers = async (token, projectName) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/projectUsers`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
 
 
 
