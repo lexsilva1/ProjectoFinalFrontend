@@ -6,14 +6,17 @@ import userstore from "../../stores/userStore";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-// Componente step3: responsável por exibir um resumo do projeto e permitir a submissão do mesmo
+/* Step3 component: responsible for displaying a project summary and allowing its submission
+It receives the following props: inputs, prevStep, setInputs, setStep, setError 
+so that it can be used in the CreateProject component */
+
 const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
   const navigate = useNavigate();
   const token = Cookies.get("authToken");
   const user = userstore((state) => state.user);
   const { t } = useTranslation();
 
-  // Função para submeter o projeto, cria um objeto 'projectDto' com as informações do projeto 
+  // Function to handle the submission of the project, it creates a projectDto object with the project information
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (inputs.slots <= 0) {
@@ -29,7 +32,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
       return;
     }
 
-    // Cria um array 'projectUsers' com os membros do projeto
+    // Creates an array 'projectUsers' with the project team members
     let projectUsers = [];
     inputs.teamMembers.forEach((member) => {
       if (member.userId === user.id) {
@@ -48,7 +51,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
       }
     });
 
-    // Cria um objeto 'projectDto' com as informações do projeto
+    // Creates a projectDto object with the project information
     let projectDto = {
       name: inputs.name,
       lab: inputs.location,
@@ -83,7 +86,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
     }
   };
 
-  // Função para criar uma lista de interesses e skills
+  // Function to create a list of interests and skills
   const interestList = [];
   if (inputs.interests) {
     inputs.interests.forEach((interest) => {
@@ -100,37 +103,59 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
   return (
     <>
       <Row>
-        <Col md={12}>
+        <Col md={12} className="text-center">
           <FormGroup className="my-form-group">
-            <Label>{t("Review Your Project")}</Label>
+            <h4>{t("Review Your Project")}</h4>
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={6}>
+          <FormGroup className="my-form-group">
             <div className="review-section">
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Project Name")}:</strong> {inputs.name}
               </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Location")}:</strong> {inputs.location}
               </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Description")}:</strong> {inputs.description}
               </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Start Date")}:</strong>
                 {inputs.startDate}
               </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("End Date")}:</strong>
                 {inputs.endDate}
               </p>
-              <p>
-                <strong>{t("Number of Slots")}:</strong> {inputs.slots}
-              </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Skills")}:</strong> {skillList.join(", ")}
               </p>
-              <p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
                 <strong>{t("Keywords")}:</strong> {interestList.join(", ")}
               </p>
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
+                <strong>{t("Materials")}:</strong>{" "}
+                {inputs.materials
+                  .map((material) => `${material.name} - ${material.quantity}`)
+                  .join(", ")}
+              </p>
+            </div>
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup className="my-form-group">
+            <div className="review-section">
+            <p style={{marginTop: "10px", marginBottom: "30px"}}>
+                <strong>{t("Number of Slots")}:</strong> {inputs.slots}
+              </p>
+
               <ul className="list-group">
+              <p style={{marginTop: "10px", marginBottom: "30px"}}>
+                <strong>{t("Team Members")}:</strong>
+              </p>
                 {inputs &&
                   inputs.teamMembers.map((member, index) => (
                     <li
@@ -138,8 +163,8 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
                       className="list-group-item d-flex justify-content-between align-items-center"
                     >
                       <img
-                        src={member.userPhoto} 
-                        alt={`${member.firstName} ${member.lastName}`} 
+                        src={member.userPhoto}
+                        alt={`${member.firstName} ${member.lastName}`}
                         className="rounded-circle"
                         style={{
                           width: "40px",
@@ -150,12 +175,6 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
                     </li>
                   ))}
               </ul>
-              <p>
-                <strong>{t("Materials")}:</strong>{" "}
-                {inputs.materials
-                  .map((material) => `${material.name} - ${material.quantity}`)
-                  .join(", ")}
-              </p>
             </div>
           </FormGroup>
         </Col>

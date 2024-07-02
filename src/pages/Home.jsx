@@ -18,6 +18,7 @@ import { useLocation } from "react-router-dom";
 import InfoBox2 from "../components/InfoBoxs/InfoBox2";
 import InfoBox3 from "../components/InfoBoxs/InfoBox3";
 import InfoBox4 from "../components/InfoBoxs/InfoBox4";
+import { useTranslation } from "react-i18next";
 import './Home.css';
 
 const Home = () => {
@@ -29,15 +30,17 @@ const Home = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
+  const currentUser = userStore((state) => state.user);
+  
 
   useEffect(() => {
     const token = location.pathname.split("/")[2];
-    if (location.pathname.startsWith('/PasswordReset/') && token) {
+    if (location.pathname.startsWith("/PasswordReset/") && token) {
       setShowSetPasswordModal(true);
     }
   }, [location]);
@@ -55,17 +58,26 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     getProjects()
       .then((projectsData) => {
-        setProjects(projectsData);
-        setHasFetchedProjects(true); 
-        setIsLoading(false); 
+        const userProjects = projectsData.filter((project) =>
+          project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
+        );
+        const otherProjects = projectsData.filter((project) =>
+          !project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
+        );
+        const combinedProjects = [...userProjects, ...otherProjects];
+        setProjects(combinedProjects);
       })
       .catch((error) => {
         console.error("Error fetching projects:", error);
-        setIsLoading(false); 
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
+  }, [currentUser]);
+
 
   const handleOpenResetPasswordModal = () => {
     setShowLoginModal(false);
@@ -88,11 +100,10 @@ const Home = () => {
     const selectedOption = event.target.value;
     setSortOption(selectedOption);
 
-
-    if (sortOption === selectedOption && sortDirection !== 'desc') {
-      setSortDirection('desc');
+    if (sortOption === selectedOption && sortDirection !== "desc") {
+      setSortDirection("desc");
     } else {
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -146,8 +157,12 @@ const Home = () => {
       const matchesSearchTerm =
         project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.interests.some(interest => interest.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        project.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
+        project.interests.some((interest) =>
+          interest.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        project.skills.some((skill) =>
+          skill.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
       return matchesSearchTerm;
     });
@@ -155,26 +170,39 @@ const Home = () => {
 
   const displayedProjects = sortProjects(filterProjects(projects));
 
-
-
   return (
     <>
-      <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}></div>
+      <div
+        style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
+      ></div>
       <div style={{ position: "fixed", width: "100%", zIndex: 1000 }}>
         <Header />
       </div>
       {isLoggedIn && (
-        <div style={{ paddingTop: "70px", position: "absolute", width: "100%" }}>
+        <div
+          style={{ paddingTop: "70px", position: "absolute", width: "100%" }}
+        >
           <div style={{ position: "fixed" }}>
             <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
         </div>
       )}
       <div>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: "flex" }}>
           {!isLoggedIn && <InfoBox />}
-          <div className={`banner${banner} ${isLoggedIn ? 'banner-logged-in' : 'banner-logged-out'}`} style={{ width: "100%", zIndex: "-1000" }}>
-            {banner === 1 ? <Banner isLoggedIn={isLoggedIn} /> : banner === 2 ? <Banner2 /> : <Banner3 />}
+          <div
+            className={`banner${banner} ${
+              isLoggedIn ? "banner-logged-in" : "banner-logged-out"
+            }`}
+            style={{ width: "100%", zIndex: "-1000" }}
+          >
+            {banner === 1 ? (
+              <Banner isLoggedIn={isLoggedIn} />
+            ) : banner === 2 ? (
+              <Banner2 />
+            ) : (
+              <Banner3 />
+            )}
           </div>
         </div>
         {!isLoggedIn && <InfoBox2 />}
@@ -199,7 +227,7 @@ const Home = () => {
                 padding: "0.5rem",
                 borderRadius: "20px",
                 height: "2.5rem",
-                backgroundColor: "white"
+                backgroundColor: "white",
               }}
             >
               <FaSearch />
@@ -219,51 +247,64 @@ const Home = () => {
               />
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
-  <select
-    value={sortOption}
-    onChange={handleSortChange}
-    style={{ borderRadius: "20px", height: "2.5rem", width: "10rem", margin: "2rem", backgroundColor: "trasparent"}}
-  >
-    <option value="">Sort by...</option>
-    <option value="createdDate">Date Created</option>
-    <option value="openSlots">Open Slots</option>
-    <option value="status">Project Status</option>
-  </select>
-  {sortOption && (
-    <>
-      <FaChevronUp
-        onClick={() => setSortDirection('asc')}
-        style={{ marginLeft: "0.5rem", cursor: "pointer" }}
-      />
-      <FaChevronDown
-        onClick={() => setSortDirection('desc')}
-        style={{ marginLeft: "0.5rem", cursor: "pointer" }}
-      />
-    </>
-  )}
-</div>
+              <select
+                value={sortOption}
+                onChange={handleSortChange}
+                style={{
+                  borderRadius: "20px",
+                  height: "2.5rem",
+                  width: "10rem",
+                  margin: "2rem",
+                  backgroundColor: "trasparent",
+                }}
+              >
+                <option value="">Sort by...</option>
+                <option value="createdDate">Date Created</option>
+                <option value="openSlots">Open Slots</option>
+                <option value="status">Project Status</option>
+              </select>
+              {sortOption && (
+                <>
+                  <FaChevronUp
+                    onClick={() => setSortDirection("asc")}
+                    style={{ marginLeft: "0.5rem", cursor: "pointer" }}
+                  />
+                  <FaChevronDown
+                    onClick={() => setSortDirection("desc")}
+                    style={{ marginLeft: "0.5rem", cursor: "pointer" }}
+                  />
+                </>
+              )}
+            </div>
           </div>
-          {isLoading ? ( 
+          {isLoading ? (
             <p>Loading...</p>
           ) : (
             <div className="project-grid">
               {displayedProjects.map((project) => (
                 <div className="project-card-container" key={project.name}>
-                  <ProjectCard
-                    project={project}
-                    isLoggedIn={isLoggedIn}
-                  />
+                  <ProjectCard project={project} isLoggedIn={isLoggedIn} />
                 </div>
               ))}
             </div>
           )}
         </div>
-        <LoginModal show={showLoginModal} handleClose={handleCloseLoginModal} handleOpenResetPasswordModal={handleOpenResetPasswordModal} />
-        <ResetPasswordModal show={showResetPasswordModal} handleClose={handleCloseResetPasswordModal} />
-        <SetPasswordModal show={showSetPasswordModal} handleClose={handleCloseSetPasswordModal} />
+        <LoginModal
+          show={showLoginModal}
+          handleClose={handleCloseLoginModal}
+          handleOpenResetPasswordModal={handleOpenResetPasswordModal}
+        />
+        <ResetPasswordModal
+          show={showResetPasswordModal}
+          handleClose={handleCloseResetPasswordModal}
+        />
+        <SetPasswordModal
+          show={showSetPasswordModal}
+          handleClose={handleCloseSetPasswordModal}
+        />
         <RegisterModal />
       </div>
-      <Footer style={{ position: 'fixed', bottom: 0, width: '100%' }} />
+      <Footer style={{ position: "fixed", bottom: 0, width: "100%" }} />
     </>
   );
 };

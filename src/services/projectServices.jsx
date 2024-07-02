@@ -305,6 +305,22 @@ export const fetchProjectUsers = async (token, projectName) => {
     }
 
     return response.json();
+};
+
+export const removeProjectUser = async (token, projectName, userId) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/ProjectUser?userId=${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
 }
 export const fetchProjectChat = async (token, projectName) => {
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/chat`, {
@@ -320,6 +336,8 @@ export const fetchProjectChat = async (token, projectName) => {
 
     return response.json();
 }
+
+
 
 
 

@@ -57,6 +57,14 @@
     "Quantity": "Quantidade",
     "Observations": "Observações",
     "Add Resource/Component": "Adicionar Recurso/Componente",
-    "View Stats": "Ver Estatísticas"
+    "View Stats": "Ver Estatísticas",
+    "Keywords:": "Palavras-chave:",
+    "Skills:": "Habilidades:",
+    "Planning": "Em Planeamento",
+    "Ready": "Pronto",
+    "Approved": "Aprovado",
+    "In Progress": "Em Progresso",
+    "Cancelled": "Cancelado",
+    "Finished": "Concluído"
 
   }
