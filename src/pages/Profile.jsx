@@ -392,7 +392,7 @@ const Profile = () => {
                               />
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>{t("Nickname:")}</Form.Label>
+                              <Form.Label>Nickname:</Form.Label>
                               <Form.Control
                                 type="text"
                                 name="nickname"
@@ -416,7 +416,7 @@ const Profile = () => {
                               </Form.Control>
                             </Form.Group>
                             <Form.Group>
-                              <Form.Label>{t("Bio:")}</Form.Label>
+                              <Form.Label>Bio:</Form.Label>
                               <Form.Control
                                 as="textarea"
                                 rows={3}
@@ -442,14 +442,14 @@ const Profile = () => {
                               <strong>{t("Last Name:")}</strong> {profile?.lastName}
                             </p>
                             <p>
-                              <strong>{t("Nickname:")}</strong> {profile?.nickname}
+                              <strong>Nickname:</strong> {profile?.nickname}
                             </p>
                             <p>
                               <strong>{t("Usual Work Place:")}</strong>{" "}
                               {profile?.labLocation}
                             </p>
                             <p>
-                              <strong>{t("Bio:")}</strong> {profile?.bio}
+                              <strong>Bio:</strong> {profile?.bio}
                             </p>
                           </div>
                         )}
