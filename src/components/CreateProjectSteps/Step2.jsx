@@ -8,10 +8,21 @@ import TypeModal from "../Modals/TypeModal";
 import UsersModal from "../Modals/UsersModal";
 import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
+/* Componente Step2: Responsável por renderizar a segunda etapa do formulário de criação de projeto.
+Recebe várias props, como inputs, nextStep, prevStep, removeTeamMember, setInputs e users
+estapa da escolha das skills, keywords, numero de slots, membros do projeto e materiais */
 
-
-const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users }) => {
+const Step2 = ({
+  inputs,
+  nextStep,
+  prevStep,
+  removeTeamMember,
+  setInputs,
+  users,
+}) => {
+  // Estados locais para gerenciar as skills, keywords (interests), tipos de skills e tipos de keywords
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -19,15 +30,19 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
   const [skillTypes, setSkillTypes] = useState([]);
   const [interestTypes, setInterestTypes] = useState([]);
   const [showTypeModal, setShowTypeModal] = useState(false);
-  const [resolveOnInterestTypeSelected, setResolveOnInterestTypeSelected] = useState(null);
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
+  const [resolveOnInterestTypeSelected, setResolveOnInterestTypeSelected] =
+    useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
+    useState(null);
   const [selectedType, setSelectedType] = useState("");
   const [showUsersModal, setShowUsersModal] = useState(false);
   const [teamMembers, setTeamMembers] = useState(inputs.teamMembers || []);
   const token = Cookies.get("authToken");
   const [error, setError] = useState("");
   const [showResourcesModal, setShowResourcesModal] = useState(false);
+  const { t } = useTranslation();
 
+  // Função para buscar as skills, keywords e seus tipos
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,41 +62,45 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
         setSkillTypes(fetchedSkillTypes);
         setInterestTypes(fetchedInterestTypes);
       } catch (error) {
-        console.error("Error fetching skills, interests and their types:", error);
+        console.error(
+          "Error fetching skills, interests and their types:",
+          error
+        );
       }
     };
 
     fetchData();
   }, [token]);
 
+  // Função para abrir o modal de seleção de tipo
   const handleOpenModal = (type) => {
     setSelectedType(type);
     setShowTypeModal(true);
   };
 
+  // Função para fechar o modal de seleção de tipo
   const handleCloseModal = () => {
     setShowTypeModal(false);
   };
 
+  // Função para tratar a mudança nas skills, criando novas skills se necessário
   const handleSkillsChange = async (selected) => {
-    
     const newSkills = selected.filter(
       (skill) => !selectedSkills.some((s) => s.name === skill.name)
     );
-  
+
     const removedSkills = selectedSkills.filter(
       (skill) => !selected.some((s) => s.name === skill.name)
     );
     const newlyCreatedSkills = [];
     try {
-      // Process new skills
       for (const skill of newSkills) {
         if (!skills.some((s) => s.name === skill.name)) {
           const skillTypeSelected = new Promise((resolve) => {
             setResolveOnSkillTypeSelected(() => resolve);
           });
-  
-          handleOpenModal('skill');
+
+          handleOpenModal("skill");
           const skillType = await skillTypeSelected;
           const newSkill = {
             name: skill.name,
@@ -89,31 +108,19 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
             projetcId: 0,
             id: null,
           };
-  
           delete newSkill.customOption;
-  
           const createdSkill = await createSkillForProject(token, newSkill);
           console.log(createdSkill);
-    
           newlyCreatedSkills.push(createdSkill);
           newSkills.splice(newSkills.indexOf(skill), 1);
-
-          
-
         }
       }
-  
-      // Process removed skills
       for (const skill of removedSkills) {
-        // Handle skill removal logic here if needed
-        // Example: await removeSkillForProject(token, skill.id);
       }
-  
-      
-      const updatedSkills = selectedSkills.filter(
-        (skill) => !removedSkills.includes(skill)
-      ).concat(newSkills).concat(newlyCreatedSkills);
-      
+      const updatedSkills = selectedSkills
+        .filter((skill) => !removedSkills.includes(skill))
+        .concat(newSkills)
+        .concat(newlyCreatedSkills);
       setSelectedSkills(updatedSkills);
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -123,18 +130,15 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
       console.error("Error processing skills:", error);
     }
   };
-  
-  
-  
+
+  // Função para tratar a mudança nas keywords, criando novas keywords se necessário
   const handleInterestsChange = async (selected) => {
     const newInterests = selected.filter(
       (interest) => !selectedInterests.some((i) => i.name === interest.name)
     );
-  
     const removedInterests = selectedInterests.filter(
       (interest) => !selected.some((i) => i.name === interest.name)
     );
-  
     const newlyCreatedInterests = [];
     try {
       // Process new interests
@@ -143,8 +147,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
           const interestTypeSelected = new Promise((resolve) => {
             setResolveOnInterestTypeSelected(() => resolve);
           });
-  
-          handleOpenModal('interest');
+          handleOpenModal("interest");
           const interestType = await interestTypeSelected;
           const newInterest = {
             name: interest.name,
@@ -152,27 +155,19 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
             projectId: 0,
             id: null,
           };
-  
           delete newInterest.customOption;
-  
           const createdInterest = await createKeyword(token, newInterest);
           console.log(createdInterest);
-  
           newlyCreatedInterests.push(createdInterest);
           newInterests.splice(newInterests.indexOf(interest), 1);
         }
       }
-  
-      // Process removed interests (if needed)
       for (const interest of removedInterests) {
-        // Handle interest removal logic here if needed
-        // Example: await removeInterestForProject(token, interest.id);
       }
-  
-      const updatedInterests = selectedInterests.filter(
-        (interest) => !removedInterests.includes(interest)
-      ).concat(newInterests).concat(newlyCreatedInterests);
-  
+      const updatedInterests = selectedInterests
+        .filter((interest) => !removedInterests.includes(interest))
+        .concat(newInterests)
+        .concat(newlyCreatedInterests);
       setSelectedInterests(updatedInterests);
       setInputs((prevInputs) => ({
         ...prevInputs,
@@ -182,12 +177,8 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
       console.error("Error processing interests:", error);
     }
   };
-  
 
-  
-  
-
-  
+  // Função para abrir o modal de seleção de utilizadores, verificando se o número de slots foi definido
   const handleOpenUsersModal = () => {
     if (!inputs.slots) {
       setError("Please define the number of slots first.");
@@ -197,10 +188,12 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     }
   };
 
+  // Função para fechar o modal de seleção de utilizadores
   const handleCloseUsersModal = () => {
     setShowUsersModal(false);
   };
 
+  // Função para adicionar um utilizador à equipa do projeto
   const handleUserSelect = (selectedUser) => {
     if (teamMembers.length >= parseInt(inputs.slots)) {
       setError("You have reached the maximum number of slots.");
@@ -212,17 +205,19 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     }
   };
 
+  // Função para selecionar um tipo de skill ou interesse
   const onTypeSelect = (type) => {
     setSelectedType(type);
     if (resolveOnSkillTypeSelected) {
       resolveOnSkillTypeSelected(type);
       setResolveOnSkillTypeSelected(null);
-    }else if (resolveOnInterestTypeSelected) {
+    } else if (resolveOnInterestTypeSelected) {
       resolveOnInterestTypeSelected(type);
       setResolveOnInterestTypeSelected(null);
     }
   };
 
+  // Função para prevenir a entrada de caracteres não desejados em campos numéricos
   const handleKeyPress = (event) => {
     const keyCode = event.keyCode || event.which;
     const keyValue = String.fromCharCode(keyCode);
@@ -231,6 +226,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     }
   };
 
+  // Função para tratar a mudança nos inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setInputs((prevInputs) => ({
@@ -239,14 +235,17 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     }));
   };
 
+  // Função para abrir o modal de recursos
   const handleOpenResourcesModal = () => {
     setShowResourcesModal(true);
   };
 
+  // Função para fechar o modal de recursos
   const handleCloseResourcesModal = () => {
     setShowResourcesModal(false);
   };
 
+  // Função para selecionar os materiais
   const handleSelect = (selectedMaterials) => {
     setInputs({ ...inputs, materials: selectedMaterials });
     handleCloseResourcesModal();
@@ -257,7 +256,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
       <Row>
         <Col md={6}>
           <FormGroup className="my-form-group">
-            <Label>Skills</Label>
+            <Label>{t("Skills")}</Label>
             <Typeahead
               id="skills-typeahead"
               labelKey="name"
@@ -271,7 +270,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
             />
           </FormGroup>
           <FormGroup className="my-form-group">
-            <Label>Interests</Label>
+            <Label>{t("Interests")}</Label>
             <Typeahead
               id="interests-typeahead"
               labelKey="name"
@@ -287,7 +286,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
         </Col>
         <Col md={6}>
           <FormGroup className="my-form-group">
-            <Label for="slots">Number of Slots</Label>
+            <Label for="slots">{t("Number of Slots")}</Label>
             <Input
               type="number"
               name="slots"
@@ -300,14 +299,21 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
             />
           </FormGroup>
           <FormGroup>
-            <Label>Team Members</Label>
-            <Button onClick={handleOpenUsersModal} color="primary" className="modal-button">
-              Add Team Members
+            <Label>{t("Team Members")}</Label>
+            <Button
+              onClick={handleOpenUsersModal}
+              color="primary"
+              className="modal-button"
+            >
+              {t("Add Team Members")}
             </Button>
             {error && <p className="error-message">{error}</p>}
             <ul className="list-group">
               {inputs.teamMembers.map((member, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                <li
+                  key={index}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
                   <img
                     src={member.userPhoto || Avatar}
                     alt={`${member.firstName} ${member.lastName}`}
@@ -319,28 +325,28 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
                     }}
                   />
                   {member.firstName} {member.lastName}
-                  {!member.isProjectManager ?
-                  <Button
-                    onClick={() => removeTeamMember(index)}
-                    color="danger"
-                    size="sm"
-                    className="ml-2"
-                  >
-                    Remove
-                  </Button>
-                  : null}
+                  {!member.isProjectManager ? (
+                    <Button
+                      onClick={() => removeTeamMember(index)}
+                      color="danger"
+                      size="sm"
+                      className="ml-2"
+                    >
+                      {t("Remove")}
+                    </Button>
+                  ) : null}
                 </li>
               ))}
             </ul>
           </FormGroup>
           <FormGroup>
-            <Label>Materials</Label>
+            <Label>{t("Materials")}</Label>
             <Button
               onClick={handleOpenResourcesModal}
               color="primary"
               className="modal-button"
             >
-              Add Materials
+              {t("Add Materials")}
             </Button>
             <ResourcesModal
               show={showResourcesModal}
@@ -366,7 +372,7 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
                     color="danger"
                     size="sm"
                   >
-                    Remove
+                    {t("Remove")}
                   </Button>
                 </li>
               ))}
@@ -376,11 +382,19 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
       </Row>
 
       <div className="d-flex justify-content-between">
-        <Button color="secondary" onClick={prevStep}>
-          Previous
+        <Button
+          className="previous-button-step2"
+          color="secondary"
+          onClick={prevStep}
+        >
+          {t("Previous")}
         </Button>
-        <Button color="primary" onClick={nextStep}>
-          Next
+        <Button
+          className="next-button-step2"
+          color="primary"
+          onClick={nextStep}
+        >
+          {t("Next")}
         </Button>
       </div>
       <TypeModal
@@ -400,6 +414,5 @@ const Step2 = ({ inputs, nextStep, prevStep, removeTeamMember, setInputs, users 
     </>
   );
 };
-
 export default Step2;
 
