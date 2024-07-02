@@ -70,7 +70,7 @@ const Project = () => {
     }
   };
   const isUserMember = project.teamMembers?.some(
-    (member) => member.approvalStatus === "MEMBER"
+    (member) => member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
   );
 
   const teamMembers = project.teamMembers?.filter(

@@ -62,10 +62,10 @@ const Home = () => {
     getProjects()
       .then((projectsData) => {
         const userProjects = projectsData.filter((project) =>
-          project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER")
+          project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
         );
         const otherProjects = projectsData.filter((project) =>
-          !project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER")
+          !project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
         );
         const combinedProjects = [...userProjects, ...otherProjects];
         setProjects(combinedProjects);

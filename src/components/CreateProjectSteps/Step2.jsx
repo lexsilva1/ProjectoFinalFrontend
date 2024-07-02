@@ -10,9 +10,9 @@ import ResourcesModal from "../Modals/ResourcesModal";
 import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
 
-/* Componente Step2: Responsável por renderizar a segunda etapa do formulário de criação de projeto.
-Recebe várias props, como inputs, nextStep, prevStep, removeTeamMember, setInputs e users
-estapa da escolha das skills, keywords, numero de slots, membros do projeto e materiais */
+/* Step2 Component: Responsible for rendering the second step of the project creation form.
+Receives several props, such as inputs, nextStep, prevStep, removeTeamMember, setInputs, and users.
+This step involves choosing skills, interests, number of slots, project team members, and materials. */
 
 const Step2 = ({
   inputs,
@@ -22,7 +22,7 @@ const Step2 = ({
   setInputs,
   users,
 }) => {
-  // Estados locais para gerenciar as skills, keywords (interests), tipos de skills e tipos de keywords
+  // Local states to manage skills, interests, skill types, and interest types
   const [skills, setSkills] = useState([]);
   const [interests, setInterests] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -42,7 +42,7 @@ const Step2 = ({
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const { t } = useTranslation();
 
-  // Função para buscar as skills, keywords e seus tipos
+  // Fetch skills, interests, skill types, and interest types when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -72,18 +72,18 @@ const Step2 = ({
     fetchData();
   }, [token]);
 
-  // Função para abrir o modal de seleção de tipo
+  // Function to open the modal for selecting a type (skill or interest)
   const handleOpenModal = (type) => {
     setSelectedType(type);
     setShowTypeModal(true);
   };
 
-  // Função para fechar o modal de seleção de tipo
+  // Function to close the modal for selecting a type (skill or interest)
   const handleCloseModal = () => {
     setShowTypeModal(false);
   };
 
-  // Função para tratar a mudança nas skills, criando novas skills se necessário
+  // Function to handle changes in skills, creating new skills if necessary
   const handleSkillsChange = async (selected) => {
     const newSkills = selected.filter(
       (skill) => !selectedSkills.some((s) => s.name === skill.name)
@@ -131,7 +131,7 @@ const Step2 = ({
     }
   };
 
-  // Função para tratar a mudança nas keywords, criando novas keywords se necessário
+  // Function to handle changes in interests, creating new interests if necessary
   const handleInterestsChange = async (selected) => {
     const newInterests = selected.filter(
       (interest) => !selectedInterests.some((i) => i.name === interest.name)
@@ -178,7 +178,7 @@ const Step2 = ({
     }
   };
 
-  // Função para abrir o modal de seleção de utilizadores, verificando se o número de slots foi definido
+  // Function to open the modal for selecting users to add to the project team if the number of slots is defined
   const handleOpenUsersModal = () => {
     if (!inputs.slots) {
       setError("Please define the number of slots first.");
@@ -188,12 +188,12 @@ const Step2 = ({
     }
   };
 
-  // Função para fechar o modal de seleção de utilizadores
+  // Function to close the modal for selecting users to add to the project team
   const handleCloseUsersModal = () => {
     setShowUsersModal(false);
   };
 
-  // Função para adicionar um utilizador à equipa do projeto
+  // Function to add a user to the project team
   const handleUserSelect = (selectedUser) => {
     if (teamMembers.length >= parseInt(inputs.slots)) {
       setError("You have reached the maximum number of slots.");
@@ -205,7 +205,7 @@ const Step2 = ({
     }
   };
 
-  // Função para selecionar um tipo de skill ou interesse
+  // Function to select a type (skill or interest) in the modal
   const onTypeSelect = (type) => {
     setSelectedType(type);
     if (resolveOnSkillTypeSelected) {
@@ -217,7 +217,7 @@ const Step2 = ({
     }
   };
 
-  // Função para prevenir a entrada de caracteres não desejados em campos numéricos
+  // Function to prevent the user from typing a comma or period in the number of slots input
   const handleKeyPress = (event) => {
     const keyCode = event.keyCode || event.which;
     const keyValue = String.fromCharCode(keyCode);
@@ -226,7 +226,7 @@ const Step2 = ({
     }
   };
 
-  // Função para tratar a mudança nos inputs
+  // Function to handle changes in the number of slots input
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setInputs((prevInputs) => ({
@@ -235,17 +235,17 @@ const Step2 = ({
     }));
   };
 
-  // Função para abrir o modal de recursos
+  // Function to open the modal for selecting resources
   const handleOpenResourcesModal = () => {
     setShowResourcesModal(true);
   };
 
-  // Função para fechar o modal de recursos
+  // Function to close the modal for selecting resources
   const handleCloseResourcesModal = () => {
     setShowResourcesModal(false);
   };
 
-  // Função para selecionar os materiais
+  // Function to select resources/materials
   const handleSelect = (selectedMaterials) => {
     setInputs({ ...inputs, materials: selectedMaterials });
     handleCloseResourcesModal();
@@ -283,6 +283,46 @@ const Step2 = ({
               selected={inputs.interests}
             />
           </FormGroup>
+          <FormGroup>
+            <Label>{t("Materials")}</Label>
+            <Button
+              onClick={handleOpenResourcesModal}
+              color="primary"
+              className="modal-button d-block"
+              style={{ marginTop: "0px", marginBottom: "10px"}}
+            >
+              {t("Add Materials")}
+            </Button>
+            <ResourcesModal
+              show={showResourcesModal}
+              handleClose={handleCloseResourcesModal}
+              handleSelect={handleSelect}
+            />
+            <ul className="list-group">
+              {inputs.materials.map((material, index) => (
+                <li
+                  key={index}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  {material.name} - {material.quantity}
+                  <Button
+                    onClick={() => {
+                      const newMaterials = [...inputs.materials];
+                      newMaterials.splice(index, 1);
+                      setInputs({
+                        ...inputs,
+                        materials: newMaterials,
+                      });
+                    }}
+                    color="danger"
+                    size="sm"
+                  >
+                    {t("Remove")}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </FormGroup>
         </Col>
         <Col md={6}>
           <FormGroup className="my-form-group">
@@ -303,7 +343,8 @@ const Step2 = ({
             <Button
               onClick={handleOpenUsersModal}
               color="primary"
-              className="modal-button"
+              className="modal-button d-block"
+              style={{ marginTop: "0px", marginBottom: "10px"}}
             >
               {t("Add Team Members")}
             </Button>
@@ -339,45 +380,6 @@ const Step2 = ({
               ))}
             </ul>
           </FormGroup>
-          <FormGroup>
-            <Label>{t("Materials")}</Label>
-            <Button
-              onClick={handleOpenResourcesModal}
-              color="primary"
-              className="modal-button"
-            >
-              {t("Add Materials")}
-            </Button>
-            <ResourcesModal
-              show={showResourcesModal}
-              handleClose={handleCloseResourcesModal}
-              handleSelect={handleSelect}
-            />
-            <ul className="list-group">
-              {inputs.materials.map((material, index) => (
-                <li
-                  key={index}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  {material.name} - {material.quantity}
-                  <Button
-                    onClick={() => {
-                      const newMaterials = [...inputs.materials];
-                      newMaterials.splice(index, 1);
-                      setInputs({
-                        ...inputs,
-                        materials: newMaterials,
-                      });
-                    }}
-                    color="danger"
-                    size="sm"
-                  >
-                    {t("Remove")}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </FormGroup>
         </Col>
       </Row>
 
@@ -397,6 +399,7 @@ const Step2 = ({
           {t("Next")}
         </Button>
       </div>
+
       <TypeModal
         show={showTypeModal}
         onHide={handleCloseModal}
@@ -414,5 +417,6 @@ const Step2 = ({
     </>
   );
 };
+
 export default Step2;
 
