@@ -335,6 +335,27 @@ export const fetchProjectChat = async (token, projectName) => {
     }
 
     return response.json();
+};
+
+export const fetchProjectLogs = async (token, projectName) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/logs`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const text = await response.text(); // Obter a resposta como texto
+    console.log(text); // Logar o texto para depuração
+    try {
+        return JSON.parse(text); // Tentar analisar o texto como JSON
+    } catch (error) {
+        throw new Error(`Invalid JSON: ${text}`); // Lançar erro se o JSON for inválido
+    }
 }
 
 

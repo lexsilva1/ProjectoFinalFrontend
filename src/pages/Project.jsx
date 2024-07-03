@@ -13,7 +13,10 @@ import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
 import ProjectChat from "../components/ProjectChat";
+import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
+import { Container, Row, Col } from 'react-bootstrap';
+import AddAnnotationModal from "../components/Modals/AddAnnotationModal";
 
 const Project = () => {
   const { projectName } = useParams();
@@ -26,6 +29,9 @@ const Project = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [status, setStatus] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
       newStatus = "In Progress";
@@ -129,6 +135,7 @@ const Project = () => {
       }
     };
 
+   
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -138,55 +145,55 @@ const Project = () => {
         />
         <div className="card-body">
           <h2 className="card-title">{project.name}</h2>
-          <p className="card-text-project">
-            <div className={getStatusClass(status)}>
-              <div className="project-card-status-bar"></div>
-              <div className="status-options">
-                {statuses.map((statusOption) => (
-                  <div
-                    key={statusOption}
-                    className="status-option"
-                    onClick={() => updateStatus(statusOption)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <strong>{statusOption}</strong>
-                  </div>
-                ))}
-              </div>
+          <div className={getStatusClass(status)}>
+            <div className="project-card-status-bar"></div>
+            <div className="status-options">
+              {statuses.map((statusOption) => (
+                <div
+                  key={statusOption}
+                  className="status-option"
+                  onClick={() => updateStatus(statusOption)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <strong>{statusOption}</strong>
+                </div>
+              ))}
             </div>
-          </p>
-          <p className="card-text-project">
-            <strong>Laboratory:</strong> {project.lab}
-          </p>
-          <p className="card-text-project">
-            <strong>Description: </strong>
-            {project.description}
-          </p>
-          <p className="card-text-project">
-            <strong>Keywords: </strong>
-            {project.interests &&
-              project.interests.map((interest, index) => (
-                <span
-                  key={`${project.id}-keyword-${index}`}
-                  className="badge badge-dark mr-2 mb-2"
-                >
-                  {interest}
-                </span>
-              ))}
-          </p>
-          <p className="card-text-project">
-            <strong>Skills: </strong>
-            {project.skills &&
-              project.skills.map((skill, index) => (
-                <span
-                  key={`${project.id}-skill-${index}`}
-                  className="badge badge-light mr-2 mb-2"
-                >
-                  {skill}
-                </span>
-              ))}
-          </p>
-          {!isMember && (
+          </div>
+          <Row>
+            <Col md={8}>
+              <p className="card-text-project">
+                <strong>Laboratory:</strong> {project.lab}
+              </p>
+              <p className="card-text-project">
+                <strong>Description: </strong>
+                {project.description}
+              </p>
+              <p className="card-text-project">
+                <strong>Keywords: </strong>
+                {project.interests &&
+                  project.interests.map((interest, index) => (
+                    <span
+                      key={`${project.id}-keyword-${index}`}
+                      className="badge badge-dark mr-2 mb-2"
+                    >
+                      {interest}
+                    </span>
+                  ))}
+              </p>
+              <p className="card-text-project">
+                <strong>Skills: </strong>
+                {project.skills &&
+                  project.skills.map((skill, index) => (
+                    <span
+                      key={`${project.id}-skill-${index}`}
+                      className="badge badge-light mr-2 mb-2"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+              </p>
+              {!isMember && (
             <>
               <p className="card-text-project">
                 <strong>Team Members:</strong>
@@ -217,46 +224,54 @@ const Project = () => {
               </p>
             </>
           )}
-          {isMember && (
-            <div>
-              <p className="card-text-project"></p>
-              <div className="table-responsive" style={{ width: "400px" }}>
-                <table className="table table-sm">
-                  <thead>
-                    <tr>
-                      <th
-                        colSpan="2"
-                        style={{
-                          textAlign: "center",
-                          backgroundColor: "var(--details-color",
-                        }}
-                      >
-                        Materials
-                      </th>
-                    </tr>
-                    <tr>
-                      <th style={{ width: "20%", backgroundColor: "#f0f0f0" }}>
-                        Name
-                      </th>
-                      <th style={{ width: "10%", backgroundColor: "#f0f0f0" }}>
-                        Quantity
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {project.billOfMaterials &&
-                      project.billOfMaterials.map((material, index) => (
-                        <tr key={`${material.id}-${index}`}>
-                          <td>{material.name}</td>
-                          <td>{material.quantity}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
+            </Col>
+            <Col md={4}> {isMember && (
+                <div className="table-responsive" style={{ width: "400px" }}>
+                  <table className="table table-sm">
+                    <thead>
+                      <tr>
+                        <th
+                          colSpan="2"
+                          style={{
+                            textAlign: "center",
+                            backgroundColor: "var(--details-color",
+                          }}
+                        >
+                          Materials
+                        </th>
+                      </tr>
+                      <tr>
+                        <th style={{ width: "20%", backgroundColor: "#f0f0f0" }}>
+                          Name
+                        </th>
+                        <th style={{ width: "10%", backgroundColor: "#f0f0f0" }}>
+                          Quantity
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {project.billOfMaterials &&
+                        project.billOfMaterials.map((material, index) => (
+                          <tr key={`${material.id}-${index}`}>
+                            <td>{material.name}</td>
+                            <td>{material.quantity}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+             
+            </Col> 
+            {isMember && (
+              <div>
+                <ProjectLogs project={project} />
+                <button onClick={handleOpenModal}>Add Annotation</button>
+                <AddAnnotationModal show={showModal} onHide={handleCloseModal} />
               </div>
-            </div>
-          )}
-          {!isMember && slotsAvailable && (
+            )}
+          </Row>
+          {!isMember && (
             <div className="button-container">
               {hasUserApplied ? (
                 <div>You have applied to this project.</div>
