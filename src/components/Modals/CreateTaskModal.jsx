@@ -64,7 +64,7 @@ const CreateTaskModal = ({
     try {
       const projectDetails = await getProjectByName(token, projectName);
       const members = projectDetails.teamMembers.filter(
-        (member) => member.approvalStatus === "MEMBER"
+        (member) => member.approvalStatus === "MEMBER" || "CREATOR"
       );
       setProjectMembers(members);
       setFilteredMembers(members);

@@ -13,7 +13,7 @@ const logLevelIcons = {
   error: <XCircleFill />,
 };
 
-const ProjectLogs = ({ project }) => {
+const ProjectLogs = ({ project, logUpdateTrigger}) => {
   const [logs, setLogs] = useState([]);
   const [userDetails, setUserDetails] = useState({});
   const token = Cookies.get('authToken');
@@ -22,16 +22,17 @@ const ProjectLogs = ({ project }) => {
 
   const logTypeMessages = {
     UPDATE_PROJECT_STATUS: "Update Project Status",
+    PROJECT_CREATED: "Project Created",
     // Adicione mais mapeamentos conforme necessário
   };
 
   useEffect(() => {
+    console.log("useEffect triggered in ProjectLogs");
     const loadLogs = async () => {
       try {
-        const fetchedLogs = await fetchProjectLogs(token, projectName);
+        const fetchedLogs = await fetchProjectLogs(token, project.name);
         const userDetailsTemp = {};
-
-        // Para cada log, buscar informações do usuário se necessário
+  
         for (const log of fetchedLogs) {
           if (log.userId && !userDetailsTemp[log.userId]) {
             try {
@@ -42,16 +43,16 @@ const ProjectLogs = ({ project }) => {
             }
           }
         }
-
+  
         setLogs(fetchedLogs);
         setUserDetails(userDetailsTemp);
       } catch (error) {
         console.error("Failed to fetch project logs:", error);
       }
     };
-
+  
     loadLogs();
-  }, [projectName, token]);
+  }, [project.name, token, logUpdateTrigger]);
 
   return (
     <Container className="project-logs">
@@ -71,7 +72,7 @@ const ProjectLogs = ({ project }) => {
               {logLevelIcons[log.level]}
             </div>
             <h5>{log.message}</h5>
-            <div>{logTypeMessages[log.type] || log.type}</div>
+            <div>{log.type === 'OTHER' ? log.log : (logTypeMessages[log.type] || log.type)}</div>
           </Card.Header>
           {log.details && (
             <Card.Body className="log-card-body">

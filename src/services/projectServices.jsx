@@ -349,14 +349,31 @@ export const fetchProjectLogs = async (token, projectName) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const text = await response.text(); // Obter a resposta como texto
-    console.log(text); // Logar o texto para depuração
+    const text = await response.text(); 
+    console.log(text); 
     try {
-        return JSON.parse(text); // Tentar analisar o texto como JSON
+        return JSON.parse(text); 
     } catch (error) {
-        throw new Error(`Invalid JSON: ${text}`); // Lançar erro se o JSON for inválido
+        throw new Error(`Invalid JSON: ${text}`); 
     }
-}
+};
+
+export const createProjectLog = async (token, projectName, logDto) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/logs`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(logDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+};
 
 
 

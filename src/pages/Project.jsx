@@ -8,7 +8,7 @@ import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
-import { getProjectByName, projectApplication, updateProjectStatus } from "../services/projectServices";
+import { getProjectByName, projectApplication, updateProjectStatus, fetchProjectLogs } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -32,6 +32,8 @@ const Project = () => {
   const [showModal, setShowModal] = useState(false);
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  const [logs, setLogs] = useState([]);
+  const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
       newStatus = "In Progress";
@@ -44,6 +46,11 @@ const Project = () => {
       member.userId === currentUser.id && member.approvalStatus === "APPLIED"
   );
 
+  const handleNewLogAdded = () => {
+    console.log("Log added, incrementing trigger");
+    setLogUpdateTrigger((prev) => prev + 1);
+  };
+  
   const statuses = ["Planning", "Ready", "Approved", "In Progress", "Finished"];
   const getStatusClass = (status) => {
     switch (status) {
@@ -267,7 +274,12 @@ const Project = () => {
               <div>
                 <ProjectLogs project={project} />
                 <button onClick={handleOpenModal}>Add Annotation</button>
-                <AddAnnotationModal show={showModal} onHide={handleCloseModal} />
+                <AddAnnotationModal
+  show={showModal}
+  handleClose={() => setShowModal(false)}
+  projectName={project.name}
+  onLogAdded={handleNewLogAdded} // Pass the callback here
+/>
               </div>
             )}
           </Row>
