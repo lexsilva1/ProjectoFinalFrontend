@@ -1,10 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import userStore from '../stores/userStore';
-import React from 'react';
 import './Header.css';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom'; 
-import { useEffect } from 'react';
 import { logout } from '../services/userServices';
 import Avatar from '../multimedia/Images/Avatar.jpg';
 import logo2 from '../multimedia/Images/logo2.png';
@@ -14,6 +13,7 @@ import { FaEnvelope } from 'react-icons/fa';
 import  useStartWebSocket  from '../Websockets/notificationsWebsocket';
 import NotificationsCanva from './NotificationsCanva';
 import { getNotifications } from '../services/notificationService';
+
 const Header = () => {
   const { t, i18n } = useTranslation();
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -26,6 +26,7 @@ const Header = () => {
   const { startWebSocket} =  useStartWebSocket(authToken);
   const setNotifications = userStore((state) => state.setNotifications);
   const notifications = userStore((state) => state.notifications);
+  const [showNotifications, setShowNotifications] = useState(false);
   // Call useStartWebSocket at the top level, conditionally activating it based on isLoggedIn
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
@@ -36,6 +37,7 @@ const Header = () => {
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);
+  const toggleNotifications = () => setShowNotifications(!showNotifications);
 
   const handleLogout = () => {
     logout();
@@ -70,7 +72,7 @@ const Header = () => {
         {authToken && user && (
           <>
             <FaEnvelope className="messages-icon" onClick={() => navigate("/messages")} />
-            <FaBell className="notification-icon" />
+            <FaBell className="notification-icon" onClick={toggleNotifications} />
             <div className="user-info">
               <img
                 src={user.image ? user.image : Avatar}
@@ -93,7 +95,7 @@ const Header = () => {
           </Button>
         </div>
       </div>
-      {isLoggedIn &&  <NotificationsCanva/>}
+      {isLoggedIn && <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />}
     </div>
   );
 };
