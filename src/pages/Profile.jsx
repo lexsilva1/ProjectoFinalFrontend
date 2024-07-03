@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Form, Image } from "react-bootstrap"
 import Sidebar from "../components/SideBar";
 import Header from "../components/Header";
 import Avatar from "../multimedia/Images/Avatar.jpg";
+import ProjectList from "../components/ProjectList";
 import { findUserById, uploadUserPhoto, updateUser, setPrivacy } from "../services/userServices";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
@@ -17,6 +18,7 @@ import TypeModal from "../components/Modals/TypeModal";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Project from "./Project";
 
 // Componente Profile: Responsável por exibir o perfil do utilizador logado e permitir a edição do mesmo
 
@@ -454,7 +456,7 @@ const Profile = () => {
                           </div>
                         )}
                       </Col>
-                      <Col md={4} style={{ marginLeft: "0px" }}>
+                      <Col md={3} style={{ marginLeft: "0px" }}>
                         <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
                         {isOwnProfile ? (
                           <Typeahead
@@ -503,25 +505,14 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col
-                        md={4}
+                        md={5}
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          paddingLeft: "8rem",
+                          paddingLeft: "2rem",
                         }}
                       >
-                        <h4 style={{ fontSize: "1rem" }}>{t("Projects")}</h4>
-                        {profile?.projects?.length > 0 ? (
-                          profile.projects.map((project, index) => (
-                            <div key={index}>
-                              <Link to={`/project/${project}`}>
-                                <strong>{project}</strong>
-                              </Link>
-                            </div>
-                          ))
-                        ) : (
-                          <p>{t("No projects added")}</p>
-                        )}
+                        <ProjectList userId={userId}/>
                       </Col>
                     </Row>
                   </Col>

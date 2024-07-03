@@ -247,7 +247,11 @@ const Step2 = ({
 
   // Function to select resources/materials
   const handleSelect = (selectedMaterials) => {
-    setInputs({ ...inputs, materials: selectedMaterials });
+    const updatedMaterials = selectedMaterials.map((material) => ({
+      ...material,
+      quantity: parseInt(material.quantity, 10),
+    }));
+    setInputs({ ...inputs, materials: updatedMaterials });
     handleCloseResourcesModal();
   };
 
