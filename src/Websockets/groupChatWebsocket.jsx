@@ -20,7 +20,6 @@ const useChatSocket = (authToken, projectName) => {
         setMessages(messages);
       };
       fetchMessages();
-      console.log('Messages:', messages);
     };
 
     // Listen for messages
