@@ -322,6 +322,20 @@ export const removeProjectUser = async (token, projectName, userId) => {
 
     return response.text();
 }
+export const fetchProjectChat = async (token, projectName) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/chat`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+}
 
 
 

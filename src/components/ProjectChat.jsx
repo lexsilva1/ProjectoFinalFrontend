@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import useChatSocket from '../Websockets/groupChatWebsocket';
+import Cookies from 'js-cookie';
+import { useParams } from 'react-router-dom';
 
 const ProjectChat = ({ isOpen, onClose }) => {
   const chatStyle = {
@@ -10,7 +13,21 @@ const ProjectChat = ({ isOpen, onClose }) => {
     transition: 'right 0.5s ease-in-out',
     backgroundColor: 'transparent',
     zIndex: 1050,
-    
+  };
+  
+
+  const token = Cookies.get('authToken');
+  const { projectName } = useParams();
+  console.log(projectName);
+  const { setMessages, messages, sendMessage } = useChatSocket(token, projectName);
+  const [message, setMessage] = useState('');
+  console.log(messages);
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+    if (message.trim() !== '') {
+      sendMessage(message);
+      setMessage('');
+    }
   };
 
   return (
@@ -28,14 +45,30 @@ const ProjectChat = ({ isOpen, onClose }) => {
               </div>
             </div>
             <div className="card-body" data-mdb-perfect-scrollbar-init style={{ position: 'relative', height: 'calc(100% - 56px - 48px)', overflowY: 'auto' }}>
-              {/* Example chat messages */}
-              {/* Chat messages here */}
+              {messages.map((message, index) => (
+                <div key={index} className="d-flex justify-content-start align-items-center mb-3">
+                  <div className="d-flex flex-column align-items-start">
+                    <div className="d-flex align-items-center">
+                      <img src={message.userPhoto} className="rounded-circle" height="30" alt="avatar" />
+                      <h6 className="ms-2">{message.sender}</h6>
+                    </div>
+                    <p className="mb-0 ms-5">{message.message}</p>
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
               <div className="input-group mb-0">
-                <input type="text" className="form-control" placeholder="Type message"
-                  aria-label="Recipient's username" aria-describedby="button-addon2" />
-                <button className="btn btn-warning" type="button" id="button-addon2">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Type message"
+                  aria-label="Recipient's username"
+                  aria-describedby="button-addon2"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <button className="btn btn-warning" type="button" id="button-addon2" onClick={handleSendMessage}>
                   Send
                 </button>
               </div>

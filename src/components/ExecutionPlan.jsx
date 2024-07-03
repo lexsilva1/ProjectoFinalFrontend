@@ -17,6 +17,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [projectProgress, setProjectProgress] = useState(0);
+  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
   const handleTaskDoubleClick = (task) => {
     tasks.forEach((t) => {
@@ -83,7 +84,7 @@ const handleSaveTask = (updatedTask) => {
     dependencies: projectTask.dependencies,
     isDisabled: false, // Adjust as necessary
     styles: { 
-      progressColor: '#2e6b75', 
+      progressColor: '#18c2de', 
       progressSelectedColor: '#2e6b75', 
     },
     type: 'project',
@@ -105,7 +106,8 @@ const handleSaveTask = (updatedTask) => {
     isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED' ? true : false, // Adjust as necessary
     styles: { 
       progressColor: '#ffbb54', 
-      progressSelectedColor: '#ff9e0d' 
+      progressSelectedColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')),
+      backgroundColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')) // Adjust as necessary
     },
     type: task.title === 'Final Presentation' ? 'milestone' : 'task',
    
