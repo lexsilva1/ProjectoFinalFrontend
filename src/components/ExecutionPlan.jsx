@@ -116,6 +116,20 @@ const handleSaveTask = (updatedTask) => {
 })
 
 tasksFormatted.push(formatedProjectTask);
+//tasksFormatted = tasksFormatted.sort((a, b) => new Date(a.start) - new Date(b.start));
+tasksFormatted.sort((a, b) => {
+  if (a.type === 'project') {
+    return -1;
+  } else if (b.type === 'project') {
+    return 1;
+  } else if (a.type === 'milestone') {
+    return 1;
+  } else if (b.type === 'milestone') {
+    return -1;
+  } else {
+    return 0;
+  }
+});
  
 
 const onDateChange = async (task) => { 
