@@ -113,11 +113,11 @@ const Home = () => {
 
   const sortProjects = (projects) => {
     switch (sortOption) {
-      case "createdDate":
+      case "creationDate":
         return projects.sort((a, b) =>
           sortDirection === "asc"
-            ? new Date(a.createdDate) - new Date(b.createdDate)
-            : new Date(b.createdDate) - new Date(a.createdDate)
+            ? new Date(a.creationDate) - new Date(b.creationDate)
+            : new Date(b.creationDate) - new Date(a.creationDate)
         );
       case "openSlots":
         return projects.sort((a, b) => {
