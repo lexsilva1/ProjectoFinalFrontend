@@ -17,6 +17,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [projectProgress, setProjectProgress] = useState(0);
+  const [taskToUpdate, setTaskToUpdate] = useState(null);
   const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
 
   const handleTaskDoubleClick = (task) => {
@@ -132,25 +133,24 @@ tasksFormatted.sort((a, b) => {
 });
  
 
-const onDateChange = async (task) => { 
-
-  tasks.forEach(async (t) => {
+const onDateChange = async (task) => {
+  for (const t of tasks) {
     if (t.id === task.id) {
       t.start = format(task.start, 'yyyy-MM-dd\'T\'HH:mm:ss');
       t.end = format(task.end, 'yyyy-MM-dd\'T\'HH:mm:ss');
-      tasks[tasks.indexOf(t)] = t;
-      tasks.reduce((acc, t) => {
-        acc[t.id] = t;
-        return acc;
-      }
-      , {});
-      addTask(t);
+      setTaskToUpdate(t); // This is synchronous but triggers an async re-render
+
+      // Assuming updateTask is an async function that returns a promise
+      await updateTask(token, name, t).then(() => {
+        const updatedTasks = tasks.map(taskItem => taskItem.id === t.id ? t : taskItem);
+        addTask(t); // Assuming this is meant to update some state or perform some action
+        setTasks(updatedTasks); // Trigger re-render with updated tasks
+        setTaskToUpdate(null); // Reset taskToUpdate state
+      });
+
+      break; // Exit loop after finding and processing the matching task
     }
-    await updateTask(token, name, t).then(() => {
-      setTasks(tasks);
-     // setUpdatedPing(!updatedPing);
-    });
-  });
+  }
 };
 const onProgressChange = async (task) => {
   debugger;
