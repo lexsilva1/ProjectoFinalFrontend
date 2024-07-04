@@ -1,30 +1,20 @@
-.create-resource-modal .modal-body {
+.custom-modal-create-resource .modal-body {
   padding: 20px;
 }
 
-.create-resource-modal .form-group {
+.custom-modal-create-resource .form-group {
   margin-bottom: 20px;
 }
 
-.create-resource-modal .form-label {
+.custom-modal-create-resource .form-label {
   font-weight: bold;
 }
 
-.create-resource-modal .form-control {
+.custom-modal-create-resource .form-control {
   border-radius: 5px;
 }
 
-.create-resource-modal .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.create-resource-modal .btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
-
-.create-resource-modal .modal-content {
+.custom-modal-create-resource .modal-content {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -32,5 +22,5 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  z-index: 1060; 
+  z-index: 5000; 
 }

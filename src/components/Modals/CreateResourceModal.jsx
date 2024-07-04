@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, FormFeedback, Row, Col } from "reactstrap";
-import "./CreateResourceModal.css";
+import { Button, Modal, Form, Row, Col, Alert } from "react-bootstrap";
 import { createResource } from "../../services/resourcesServices";
 import Cookies from "js-cookie";
-
-const initialState = {
-  name: '',
-  description: '',
-  type: '',
-  supplier: '',
-  stock: '',
-  brand: '',
-  supplierContact: '',
-  observations: ''
-};
+import "./CreateResourceModal.css"; 
 
 const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
   const token = Cookies.get("authToken");
+  const initialState = {
+    name: '',
+    description: '',
+    type: '',
+    supplier: '',
+    stock: '',
+    brand: '',
+    supplierContact: '',
+    observations: ''
+  };
   const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState({});
 
@@ -38,8 +37,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
     if (!validate()) return;
 
     try {
-      const response = await createResource(token, formData);
-      console.log("Response from createResource:", response);
+      await createResource(token, formData);
       fetchResources(); 
       handleClose();
     } catch (error) {
@@ -53,102 +51,106 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className="custom-modal create-resource-modal">
-      <ModalHeader toggle={toggle}>Create Resource</ModalHeader>
-      <ModalBody>
+    <Modal show={isOpen} onHide={handleClose} centered className="custom-modal-create-resource">
+      <Modal.Header closeButton>
+        <Modal.Title>Create Resource</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <Form onSubmit={onSubmit}>
-          <FormGroup>
-            <Row>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="name">Name</Label>
-                  <Input
-                    name="name"
-                    value={formData.name}
-                    onChange={onChange}
-                    invalid={!!errors.name}
-                  />
-                  <FormFeedback>{errors.name}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label for="description">Description</Label>
-                  <Input
-                    name="description"
-                    value={formData.description}
-                    onChange={onChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="type">Type</Label>
-                  <Input
-                    type="select"
-                    name="type"
-                    value={formData.type}
-                    onChange={onChange}
-                    invalid={!!errors.type}
-                  >
-                    <option value="">Select...</option>
-                    <option value="COMPONENT">Component</option>
-                    <option value="RESOURCE">Resource</option>
-                  </Input>
-                  <FormFeedback>{errors.type}</FormFeedback>
-                </FormGroup>
-                <FormGroup>
-                  <Label for="supplier">Supplier</Label>
-                  <Input
-                    name="supplier"
-                    value={formData.supplier}
-                    onChange={onChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-  <Label for="stock">Quantity</Label>
-  <Input
-    type="number"
-    name="stock"
-    value={formData.stock}
-    onChange={onChange}
-    invalid={!!errors.stock}
-    min="0" // This prevents negative numbers
-  />
-  <FormFeedback>{errors.stock}</FormFeedback>
-</FormGroup>
-              </Col>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="brand">Brand</Label>
-                  <Input
-                    name="brand"
-                    value={formData.brand}
-                    onChange={onChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="supplierContact">Supplier Contact</Label>
-                  <Input
-                    name="supplierContact"
-                    value={formData.supplierContact}
-                    onChange={onChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label for="observations">Observations</Label>
-                  <Input
-                    name="observations"
-                    value={formData.observations}
-                    onChange={onChange}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-          </FormGroup>
-          <Button type="submit" color="primary">Submit</Button>
+          <Row>
+            <Col md={6}>
+              <Form.Group controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={onChange}
+                  isInvalid={!!errors.name}
+                />
+                <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="description">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="description"
+                  value={formData.description}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="type">
+                <Form.Label>Type</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="type"
+                  value={formData.type}
+                  onChange={onChange}
+                  isInvalid={!!errors.type}
+                >
+                  <option value="">Select...</option>
+                  <option value="COMPONENT">Component</option>
+                  <option value="RESOURCE">Resource</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">{errors.type}</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="supplier">
+                <Form.Label>Supplier</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="supplier"
+                  value={formData.supplier}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="stock">
+                <Form.Label>Quantity</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={onChange}
+                  isInvalid={!!errors.stock}
+                  min="0"
+                />
+                <Form.Control.Feedback type="invalid">{errors.stock}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group controlId="brand">
+                <Form.Label>Brand</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="supplierContact">
+                <Form.Label>Supplier Contact</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="supplierContact"
+                  value={formData.supplierContact}
+                  onChange={onChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="observations">
+                <Form.Label>Observations</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="observations"
+                  value={formData.observations}
+                  onChange={onChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Button type="submit" variant="primary">Submit</Button>
         </Form>
-      </ModalBody>
+      </Modal.Body>
     </Modal>
   );
 };
 
 export default CreateResourceModal;
-
-
