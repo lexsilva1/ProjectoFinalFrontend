@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, FormControl } from 'react-bootstrap';
+import { addResourceToProject } from '../../services/projectServices';
 import { getResources } from '../../services/resourcesServices';
 import CreateResourceModal from './CreateResourceModal';
 import './ResourcesModal.css';
 import Cookies from 'js-cookie';
 
-const ResourcesModal = ({ show, handleClose, handleSelect }) => {
+const ResourcesModal = ({ show, handleClose, handleSelect, projectName }) => {
   const [resources, setResources] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -34,14 +35,25 @@ const ResourcesModal = ({ show, handleClose, handleSelect }) => {
     setSelectedMaterials(updatedMaterials);
   };
 
-  const handleAddResource = (resource) => {
-    const quantity = quantities[resource.name] || 1;
+  const handleAddResource = async (resource) => {
+    const quantity = quantities[resource.name] || 1; 
+  
+    if(projectName) {
+      try {
+        // Corrigir: resources.id deve ser resource.id
+        const response = await addResourceToProject(token, projectName, resource.id, quantity);
+        handleSelect(response); 
+      } catch (error) {
+        console.error('Failed to add resource to project:', error);
+      }
+    }
+  
     const updatedMaterials = [
       ...selectedMaterials,
       { ...resource, quantity },
     ];
     setSelectedMaterials(updatedMaterials);
-
+  
     handleSelect(updatedMaterials); 
     handleClose(); 
   };
@@ -54,6 +66,7 @@ const ResourcesModal = ({ show, handleClose, handleSelect }) => {
     setShowCreateResourceModal(false);
     fetchResources(); 
   };
+
 
   return (
     <>
