@@ -151,7 +151,7 @@ const Project = () => {
           className="card-img-top"
         />
         <div className="card-body">
-          <h2 className="card-title">{project.name}</h2>
+          <h2 className="card-title-project-info">{project.name}</h2>
           <div className={getStatusClass(status)}>
             <div className="project-card-status-bar"></div>
             <div className="status-options">
@@ -170,7 +170,7 @@ const Project = () => {
           <Row>
             <Col md={8}>
               <p className="card-text-project">
-                <strong>Laboratory:</strong> {project.lab}
+                <strong>Laboratory: </strong> {project.lab}
               </p>
               <p className="card-text-project">
                 <strong>Description: </strong>
@@ -235,7 +235,7 @@ const Project = () => {
             <Col md={4}>
               {" "}
               {isMember && (
-                <div className="table-responsive" style={{ width: "400px" }}>
+                <div className="table-responsive" style={{ margin: "40px", borderRadius: "10px" }}>
                   <table className="table table-sm">
                     <thead>
                       <tr>
@@ -251,12 +251,12 @@ const Project = () => {
                       </tr>
                       <tr>
                         <th
-                          style={{ width: "20%", backgroundColor: "#f0f0f0" }}
+                          style={{ width: "20%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
                         >
                           Name
                         </th>
                         <th
-                          style={{ width: "10%", backgroundColor: "#f0f0f0" }}
+                          style={{ width: "10%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
                         >
                           Quantity
                         </th>
@@ -266,7 +266,7 @@ const Project = () => {
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
                           <tr key={`${material.id}-${index}`}>
-                            <td>{material.name}</td>
+                            <td  style={{fontSize: "0.9rem" }}>{material.name}</td>
                             <td>{material.quantity}</td>
                           </tr>
                         ))}
