@@ -272,7 +272,7 @@ const Project = () => {
             </Col> 
             {isMember && (
               <div>
-                <ProjectLogs project={project} />
+                <ProjectLogs project={project} logUpdateTrigger={logUpdateTrigger} />
                 <button onClick={handleOpenModal}>Add Annotation</button>
                 <AddAnnotationModal
   show={showModal}
