@@ -8,6 +8,7 @@ import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
+import WarningModal from "../components/Modals/WarningModal";
 import { getProjectByName, projectApplication, updateProjectStatus, fetchProjectLogs } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
@@ -16,6 +17,7 @@ import ProjectChat from "../components/ProjectChat";
 import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { Container, Row, Col } from 'react-bootstrap';
+
 
 
 const Project = () => {
@@ -148,6 +150,8 @@ const Project = () => {
         member.userId === currentUser.id && member.isProjectManager === true
     );
 
+    const isCurrentUserAppManager = currentUser.role <2;
+
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -164,8 +168,8 @@ const Project = () => {
                 <div
                   key={statusOption}
                   className="status-option"
-                  onClick={() => isCurrentUserProjectManager && updateStatus(statusOption)}
-                  style={{ cursor: isCurrentUserProjectManager ? "pointer" : "default" }}
+                  onClick={() => (isCurrentUserProjectManager || isCurrentUserAppManager) && updateStatus(statusOption)}
+                  style={{ cursor: isCurrentUserProjectManager || isCurrentUserAppManager ? "pointer" : "default" }}
                 >
                   <strong>{statusOption}</strong>
                 </div>
@@ -284,6 +288,11 @@ const Project = () => {
               <div>
                 <ProjectLogs project={project} />
               </div>
+            )}
+            {isCurrentUserProjectManager && (
+                <button className="btn-project-apply" onClick={handleOpenModal}>
+                  Cancel Project
+                </button>
             )}
           </Row>
           {!isMember && (
