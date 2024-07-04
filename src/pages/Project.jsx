@@ -36,6 +36,7 @@ const Project = () => {
   const handleCloseModal = () => setShowModal(false);
   const [logs, setLogs] = useState([]);
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
       newStatus = "In Progress";
@@ -169,7 +170,7 @@ const Project = () => {
                   key={statusOption}
                   className="status-option"
                   onClick={() => (isCurrentUserProjectManager || isCurrentUserAppManager) && updateStatus(statusOption)}
-                  style={{ cursor: isCurrentUserProjectManager || isCurrentUserAppManager ? "pointer" : "default" }}
+                  style={{ cursor: (isCurrentUserProjectManager || isCurrentUserAppManager) ? "pointer" : "default" }}
                 >
                   <strong>{statusOption}</strong>
                 </div>
