@@ -9,7 +9,8 @@ import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal";
-import { getProjectByName, projectApplication, updateProjectStatus, fetchProjectLogs } from "../services/projectServices";
+import ResourcesModal from "../components/Modals/ResourcesModal";
+import { getProjectByName, projectApplication, updateProjectStatus, addResourceToProject } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -17,6 +18,7 @@ import ProjectChat from "../components/ProjectChat";
 import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { Container, Row, Col } from 'react-bootstrap';
+import { set } from "date-fns";
 
 
 const Project = () => {
@@ -36,6 +38,7 @@ const Project = () => {
   const [logs, setLogs] = useState([]);
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const [showResourcesModal, setShowResourcesModal] = useState(false);
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };
@@ -67,6 +70,17 @@ const Project = () => {
       console.error("Failed to update project status:", error);
     }
   };
+
+  const handleShowResourcesModal = () => setShowResourcesModal(true);
+const handleCloseResourcesModal = () => setShowResourcesModal(false);
+
+const handleResourceSelected = (resource) => {
+  console.log("Resource selected:", resource);
+  // Add your logic here for when a resource is selected
+};
+
+  
+
 
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
@@ -224,7 +238,7 @@ const Project = () => {
           </div>
         )}
           <Row>
-            <Col md={8}>
+            <Col md={6}>
               <p className="card-text-project">
                 <strong>Laboratory: </strong> {project.lab}
               </p>
@@ -288,12 +302,12 @@ const Project = () => {
                 </>
               )}
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               {" "}
               {isMember && (
                 <div
                   className="table-responsive"
-                  style={{ margin: "40px", borderRadius: "10px" }}
+                  style={{ margin: "40px", width: "60%"}}
                 >
                   <table className="table table-sm">
                     <thead>
@@ -302,32 +316,32 @@ const Project = () => {
                           colSpan="2"
                           style={{
                             textAlign: "center",
-                            backgroundColor: "var(--details-color",
+                            padding: "20px",
+                           
                           }}
                         >
-                          Materials
+                          Materials:
                         </th>
                       </tr>
                       <tr>
                         <th
                           style={{
-                            width: "20%",
-                            backgroundColor: "#f0f0f0",
+                            width: "20%",   
                             fontSize: "0.9rem",
                             alignItems: "center",
                           }}
                         >
-                          Name
+                          Name:
                         </th>
                         <th
                           style={{
                             width: "10%",
-                            backgroundColor: "#f0f0f0",
                             fontSize: "0.9rem",
                             alignItems: "center",
+                            textAlign: "right",
                           }}
                         >
-                          Quantity
+                          Quantity:
                         </th>
                       </tr>
                     </thead>
@@ -338,11 +352,18 @@ const Project = () => {
                             <td style={{ fontSize: "0.9rem" }}>
                               {material.name}
                             </td>
-                            <td>{material.quantity}</td>
+                            <td style={{textAlign: "right"}}>{material.quantity}</td>
                           </tr>
                         ))}
                     </tbody>
                   </table>
+                  <button onClick={handleShowResourcesModal}>Add resource/component</button>
+                  <ResourcesModal
+        show={showResourcesModal}
+        handleClose={handleCloseResourcesModal}
+        handleSelect={handleResourceSelected}
+        projectName={project.name}
+      />
                 </div>
               )}
             </Col>
@@ -464,7 +485,7 @@ const Project = () => {
             {renderTabContent()}
           </div>
         </div>
-      </div>
+      </div>  
     </>
   );
 };

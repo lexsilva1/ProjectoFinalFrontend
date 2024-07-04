@@ -374,6 +374,26 @@ export const leaveProject = async (token, projectName) => {
     return response.text();
 };
 
+export const addResourceToProject = async (token, projectName, resourceId, quantity) => {
+    const url = new URL(`${projectsURL}/${encodeURIComponent(projectName)}/resources`);
+    url.searchParams.append("resourceId", resourceId);
+    url.searchParams.append("quantity", quantity);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.json();
+    }
+};
+
 
 
 
