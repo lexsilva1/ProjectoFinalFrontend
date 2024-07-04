@@ -1,8 +1,13 @@
 .card-text-project {
     font-size: 1rem;
-    margin-bottom: 40px;
+    margin: 40px;
     display: flex;
     flex-wrap: wrap;
+}
+
+.w-100 {
+margin: 0px; 
+margin-bottom: 0px!important; 
 }
 
 .project-team-member {
@@ -40,12 +45,14 @@
     margin-left: 2rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
     margin-bottom: 0px !important;
+    border-top: 1px solid var(--contrast-color);
 }
 
-.card-title {
+.card-title-project-info{
     font-size: 2rem;
     margin: 40px;
     text-align: center;
+    color: black;
 }
 
 .badge-dark, .badge-light {
@@ -70,7 +77,7 @@
     display: flex;
     flex-direction: column;
     align-items: center; 
-    margin-top: 6rem; 
+
 }
 
 .nav-tabs {
@@ -88,7 +95,11 @@
 }
 
 .nav-tabs .nav-link.active {
-    border-color: #ddd #ddd #fff;
+    border-color: var(--contrast-color) var(--contrast-color)  var(--contrast-color);
+    background-color: var(--contrast-color);
+    color: var(--primary-color);
+
+    
 }
 
 .btn-project-apply {
@@ -114,12 +125,12 @@
 
 .button-container {
     display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    height: 100%; /* Opcional: ajuste a altura conforme necessário */
+    justify-content: center; 
+    align-items: center; 
+    height: 100%; 
   }
   .status-options {
     display: flex;
-    justify-content: space-around; /* Adjusts the spacing between options */
-    align-items: center; /* Aligns items vertically in the center */
+    justify-content: space-around; 
+    align-items: center; 
   }

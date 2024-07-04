@@ -149,10 +149,10 @@ const ProjectTeamTab = ({ project }) => {
   };
 
   return (
-    <Card className="shadow-lg w-100">
+    <Card className="shadow-lg w-100" >
       <Card.Header className="d-flex justify-content-between align-items-center">
         <h4 className="card-title">Team Members For {project.name}</h4>
-        <Button onClick={handleOpenModal}>Add Team Member</Button>
+        <Button onClick={handleOpenModal} style={{ display: isCurrentUserProjectManager ? 'block' : 'none' }}>Add Team Member</Button>
         <UsersModal
           show={showModal}
           handleClose={handleCloseModal}
@@ -165,7 +165,7 @@ const ProjectTeamTab = ({ project }) => {
       </Card.Header>
       <Card.Body>
         <Row>
-          <Col md={4}>
+          <Col md={4} style={{ borderRight: "1px solid lightgray" }}>
             <h5>Members</h5>
             <div className="members-list">
               {members.length > 0 ? (
@@ -198,7 +198,7 @@ const ProjectTeamTab = ({ project }) => {
             </div>
           </Col>
 
-          <Col md={4}>
+          <Col md={4}style={{ borderRight: "1px solid lightgray" }}>
             <h5>Invited</h5>
             <div className="members-list">
               {invited.length > 0 ? (
@@ -214,7 +214,7 @@ const ProjectTeamTab = ({ project }) => {
             </div>
           </Col>
 
-          <Col md={4}>
+          <Col md={4} >
             <h5>Applied</h5>
             <div className="members-list">
               {applied.length > 0 ? (

@@ -58,6 +58,10 @@
 
   .card-title {
     text-align: center;
+color: white!important;
+font-weight: normal!important;
+font-size: 20px!important;
+
   }
 
   .card-header {
@@ -66,6 +70,7 @@
     display: flex; 
     justify-content: center;
     padding: 10px 0; 
+    background-color: var(--contrast-color);
   }
 
   .card-slots-avaliable {
@@ -75,3 +80,5 @@
     margin-top: 10px;
     margin-right: 10px;
   }
+
+
