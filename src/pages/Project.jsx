@@ -18,8 +18,6 @@ import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { Container, Row, Col } from 'react-bootstrap';
 
-
-
 const Project = () => {
   const { projectName } = useParams();
   const [isChatOpen, setIsChatOpen] = React.useState(false);
@@ -47,10 +45,21 @@ const Project = () => {
 
   const handleConfirmCancel = async () => {
     setShowWarningModal(false);
-    const status = 'Cancelled';
+    const status = "Cancelled";
     try {
       await updateProjectStatus(token, project.name, status);
       console.log("Project status updated to Cancelled");
+    } catch (error) {
+      console.error("Failed to update project status:", error);
+    }
+  };
+
+  const handleRestoreProject = async () => {
+    setShowModal(false);
+    const status = "Planning";
+    try {
+      await updateProjectStatus(token, project.name, status);
+      console.log("Project status updated to Ready");
     } catch (error) {
       console.error("Failed to update project status:", error);
     }
@@ -110,7 +119,7 @@ const Project = () => {
   );
 
   const teamMembers = project.teamMembers?.filter(
-    (member) => member.approvalStatus === "MEMBER"
+    (member) => member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
   );
 
   useEffect(() => {
@@ -138,11 +147,10 @@ const Project = () => {
     },
     type: "project",
   };
-  const isMember = project.teamMembers?.some(
+  const isMember = project.status !== "Cancelled" && project.teamMembers?.some(
     (member) =>
       member.userId === currentUser.id &&
-      (member.approvalStatus === "MEMBER" ||
-        member.approvalStatus === "CREATOR")
+      (member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
   );
 
   const renderInfoTabContent = () => {
@@ -181,7 +189,13 @@ const Project = () => {
           className="card-img-top"
         />
         <div className="card-body">
-          <h2 className="card-title-project-info">{project.name}</h2>
+        <h2 className="card-title-project-info">{project.name}</h2>
+        {status === "Cancelled" ? (
+          <div className={getStatusClass(status)}>
+            <div className="project-card-status-bar"></div>
+            <strong>Cancelled</strong>
+          </div>
+        ) : (
           <div className={getStatusClass(status)}>
             <div className="project-card-status-bar"></div>
             <div className="status-options">
@@ -189,14 +203,23 @@ const Project = () => {
                 <div
                   key={statusOption}
                   className="status-option"
-                  onClick={() => (isCurrentUserProjectManager || isCurrentUserAppManager) && updateStatus(statusOption)}
-                  style={{ cursor: (isCurrentUserProjectManager || isCurrentUserAppManager) ? "pointer" : "default" }}
+                  onClick={() =>
+                    (isCurrentUserProjectManager || isCurrentUserAppManager) &&
+                    updateStatus(statusOption)
+                  }
+                  style={{
+                    cursor:
+                      isCurrentUserProjectManager || isCurrentUserAppManager
+                        ? "pointer"
+                        : "default",
+                  }}
                 >
                   <strong>{statusOption}</strong>
                 </div>
               ))}
             </div>
           </div>
+        )}
           <Row>
             <Col md={8}>
               <p className="card-text-project">
@@ -265,7 +288,10 @@ const Project = () => {
             <Col md={4}>
               {" "}
               {isMember && (
-                <div className="table-responsive" style={{ margin: "40px", borderRadius: "10px" }}>
+                <div
+                  className="table-responsive"
+                  style={{ margin: "40px", borderRadius: "10px" }}
+                >
                   <table className="table table-sm">
                     <thead>
                       <tr>
@@ -281,12 +307,22 @@ const Project = () => {
                       </tr>
                       <tr>
                         <th
-                          style={{ width: "20%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
+                          style={{
+                            width: "20%",
+                            backgroundColor: "#f0f0f0",
+                            fontSize: "0.9rem",
+                            alignItems: "center",
+                          }}
                         >
                           Name
                         </th>
                         <th
-                          style={{ width: "10%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
+                          style={{
+                            width: "10%",
+                            backgroundColor: "#f0f0f0",
+                            fontSize: "0.9rem",
+                            alignItems: "center",
+                          }}
                         >
                           Quantity
                         </th>
@@ -296,7 +332,9 @@ const Project = () => {
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
                           <tr key={`${material.id}-${index}`}>
-                            <td  style={{fontSize: "0.9rem" }}>{material.name}</td>
+                            <td style={{ fontSize: "0.9rem" }}>
+                              {material.name}
+                            </td>
                             <td>{material.quantity}</td>
                           </tr>
                         ))}
@@ -310,9 +348,11 @@ const Project = () => {
                 <ProjectLogs project={project} />
               </div>
             )}
-            {isCurrentUserProjectManager && (
+            {isCurrentUserProjectManager || project.status !== "Cancelled" && (
               <div>
-                <button onClick={handleCancelProjectClick}>Cancel Project</button>
+                <button onClick={handleCancelProjectClick}>
+                  Cancel Project
+                </button>
                 <WarningModal
                   isOpen={showWarningModal}
                   message="Are you sure you want to cancel this project?"
@@ -321,18 +361,29 @@ const Project = () => {
                 />
               </div>
             )}
+            {isCurrentUserAppManager && project.status === "Cancelled" && (
+              <div>
+                <button onClick={handleOpenModal}>Restore Project</button>
+                <WarningModal
+                  isOpen={showModal}
+                  message="Are you sure you want to restore this project?"
+                  onCancel={handleCloseModal}
+                  onConfirm={handleRestoreProject}
+                />
+              </div>
+            )}
           </Row>
-          {!isMember && (
-            <div className="button-container">
-              {hasUserApplied ? (
-                <div>You have applied to this project.</div>
-              ) : (
-                <button className="btn-project-apply" onClick={handleApply}>
-                  Apply
-                </button>
-              )}
-            </div>
-          )}
+          {(!isMember && project.status !== "Cancelled") && (
+  <div className="button-container">
+    {hasUserApplied ? (
+      <div>You have applied to this project.</div>
+    ) : (
+      <button className="btn-project-apply" onClick={handleApply}>
+        Apply
+      </button>
+    )}
+  </div>
+)}
         </div>
       </div>
     );
