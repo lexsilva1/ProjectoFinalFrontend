@@ -59,6 +59,7 @@ const Home = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    if(isLoggedIn) {
     getProjects()
       .then((projectsData) => {
         const userProjects = projectsData.filter((project) =>
@@ -76,7 +77,19 @@ const Home = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [currentUser]);
+  
+}else{ 
+  getProjects()
+    .then((projectsData) => {
+      setProjects(projectsData);
+    })
+    .catch((error) => {
+      console.error("Error fetching projects:", error);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+}}, [currentUser]);
 
 
   const handleOpenResetPasswordModal = () => {
