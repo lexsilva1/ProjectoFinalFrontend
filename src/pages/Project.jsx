@@ -18,6 +18,7 @@ import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { Container, Row, Col } from 'react-bootstrap';
 
+
 const Project = () => {
   const { projectName } = useParams();
   const [isChatOpen, setIsChatOpen] = React.useState(false);
@@ -48,6 +49,7 @@ const Project = () => {
     const status = "Cancelled";
     try {
       await updateProjectStatus(token, project.name, status);
+
       console.log("Project status updated to Cancelled");
     } catch (error) {
       console.error("Failed to update project status:", error);
@@ -59,6 +61,7 @@ const Project = () => {
     const status = "Planning";
     try {
       await updateProjectStatus(token, project.name, status);
+
       console.log("Project status updated to Ready");
     } catch (error) {
       console.error("Failed to update project status:", error);
@@ -348,7 +351,7 @@ const Project = () => {
                 <ProjectLogs project={project} />
               </div>
             )}
-            {isCurrentUserProjectManager || project.status !== "Cancelled" && (
+            {(isCurrentUserProjectManager || isCurrentUserAppManager) && project.status !== "Cancelled" && (
               <div>
                 <button onClick={handleCancelProjectClick}>
                   Cancel Project
