@@ -358,6 +358,22 @@ export const createProjectLog = async (token, projectName, logDto) => {
     return response.json();
 };
 
+export const leaveProject = async (token, projectName) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/leave`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+};
+
 
 
 

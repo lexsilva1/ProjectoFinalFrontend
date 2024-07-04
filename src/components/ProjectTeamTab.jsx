@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '../multimedia/Images/Avatar.jpg';
-import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications, removeProjectUser } from '../services/projectServices';
+import { inviteUser, promoteUser, demoteUser, manageInvitesApplications, rejectInvitesApplications, removeProjectUser, leaveProject } from '../services/projectServices';
 import './ProjectTeamTab.css';
 import UsersModal from './Modals/UsersModal';
 import userStore from '../stores/userStore';
 import Cookies from 'js-cookie';
 import { findAllUsers } from '../services/userServices';
+import { Row, Col, Card, Button, Form, Image } from 'react-bootstrap';
 
 
 const ProjectTeamTab = ({ project }) => {
@@ -137,15 +138,21 @@ const ProjectTeamTab = ({ project }) => {
     }
   };
 
+  const handleLeaveProject = async () => {
+    try {
+      await leaveProject(token, project.name);
+      console.log(`Left project ${project.name} successfully.`);
+      // Aqui você pode adicionar lógica adicional, como redirecionar o usuário ou atualizar o estado da UI
+    } catch (error) {
+      console.error("Error leaving project", error);
+    }
+  };
+
   return (
-    <div className="card shadow-lg w-100">
-      <div className="header-with-invite">
-        <div className="card-header">
-          <h4 className="card-title">Team Members For {project.name}</h4>
-        </div>
-        <button className="invite-button" onClick={handleOpenModal}>
-          Add Team Member
-        </button>
+    <Card className="shadow-lg w-100">
+      <Card.Header className="d-flex justify-content-between align-items-center">
+        <h4 className="card-title">Team Members For {project.name}</h4>
+        <Button onClick={handleOpenModal}>Add Team Member</Button>
         <UsersModal
           show={showModal}
           handleClose={handleCloseModal}
@@ -155,111 +162,98 @@ const ProjectTeamTab = ({ project }) => {
           onUserAdded={handleUserAdded}
           onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
         />
-      </div>
-      <div className="card-slots-avaliable">
-        <p className="card-text-project">
-          <strong>Slots available:</strong>{" "}
-          {project.maxTeamMembers !== undefined &&
-            `${project.maxTeamMembers - members.length}/${
-              project.maxTeamMembers
-            }`}
-        </p>
-      </div>
-
-      <div className="members-container">
-        <h4>Members</h4>
-        <div className="members-list">
-          {members.map((member, index) => (
-            <div
-              key={`${project.id}-member-${index}`}
-              className="simple-user-display"
-            >
-              <img
-                src={member.userPhoto || Avatar}
-                alt={`${member.firstName} ${member.lastName}`}
-                className="user-image-project"
-              />
-              <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
-              {isCurrentUserProjectManager && currentUser.id !== member.userId ? (
-                <select
-                  className="role-dropdown"
-                  value={member.isProjectManager ? "Project Manager" : "Collaborator"}
-                  onChange={(e) => handleRoleChange(e, member.userId)}
-                >
-                  <option value="Collaborator">Collaborator</option>
-                  <option value="Project Manager">Project Manager</option>
-                </select>
+      </Card.Header>
+      <Card.Body>
+        <Row>
+          <Col md={4}>
+            <h5>Members</h5>
+            <div className="members-list">
+              {members.length > 0 ? (
+                members.map((member, index) => (
+                  <div key={`${project.id}-member-${index}`} className="simple-user-display">
+                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
+                    <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
+                    {isCurrentUserProjectManager && currentUser.id !== member.userId ? (
+                      <Form.Select
+                        className="role-dropdown"
+                        value={member.isProjectManager ? "Project Manager" : "Collaborator"}
+                        onChange={(e) => handleRoleChange(e, member.userId)}
+                      >
+                        <option value="Collaborator">Collaborator</option>
+                        <option value="Project Manager">Project Manager</option>
+                      </Form.Select>
+                    ) : (
+                      <p className="role-label">{member.isProjectManager ? "Project Manager" : "Collaborator"}</p>
+                    )}
+                    {isCurrentUserProjectManager && currentUser.id !== member.userId && (
+                      <div className="remove-user-cross" onClick={() => handleRemoveUser(member.userId)}>
+                        <Button variant="link" size="sm">x</Button>
+                      </div>
+                    )}
+                  </div>
+                ))
               ) : (
-                <p className="role-label">{member.isProjectManager ? "Project Manager" : "Collaborator"}</p>
-              )}
-              {isCurrentUserProjectManager && currentUser.id !== member.userId && (
-                <div
-                  className="remove-user-cross"
-                  onClick={() => handleRemoveUser(member.userId)}
-                >
-                  <button>x</button>
-                </div>
+                <p>No members available.</p>
               )}
             </div>
-          ))}
-        </div>
-      </div>
+          </Col>
 
-      <div className="invited-container">
-        <h4>Invited</h4>
-        <div className="members-list">
-          {invitedUsers.map((member, index) => (
-            <div key={`${project.id}-invited-${index}`} className="simple-user-display">
-              <img src={member.userPhoto || Avatar} alt={`${member.firstName} ${member.lastName}`} className="user-image-project" />
-              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="applied-container">
-        <h4>Applied</h4>
-        <div className="members-list">
-          {applied.map((member, index) => (
-            <div
-              key={`${project.id}-applied-${index}`}
-              className="simple-user-display"
-            >
-              <img
-                src={member.userPhoto || Avatar}
-                alt={`${member.firstName} ${member.lastName}`}
-                className="user-image-project"
-              />
-              <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
-              {isCurrentUserProjectManager && (
-                <div className="application-actions">
-                  <button
-                    className="accept-button"
-                    onClick={() => handleAcceptApplication(member)}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    className="decline-button"
-                    onClick={() =>
-                      rejectInvitesApplications(
-                        token,
-                        project.name,
-                        member.userId,
-                        "REJECT",
-                        member.notificationId
-                      )
-                    }
-                  >
-                    Decline
-                  </button>
-                </div>
+          <Col md={4}>
+            <h5>Invited</h5>
+            <div className="members-list">
+              {invited.length > 0 ? (
+                invited.map((member, index) => (
+                  <div key={`${project.id}-invited-${index}`} className="simple-user-display">
+                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
+                    <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No invited users available.</p>
               )}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          </Col>
+
+          <Col md={4}>
+            <h5>Applied</h5>
+            <div className="members-list">
+              {applied.length > 0 ? (
+                applied.map((member, index) => (
+                  <div key={`${project.id}-applied-${index}`} className="simple-user-display">
+                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
+                    <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+                    {isCurrentUserProjectManager && (
+                      <div className="application-actions">
+                        <Button size="sm" className="accept-button" onClick={() => handleAcceptApplication(member)}>Accept</Button>
+                        <Button size="sm" className="decline-button" onClick={() =>
+                          rejectInvitesApplications(
+                            token,
+                            project.name,
+                            member.userId,
+                            "REJECT",
+                            member.notificationId
+                          )
+                        }>Decline</Button>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p>No applied users available.</p>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </Card.Body>
+      <Card.Footer>
+        <p className="card-text-project">
+          <strong>Slots available:</strong> 
+          {project.maxTeamMembers !== undefined && 
+            `${project.maxTeamMembers - members.length}/${project.maxTeamMembers}`}
+        </p>
+        <button onClick={handleLeaveProject}>Leave Project</button>
+      </Card.Footer>
+    </Card>
   );
 };
 
