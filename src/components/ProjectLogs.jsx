@@ -145,7 +145,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
       const logDto = {
         log: annotation,
         taskId: selectedTask ? selectedTask.id : null,
-        otherUserId: selectedUser ? selectedUser.id : null
+        otherUserId: selectedUser ? selectedUser.userId : null
       };
 
       console.log (logDto);
