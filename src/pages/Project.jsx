@@ -37,6 +37,25 @@ const Project = () => {
   const [logs, setLogs] = useState([]);
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const handleCancelProjectClick = () => {
+    setShowWarningModal(true);
+  };
+
+  const handleCancel = () => {
+    setShowWarningModal(false);
+  };
+
+  const handleConfirmCancel = async () => {
+    setShowWarningModal(false);
+    const status = 'Cancelled';
+    try {
+      await updateProjectStatus(token, project.name, status);
+      console.log("Project status updated to Cancelled");
+    } catch (error) {
+      console.error("Failed to update project status:", error);
+    }
+  };
+
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
       newStatus = "In Progress";
@@ -151,7 +170,8 @@ const Project = () => {
         member.userId === currentUser.id && member.isProjectManager === true
     );
 
-    const isCurrentUserAppManager = currentUser.role <2;
+    const isCurrentUserAppManager = currentUser.role < 2;
+    console.log(currentUser.role);
 
     return (
       <div className="card shadow-lg w-100">
@@ -291,9 +311,15 @@ const Project = () => {
               </div>
             )}
             {isCurrentUserProjectManager && (
-                <button className="btn-project-apply" onClick={handleOpenModal}>
-                  Cancel Project
-                </button>
+              <div>
+                <button onClick={handleCancelProjectClick}>Cancel Project</button>
+                <WarningModal
+                  isOpen={showWarningModal}
+                  message="Are you sure you want to cancel this project?"
+                  onCancel={handleCancel}
+                  onConfirm={handleConfirmCancel}
+                />
+              </div>
             )}
           </Row>
           {!isMember && (
