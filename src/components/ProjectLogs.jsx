@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
+import { Container, Card, Badge, Form, Button, Alert, ListGroup } from 'react-bootstrap';
 import { ClockFill, InfoCircleFill, ExclamationTriangleFill, XCircleFill } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
-import { fetchProjectLogs } from '../services/projectServices';
+import { fetchProjectLogs, createProjectLog, getTasks, getProjectByName } from '../services/projectServices';
 import Cookies from 'js-cookie';
 import { findUserById } from '../services/userServices';
 import './ProjectLogs.css';
@@ -13,26 +13,31 @@ const logLevelIcons = {
   error: <XCircleFill />,
 };
 
-const ProjectLogs = ({ project, logUpdateTrigger}) => {
+const ProjectLogs = ({ project, logUpdateTrigger }) => {
   const [logs, setLogs] = useState([]);
   const [userDetails, setUserDetails] = useState({});
+  const [annotation, setAnnotation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const token = Cookies.get('authToken');
   const projectName = project.name;
-  console.log(projectName);
 
   const logTypeMessages = {
     UPDATE_PROJECT_STATUS: "Update Project Status",
     PROJECT_CREATED: "Project Created",
-    // Adicione mais mapeamentos conforme necessário
   };
 
   useEffect(() => {
-    console.log("useEffect triggered in ProjectLogs");
-    const loadLogs = async () => {
+    const loadLogsAndTasks = async () => {
+      // Load logs
       try {
         const fetchedLogs = await fetchProjectLogs(token, project.name);
         const userDetailsTemp = {};
-  
+
         for (const log of fetchedLogs) {
           if (log.userId && !userDetailsTemp[log.userId]) {
             try {
@@ -43,51 +48,177 @@ const ProjectLogs = ({ project, logUpdateTrigger}) => {
             }
           }
         }
-  
+
         setLogs(fetchedLogs);
         setUserDetails(userDetailsTemp);
       } catch (error) {
         console.error("Failed to fetch project logs:", error);
       }
+
+      // Load tasks
+      try {
+        const response = await getTasks(token, project.name);
+        const fetchedTasks = response.tasks;
+        if (Array.isArray(fetchedTasks)) {
+          setTasks(fetchedTasks);
+        } else {
+          console.error("Expected fetchedTasks to be an array, got:", typeof fetchedTasks);
+          setTasks([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+        setTasks([]);
+      }
     };
-  
-    loadLogs();
+
+    loadLogsAndTasks();
   }, [project.name, token, logUpdateTrigger]);
 
+  const handleAnnotationChange = async (e) => {
+    const value = e.target.value;
+    setAnnotation(value);
+
+    if (value.includes("#") && !/\S#\S/.test(value)) {
+      const searchTerm = value.substring(value.lastIndexOf("#") + 1);
+      if (searchTerm.length > 0) {
+        const filteredTasks = tasks.filter(
+          (task) =>
+            typeof task.title === "string" &&
+            task.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setSuggestions(filteredTasks);
+      } else {
+        setSuggestions(tasks);
+      }
+    } else if (value.includes("@") && !/\S@\S/.test(value)) {
+      const searchTerm = value.substring(value.lastIndexOf("@") + 1);
+      try {
+        const projectDetails = await getProjectByName(token, project.name);
+        const projectMembers = projectDetails.teamMembers.filter(member => 
+          member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
+        );
+        if (searchTerm.length > 0) {
+          const filteredMembers = projectMembers.filter(
+            (member) =>
+              `${member.firstName} ${member.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          setSuggestions(filteredMembers);
+        } else {
+          setSuggestions(projectMembers);
+        }
+      } catch (error) {
+        console.error("Failed to fetch project members:", error);
+        setSuggestions([]);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const onSelectSuggestion = (suggestion) => {
+    let newAnnotation = annotation;
+    if (suggestion.firstName && suggestion.lastName) {
+      // Member suggestion
+      const memberName = `${suggestion.firstName} ${suggestion.lastName}`.trim();
+      setSelectedUser(suggestion);
+      const atIndex = annotation.lastIndexOf("@");
+      newAnnotation = `${annotation.substring(0, atIndex)}@${memberName} `;
+    } else if (suggestion.title) {
+      // Task suggestion
+      const taskTitle = suggestion.title.trim();
+      setSelectedTask(suggestion);
+      const hashIndex = annotation.lastIndexOf("#");
+      newAnnotation = `${annotation.substring(0, hashIndex)}#${taskTitle} `;
+    }
+    setAnnotation(newAnnotation);
+    setSuggestions([]);
+  };
+
+  const onSave = async () => {
+    if (!annotation.trim()) {
+      setError("Annotation cannot be empty.");
+      return;
+    }
+    setIsLoading(true);
+    setError("");
+    try {
+      const logDto = {
+        log: annotation,
+        taskId: selectedTask ? selectedTask.id : null,
+        otherUserId: selectedUser ? selectedUser.id : null
+      };
+
+      console.log (logDto);
+
+      const newDto = await createProjectLog(token, projectName, logDto);
+      setLogs([...logs, newDto]);
+      setAnnotation("");
+      setSelectedTask(null); // Reset selected task
+      setSelectedUser(null); // Reset selected user
+    } catch (error) {
+      setError(`Failed to add annotation: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Container className="project-logs">
-      {logs && Array.isArray(logs) ? logs.map((log) => (
-        <Card key={log.id} className="log-card">
-          <Card.Header className="log-card-header">
-            <div className="log-time">
-              <Badge>
-                <ClockFill className="mr-1" />
-                {new Date(log.time).toLocaleString()}
-              </Badge>
-              {log.userId && userDetails[log.userId] && (
-                <span style={{marginLeft: "25px"}}>{userDetails[log.userId].firstName}</span>
-              )}
-            </div>
-            <div className="log-icon">
-              {logLevelIcons[log.level]}
-            </div>
-            <h5>{log.message}</h5>
-            <div>{log.type === 'OTHER' ? log.log : (logTypeMessages[log.type] || log.type)}</div>
-          </Card.Header>
-          {log.details && (
-            <Card.Body className="log-card-body">
-              <Card.Text className="log-details">{log.details}</Card.Text>
-            </Card.Body>
-          )}
-        </Card>
-      )) : <p>No logs available.</p>}
+    <Container className="project-logs d-flex flex-column">
+      <div className="logs-section flex-grow-1 overflow-auto">
+        {logs && Array.isArray(logs) ? logs.map((log) => (
+          <Card key={log.id} className="log-card">
+            <Card.Header className="log-card-header">
+              <div className="log-time">
+                <Badge>
+                  <ClockFill className="mr-1" />
+                  {new Date(log.time).toLocaleString()}
+                </Badge>
+                {log.userId && userDetails[log.userId] && (
+                  <span style={{marginLeft: "25px"}}>{userDetails[log.userId].firstName}</span>
+                )}
+              </div>
+              <div className="log-icon">
+                {logLevelIcons[log.level]}
+              </div>
+              <h5>{log.message}</h5>
+              <div>{log.type === 'OTHER' ? log.log : (logTypeMessages[log.type] || log.type)}</div>
+            </Card.Header>
+            {log.details && (
+              <Card.Body className="log-card-body">
+                <Card.Text className="log-details">{log.details}</Card.Text>
+              </Card.Body>
+            )}
+          </Card>
+        )) : <p>No logs available.</p>}
+      </div>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <Form className="mt-3">
+        <Form.Group controlId="annotation">
+          <Form.Label>Add Annotation</Form.Label>
+          <Form.Control as="textarea" rows="3" value={annotation} onChange={handleAnnotationChange} />
+        </Form.Group>
+        {suggestions.length > 0 && (
+          <ListGroup>
+            {suggestions.map((suggestion) => (
+              <ListGroup.Item key={suggestion.id} onClick={() => onSelectSuggestion(suggestion)} className="suggestion-item" style={{ cursor: "pointer" }}>
+                {suggestion.firstName && suggestion.lastName
+                  ? <span className="member-suggestion">{`${suggestion.firstName} ${suggestion.lastName}`}</span>
+                  : suggestion.title}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        )}
+        <Button variant="primary" onClick={onSave} disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save Annotation"}
+        </Button>
+      </Form>
     </Container>
-    
   );
 };
 
 ProjectLogs.propTypes = {
   project: PropTypes.object.isRequired,
+  logUpdateTrigger: PropTypes.func.isRequired,
 };
 
 export default ProjectLogs;
