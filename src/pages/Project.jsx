@@ -143,6 +143,11 @@ const Project = () => {
       }
     };
 
+    const isCurrentUserProjectManager = project.teamMembers?.some(
+      (member) =>
+        member.userId === currentUser.id && member.isProjectManager === true
+    );
+
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -159,8 +164,8 @@ const Project = () => {
                 <div
                   key={statusOption}
                   className="status-option"
-                  onClick={() => updateStatus(statusOption)}
-                  style={{ cursor: "pointer" }}
+                  onClick={() => isCurrentUserProjectManager && updateStatus(statusOption)}
+                  style={{ cursor: isCurrentUserProjectManager ? "pointer" : "default" }}
                 >
                   <strong>{statusOption}</strong>
                 </div>

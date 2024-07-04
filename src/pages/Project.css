@@ -134,3 +134,8 @@ margin-bottom: 0px!important;
     justify-content: space-around; 
     align-items: center; 
   }
+
+  .disabled-status-bar {
+    pointer-events: none;
+    cursor: default;
+  }

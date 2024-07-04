@@ -42,6 +42,7 @@ const Profile = () => {
   const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const isOwnProfile = user?.id == userId;
   const { t } = useTranslation();
+  
 
   const [formValues, setFormValues] = useState({
     firstName: "",
