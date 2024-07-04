@@ -360,7 +360,7 @@ export const createProjectLog = async (token, projectName, logDto) => {
 
 export const leaveProject = async (token, projectName) => {
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/leave`, {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'token': token
