@@ -9,8 +9,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal";
-import ResourcesModal from "../components/Modals/ResourcesModal";
-import { getProjectByName, projectApplication, updateProjectStatus, addResourceToProject } from "../services/projectServices";
+import { getProjectByName, projectApplication, updateProjectStatus, fetchProjectLogs } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -18,7 +17,7 @@ import ProjectChat from "../components/ProjectChat";
 import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { Container, Row, Col } from 'react-bootstrap';
-import { set } from "date-fns";
+
 
 
 const Project = () => {
@@ -38,7 +37,6 @@ const Project = () => {
   const [logs, setLogs] = useState([]);
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const [showResourcesModal, setShowResourcesModal] = useState(false);
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };
@@ -49,38 +47,14 @@ const Project = () => {
 
   const handleConfirmCancel = async () => {
     setShowWarningModal(false);
-    const status = "Cancelled";
+    const status = 'Cancelled';
     try {
       await updateProjectStatus(token, project.name, status);
-
       console.log("Project status updated to Cancelled");
     } catch (error) {
       console.error("Failed to update project status:", error);
     }
   };
-
-  const handleRestoreProject = async () => {
-    setShowModal(false);
-    const status = "Planning";
-    try {
-      await updateProjectStatus(token, project.name, status);
-
-      console.log("Project status updated to Ready");
-    } catch (error) {
-      console.error("Failed to update project status:", error);
-    }
-  };
-
-  const handleShowResourcesModal = () => setShowResourcesModal(true);
-const handleCloseResourcesModal = () => setShowResourcesModal(false);
-
-const handleResourceSelected = (resource) => {
-  console.log("Resource selected:", resource);
-  // Add your logic here for when a resource is selected
-};
-
-  
-
 
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
@@ -136,7 +110,7 @@ const handleResourceSelected = (resource) => {
   );
 
   const teamMembers = project.teamMembers?.filter(
-    (member) => member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
+    (member) => member.approvalStatus === "MEMBER"
   );
 
   useEffect(() => {
@@ -164,10 +138,11 @@ const handleResourceSelected = (resource) => {
     },
     type: "project",
   };
-  const isMember = project.status !== "Cancelled" && project.teamMembers?.some(
+  const isMember = project.teamMembers?.some(
     (member) =>
       member.userId === currentUser.id &&
-      (member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
+      (member.approvalStatus === "MEMBER" ||
+        member.approvalStatus === "CREATOR")
   );
 
   const renderInfoTabContent = () => {
@@ -206,13 +181,7 @@ const handleResourceSelected = (resource) => {
           className="card-img-top"
         />
         <div className="card-body">
-        <h2 className="card-title-project-info">{project.name}</h2>
-        {status === "Cancelled" ? (
-          <div className={getStatusClass(status)}>
-            <div className="project-card-status-bar"></div>
-            <strong>Cancelled</strong>
-          </div>
-        ) : (
+          <h2 className="card-title-project-info">{project.name}</h2>
           <div className={getStatusClass(status)}>
             <div className="project-card-status-bar"></div>
             <div className="status-options">
@@ -220,25 +189,16 @@ const handleResourceSelected = (resource) => {
                 <div
                   key={statusOption}
                   className="status-option"
-                  onClick={() =>
-                    (isCurrentUserProjectManager || isCurrentUserAppManager) &&
-                    updateStatus(statusOption)
-                  }
-                  style={{
-                    cursor:
-                      isCurrentUserProjectManager || isCurrentUserAppManager
-                        ? "pointer"
-                        : "default",
-                  }}
+                  onClick={() => (isCurrentUserProjectManager || isCurrentUserAppManager) && updateStatus(statusOption)}
+                  style={{ cursor: (isCurrentUserProjectManager || isCurrentUserAppManager) ? "pointer" : "default" }}
                 >
                   <strong>{statusOption}</strong>
                 </div>
               ))}
             </div>
           </div>
-        )}
           <Row>
-            <Col md={6}>
+            <Col md={8}>
               <p className="card-text-project">
                 <strong>Laboratory: </strong> {project.lab}
               </p>
@@ -302,13 +262,10 @@ const handleResourceSelected = (resource) => {
                 </>
               )}
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               {" "}
               {isMember && (
-                <div
-                  className="table-responsive"
-                  style={{ margin: "40px", width: "60%"}}
-                >
+                <div className="table-responsive" style={{ margin: "40px", borderRadius: "10px" }}>
                   <table className="table table-sm">
                     <thead>
                       <tr>
@@ -316,32 +273,22 @@ const handleResourceSelected = (resource) => {
                           colSpan="2"
                           style={{
                             textAlign: "center",
-                            padding: "20px",
-                           
+                            backgroundColor: "var(--details-color",
                           }}
                         >
-                          Materials:
+                          Materials
                         </th>
                       </tr>
                       <tr>
                         <th
-                          style={{
-                            width: "20%",   
-                            fontSize: "0.9rem",
-                            alignItems: "center",
-                          }}
+                          style={{ width: "20%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
                         >
-                          Name:
+                          Name
                         </th>
                         <th
-                          style={{
-                            width: "10%",
-                            fontSize: "0.9rem",
-                            alignItems: "center",
-                            textAlign: "right",
-                          }}
+                          style={{ width: "10%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
                         >
-                          Quantity:
+                          Quantity
                         </th>
                       </tr>
                     </thead>
@@ -349,21 +296,12 @@ const handleResourceSelected = (resource) => {
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
                           <tr key={`${material.id}-${index}`}>
-                            <td style={{ fontSize: "0.9rem" }}>
-                              {material.name}
-                            </td>
-                            <td style={{textAlign: "right"}}>{material.quantity}</td>
+                            <td  style={{fontSize: "0.9rem" }}>{material.name}</td>
+                            <td>{material.quantity}</td>
                           </tr>
                         ))}
                     </tbody>
                   </table>
-                  <button onClick={handleShowResourcesModal}>Add resource/component</button>
-                  <ResourcesModal
-        show={showResourcesModal}
-        handleClose={handleCloseResourcesModal}
-        handleSelect={handleResourceSelected}
-        projectName={project.name}
-      />
                 </div>
               )}
             </Col>
@@ -372,11 +310,9 @@ const handleResourceSelected = (resource) => {
                 <ProjectLogs project={project} />
               </div>
             )}
-            {(isCurrentUserProjectManager || isCurrentUserAppManager) && project.status !== "Cancelled" && (
+            {isCurrentUserProjectManager && (
               <div>
-                <button onClick={handleCancelProjectClick}>
-                  Cancel Project
-                </button>
+                <button onClick={handleCancelProjectClick}>Cancel Project</button>
                 <WarningModal
                   isOpen={showWarningModal}
                   message="Are you sure you want to cancel this project?"
@@ -385,29 +321,18 @@ const handleResourceSelected = (resource) => {
                 />
               </div>
             )}
-            {isCurrentUserAppManager && project.status === "Cancelled" && (
-              <div>
-                <button onClick={handleOpenModal}>Restore Project</button>
-                <WarningModal
-                  isOpen={showModal}
-                  message="Are you sure you want to restore this project?"
-                  onCancel={handleCloseModal}
-                  onConfirm={handleRestoreProject}
-                />
-              </div>
-            )}
           </Row>
-          {(!isMember && project.status !== "Cancelled") && (
-  <div className="button-container">
-    {hasUserApplied ? (
-      <div>You have applied to this project.</div>
-    ) : (
-      <button className="btn-project-apply" onClick={handleApply}>
-        Apply
-      </button>
-    )}
-  </div>
-)}
+          {!isMember && (
+            <div className="button-container">
+              {hasUserApplied ? (
+                <div>You have applied to this project.</div>
+              ) : (
+                <button className="btn-project-apply" onClick={handleApply}>
+                  Apply
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -485,7 +410,7 @@ const handleResourceSelected = (resource) => {
             {renderTabContent()}
           </div>
         </div>
-      </div>  
+      </div>
     </>
   );
 };
