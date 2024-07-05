@@ -394,12 +394,45 @@ export const addResourceToProject = async (token, projectName, resourceId, quant
     }
 };
 
+export const removeResourceToProject = async (token, projectName, resourceId, quantity) => {
+    const url = new URL(`${projectsURL}/${encodeURIComponent(projectName)}/resources`);
+    url.searchParams.append("resourceId", resourceId);
+    url.searchParams.append("quantity", quantity);
 
+    const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
 
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.json();
+    }
+};
 
+export const updateResourceToProject = async (token, projectName, resourceId, quantity) => {
+    const url = new URL(`${projectsURL}/${encodeURIComponent(projectName)}/resources`);
+    url.searchParams.append("resourceId", resourceId);
+    url.searchParams.append("quantity", quantity);
 
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        }
+    });
 
-
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.json();
+    }
+};
 
 
 
