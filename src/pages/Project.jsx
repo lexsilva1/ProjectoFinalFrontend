@@ -39,6 +39,7 @@ const Project = () => {
   const [logs, setLogs] = useState([]);
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const [showResourcesModal, setShowResourcesModal] = useState(false);
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };

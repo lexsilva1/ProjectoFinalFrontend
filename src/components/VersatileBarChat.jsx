@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const BarChartComponent = ({ data }) => {
+const VersatileBarChart = ({ data }) => {
   // Convert the HashMap to an array of objects for recharts
   const chartData = Object.keys(data).map(key => ({
     name: key,
@@ -22,4 +22,4 @@ const BarChartComponent = ({ data }) => {
   );
 };
 
-export default BarChartComponent;
+export default VersatileBarChart;
