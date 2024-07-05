@@ -66,7 +66,7 @@ const Dashboard = () => {
             <Col key={lab} md={6} className="mb-4">
                 <Card className="shadow-sm">
                     <Card.Body className="chart-content">
-                        <Card.Title>{lab}</Card.Title>
+                        <Card.Title className = "card-title-dashboard">{lab}</Card.Title>
                         <PieChart width={300} height={300}> {/* Reduzindo o tamanho do gráfico */}
                             <Pie data={labData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
                                 {labData.map((entry) => (
@@ -92,7 +92,7 @@ const Dashboard = () => {
                     <Col md={4}>
                         <Card className="shadow-sm">
                             <Card.Body>
-                                <Card.Title>Total Projects</Card.Title>
+                                <Card.Title className = "card-title-dashboard">Total Projects</Card.Title>
                                 <h2>{totalProjects}</h2>
                             </Card.Body>
                         </Card>
@@ -100,7 +100,7 @@ const Dashboard = () => {
                     <Col md={4}>
                         <Card className="shadow-sm">
                             <Card.Body>
-                                <Card.Title>Average Members per Project</Card.Title>
+                                <Card.Title className = "card-title-dashboard">Average Members per Project</Card.Title>
                                 <h2>{data.averageMembersPerProject.toFixed(1)}</h2>
                             </Card.Body>
                         </Card>
@@ -108,7 +108,7 @@ const Dashboard = () => {
                     <Col md={4}>
                         <Card className="shadow-sm">
                             <Card.Body>
-                                <Card.Title>Average Execution Time (days)</Card.Title>
+                                <Card.Title className = "card-title-dashboard">Average Execution Time (days)</Card.Title>
                                 <h2>{data.averageExecutionTime.toFixed(1)}</h2>
                             </Card.Body>
                         </Card>
@@ -118,7 +118,7 @@ const Dashboard = () => {
                     <Col md={6} className="mb-4">
                         <Card className="shadow-sm">
                             <Card.Body className="chart-content">
-                                <Card.Title>Status Overview</Card.Title>
+                                <Card.Title className = "card-title-dashboard">Status Overview</Card.Title>
                                 <PieChart width={300} height={300}> {/* Reduzindo o tamanho do gráfico */}
                                     <Pie data={projectStatusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
                                         {projectStatusData.map((entry) => (

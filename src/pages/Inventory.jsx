@@ -7,6 +7,7 @@ import Sidebar from '../components/SideBar';
 import { FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch } from 'react-icons/fa';
 import './Inventory.css';
 import CreateResourceModal from '../components/Modals/CreateResourceModal';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 /* Componente Inventory: Responsável por exibir a lista de recursos disponíveis no inventário. 
@@ -26,6 +27,7 @@ const Inventory = () => {
   const token = Cookies.get("authToken");
   const [modalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Função para buscar os recursos disponíveis no inventário
   const fetchResources = async () => {
@@ -109,6 +111,10 @@ const Inventory = () => {
     setCurrentPage(pageNumber);
   };
 
+  const goToResourceStats = () => {
+    navigate("/resources-stats");
+  };
+
   return (
     <>
       <Header />
@@ -141,7 +147,7 @@ const Inventory = () => {
               <Button
                 className="buttonViewStats"
                 onClick={() => {
-                  /* Ação do botão View Stats */
+                  goToResourceStats();
                 }}
               >
                 {t("View Stats")}
