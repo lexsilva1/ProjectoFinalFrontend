@@ -39,11 +39,12 @@
 
 
 
-.card-title {
-    color: var(--dark-color);
+.card-title-dashboard {
+    color: var(--dark-color)!important;
     font-weight: bold;
     margin: 1rem;
     font-size: 12px;
+    margin-bottom: 0.5rem; 
 }
 
 
@@ -58,6 +59,6 @@
     justify-content: center;
 }
 
-.card-title {
-    margin-bottom: 0.5rem; 
+.card {
+    border-top: none;
 }

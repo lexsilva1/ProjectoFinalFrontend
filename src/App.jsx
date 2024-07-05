@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import userStore from './stores/userStore';
 import Messages from './pages/Messages';
 import Dashboard from './pages/Dashboard';
+import ResourcesStats from './pages/ResourcesStats';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/messages/:userId" element={<Messages />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/resources-stats" element={<ResourcesStats />} />
       </Routes>
     </>
   );
