@@ -7,15 +7,21 @@ import userStore from '../stores/userStore';
 import Cookies from 'js-cookie';
 import { findAllUsers } from '../services/userServices';
 import { Row, Col, Card, Button, Form, Image } from 'react-bootstrap';
-
+import WarningModal from './Modals/WarningModal';
+import { useNavigate } from 'react-router-dom';
 
 const ProjectTeamTab = ({ project }) => {
   const [showModal, setShowModal] = useState(false);
   const [invitedUsers, setInvitedUsers] = useState([]);
+  const [warningModalOpen, setWarningModalOpen] = useState(false);
+  const [leaveProjectWarningOpen, setLeaveProjectWarningOpen] = useState(false);
+  const [userToRemove, setUserToRemove] = useState(null);
+  const [userNameToRemove, setUserNameToRemove] = useState(""); 
   const token = Cookies.get("authToken");
   const [users, setUsers] = useState([]);
   const currentUser = userStore((state) => state.user);
   const [localTeamMembers, setLocalTeamMembers] = useState(project.teamMembers);
+  const navigate = useNavigate();
 
   const isCurrentUserProjectManager = localTeamMembers?.find(
     (member) => member.userId === currentUser.id
@@ -28,13 +34,11 @@ const ProjectTeamTab = ({ project }) => {
         member.approvalStatus === "CREATOR"
     ) || [];
   const invited =
-    localTeamMembers?.filter(
-      (member) => member.approvalStatus === "INVITED"
-    ) || [];
+    localTeamMembers?.filter((member) => member.approvalStatus === "INVITED") ||
+    [];
   const applied =
-    localTeamMembers?.filter(
-      (member) => member.approvalStatus === "APPLIED"
-    ) || [];
+    localTeamMembers?.filter((member) => member.approvalStatus === "APPLIED") ||
+    [];
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -53,10 +57,12 @@ const ProjectTeamTab = ({ project }) => {
   }, [token]);
 
   useEffect(() => {
-    const initialInvitedUsers = localTeamMembers.filter(member => member.approvalStatus === "INVITED");
+    const initialInvitedUsers = localTeamMembers.filter(
+      (member) => member.approvalStatus === "INVITED"
+    );
     setInvitedUsers(initialInvitedUsers);
   }, [localTeamMembers]);
-  
+
   const handleUserAdded = (userToAdd) => {
     console.log(token, project.name, userToAdd.userId);
     inviteUser(token, project.name, userToAdd.userId)
@@ -65,13 +71,15 @@ const ProjectTeamTab = ({ project }) => {
           ...userToAdd,
           approvalStatus: "INVITED",
         };
-    
-        setLocalTeamMembers(prevMembers => [...prevMembers, newUserInvited]);
-        setInvitedUsers(prevInvited => [...prevInvited, newUserInvited]);
-    
-        const updatedUsers = users.filter(user => user.userId !== userToAdd.userId);
+
+        setLocalTeamMembers((prevMembers) => [...prevMembers, newUserInvited]);
+        setInvitedUsers((prevInvited) => [...prevInvited, newUserInvited]);
+
+        const updatedUsers = users.filter(
+          (user) => user.userId !== userToAdd.userId
+        );
         setUsers(updatedUsers);
-    
+
         handleCloseModal();
       })
       .catch((error) => {
@@ -97,26 +105,44 @@ const ProjectTeamTab = ({ project }) => {
   };
 
   const excludedUserIds = [
-    ...members.map(member => member.userId),
-    ...invited.map(invite => invite.userId),
-    ...applied.map(application => application.userId),
+    ...members.map((member) => member.userId),
+    ...invited.map((invite) => invite.userId),
+    ...applied.map((application) => application.userId),
   ];
 
-  const handleRemoveUser = (userId) => {
-    removeProjectUser(token, project.name, userId)
-      .then(() => {
-        // Filter out the removed user from localTeamMembers
-        const updatedTeamMembers = localTeamMembers.filter(member => member.userId !== userId);
-        setLocalTeamMembers(updatedTeamMembers);
-  
-        console.log(`User ${userId} removed from project ${project.name}.`);
-        console.log("Updated localTeamMembers:", updatedTeamMembers); // Adicionar este log
-      })
-      .catch((error) => {
-        console.error("Error removing user from project", error);
-      });
+  const handleOpenWarningModal = (userId, userName) => {
+    setUserToRemove(userId);
+    setUserNameToRemove(userName); // Set the user name to state
+    setWarningModalOpen(true);
   };
-  
+
+  const handleConfirmRemoveUser = () => {
+    if (userToRemove) {
+      removeProjectUser(token, project.name, userToRemove)
+        .then(() => {
+          const updatedTeamMembers = localTeamMembers.filter(
+            (member) => member.userId !== userToRemove
+          );
+          setLocalTeamMembers(updatedTeamMembers);
+          setWarningModalOpen(false);
+          setUserToRemove(null);
+          setUserNameToRemove(""); // Clear the user name
+          console.log(
+            `User ${userToRemove} removed from project ${project.name}.`
+          );
+        })
+        .catch((error) => {
+          console.error("Error removing user from project", error);
+        });
+    }
+  };
+
+  const handleCancelRemoveUser = () => {
+    setWarningModalOpen(false);
+    setUserToRemove(null);
+    setUserNameToRemove(""); // Clear the user name
+  };
+
   const handleAcceptApplication = async (member) => {
     try {
       await manageInvitesApplications(
@@ -126,8 +152,7 @@ const ProjectTeamTab = ({ project }) => {
         "ACCEPT_APPLICATION"
       );
       console.log(`Application from user ${member.userId} accepted.`);
-  
-      // Atualize o estado para mover o usuário aceito da lista de candidatos para a lista de membros
+
       setLocalTeamMembers((prevMembers) =>
         prevMembers.map((m) =>
           m.userId === member.userId ? { ...m, approvalStatus: "MEMBER" } : m
@@ -138,57 +163,104 @@ const ProjectTeamTab = ({ project }) => {
     }
   };
 
-  const handleLeaveProject = async () => {
+  const handleOpenLeaveProjectWarningModal = () => {
+    setLeaveProjectWarningOpen(true);
+  };
+
+  const handleConfirmLeaveProject = async () => {
     try {
       await leaveProject(token, project.name);
       console.log(`Left project ${project.name} successfully.`);
-      // Aqui você pode adicionar lógica adicional, como redirecionar o usuário ou atualizar o estado da UI
+      setLeaveProjectWarningOpen(false);
+      navigate("/");
     } catch (error) {
       console.error("Error leaving project", error);
     }
   };
 
+  const handleCancelLeaveProject = () => {
+    setLeaveProjectWarningOpen(false);
+  };
+
   return (
-    <Card className="shadow-lg w-100" >
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <h4 className="card-title">Team Members For {project.name}</h4>
-        <Button onClick={handleOpenModal} style={{ display: isCurrentUserProjectManager ? 'block' : 'none' }}>Add Team Member</Button>
+    <Card className="shadow-lg w-100">
+      <Card.Header
+        className="d-flex justify-content-between align-items-center"
+        style={{ height: "60px" }}
+      >
         <UsersModal
           show={showModal}
           handleClose={handleCloseModal}
           inputs={{}}
           setInputs={() => {}}
-          users={users.filter(user => !excludedUserIds.includes(user.userId))} 
+          users={users.filter((user) => !excludedUserIds.includes(user.userId))}
           onUserAdded={handleUserAdded}
           onAddUser={(userToAdd) => handleUserAdded(userToAdd)}
         />
       </Card.Header>
       <Card.Body>
         <Row>
-          <Col md={4} style={{ borderRight: "1px solid lightgray" }}>
+          <Col md={6} style={{ borderRight: "1px solid lightgray" }}>
             <h5>Members</h5>
             <div className="members-list">
               {members.length > 0 ? (
                 members.map((member, index) => (
-                  <div key={`${project.id}-member-${index}`} className="simple-user-display">
-                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
+                  <div
+                    key={`${project.id}-member-${index}`}
+                    className="simple-user-display"
+                  >
+                    {isCurrentUserProjectManager &&
+                      currentUser.id !== member.userId && (
+                        <div style={{ width: "95%", textAlign: "right" }}>
+                          <div
+                            className="remove-user-cross"
+                            onClick={() =>
+                              handleOpenWarningModal(
+                                member.userId,
+                                `${member.firstName} ${member.lastName}`
+                              )
+                            }
+                          >
+                            <button
+                              size="sm"
+                              style={{
+                                backgroundColor: "transparent",
+                                border: "none",
+                                color: "grey",
+                              }}
+                            >
+                              X
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    <Image
+                      src={member.userPhoto || Avatar}
+                      roundedCircle
+                      className="user-image-project"
+                    />
                     <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
-                    {isCurrentUserProjectManager && currentUser.id !== member.userId ? (
+                    {isCurrentUserProjectManager &&
+                    currentUser.id !== member.userId ? (
                       <Form.Select
                         className="role-dropdown"
-                        value={member.isProjectManager ? "Project Manager" : "Collaborator"}
+                        style={{ fontSize: "14px" }}
+                        value={
+                          member.isProjectManager
+                            ? "Project Manager"
+                            : "Collaborator"
+                        }
                         onChange={(e) => handleRoleChange(e, member.userId)}
                       >
                         <option value="Collaborator">Collaborator</option>
                         <option value="Project Manager">Project Manager</option>
                       </Form.Select>
                     ) : (
-                      <p className="role-label">{member.isProjectManager ? "Project Manager" : "Collaborator"}</p>
-                    )}
-                    {isCurrentUserProjectManager && currentUser.id !== member.userId && (
-                      <div className="remove-user-cross" onClick={() => handleRemoveUser(member.userId)}>
-                        <Button variant="link" size="sm">x</Button>
-                      </div>
+                      <p className="role-label" style={{ fontWeight: "bold" }}>
+                        {member.isProjectManager
+                          ? "Project Manager"
+                          : "Collaborator"}
+                      </p>
                     )}
                   </div>
                 ))
@@ -198,14 +270,21 @@ const ProjectTeamTab = ({ project }) => {
             </div>
           </Col>
 
-          <Col md={4}style={{ borderRight: "1px solid lightgray" }}>
+          <Col md={3} style={{ borderRight: "1px solid lightgray" }}>
             <h5>Invited</h5>
             <div className="members-list">
               {invited.length > 0 ? (
                 invited.map((member, index) => (
-                  <div key={`${project.id}-invited-${index}`} className="simple-user-display">
-                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
-                    <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+                  <div
+                    key={`${project.id}-invited-${index}`}
+                    className="simple-user-display"
+                  >
+                    <Image
+                      src={member.userPhoto || Avatar}
+                      roundedCircle
+                      className="user-image-project"
+                    />
+                    <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
                   </div>
                 ))
               ) : (
@@ -214,26 +293,46 @@ const ProjectTeamTab = ({ project }) => {
             </div>
           </Col>
 
-          <Col md={4} >
+          <Col md={3}>
             <h5>Applied</h5>
             <div className="members-list">
               {applied.length > 0 ? (
                 applied.map((member, index) => (
-                  <div key={`${project.id}-applied-${index}`} className="simple-user-display">
-                    <Image src={member.userPhoto || Avatar} roundedCircle className="user-image-project" />
-                    <p className="user-name">{`${member.firstName} ${member.lastName}`}</p>
+                  <div
+                    key={`${project.id}-applied-${index}`}
+                    className="simple-user-display"
+                  >
+                    <Image
+                      src={member.userPhoto || Avatar}
+                      roundedCircle
+                      className="user-image-project"
+                    />
+                    <p className="user-name-project">{`${member.firstName} ${member.lastName}`}</p>
                     {isCurrentUserProjectManager && (
                       <div className="application-actions">
-                        <Button size="sm" className="accept-button" onClick={() => handleAcceptApplication(member)}>Accept</Button>
-                        <Button size="sm" className="decline-button" onClick={() =>
-                          rejectInvitesApplications(
-                            token,
-                            project.name,
-                            member.userId,
-                            "REJECT",
-                            member.notificationId
-                          )
-                        }>Decline</Button>
+                        <Button
+                          size="sm"
+                          className="accept-button"
+                          style={{ marginRight: "10px" }}
+                          onClick={() => handleAcceptApplication(member)}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="decline-button"
+                          onClick={() =>
+                            rejectInvitesApplications(
+                              token,
+                              project.name,
+                              member.userId,
+                              "REJECT",
+                              member.notificationId
+                            )
+                          }
+                        >
+                          Decline
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -246,13 +345,44 @@ const ProjectTeamTab = ({ project }) => {
         </Row>
       </Card.Body>
       <Card.Footer>
-        <p className="card-text-project">
-          <strong>Slots available:</strong> 
-          {project.maxTeamMembers !== undefined && 
-            `${project.maxTeamMembers - members.length}/${project.maxTeamMembers}`}
+        <p
+          className="card-text-project-team"
+          style={{ marginTop: "20px", marginLeft: "10px" }}
+        >
+          <strong>Slots available:</strong>
+          {project.maxTeamMembers !== undefined &&
+            `${project.maxTeamMembers - members.length}/${
+              project.maxTeamMembers
+            }`}
         </p>
-        <button onClick={handleLeaveProject}>Leave Project</button>
+        <Button
+          onClick={handleOpenModal}
+          style={{ display: isCurrentUserProjectManager ? "block" : "none" }}
+        >
+          Add Team Member
+        </Button>
+        <div
+          style={{
+            marginTop: "20px",
+            marginBottom: "20px",
+            textAlign: "right",
+          }}
+        >
+          <Button onClick={handleOpenLeaveProjectWarningModal}>Leave Project</Button>
+        </div>
       </Card.Footer>
+      <WarningModal
+        isOpen={warningModalOpen}
+        message={`Are you sure you want to remove ${userNameToRemove} from your project?`}
+        onCancel={handleCancelRemoveUser}
+        onConfirm={handleConfirmRemoveUser}
+      />
+      <WarningModal
+        isOpen={leaveProjectWarningOpen}
+        message="Are you sure you want to leave this project?"
+        onCancel={handleCancelLeaveProject}
+        onConfirm={handleConfirmLeaveProject}
+      />
     </Card>
   );
 };
