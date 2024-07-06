@@ -42,6 +42,7 @@ const Step2 = ({
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const { t } = useTranslation();
 
+
   // Fetch skills, interests, skill types, and interest types when the component mounts
   useEffect(() => {
     const fetchData = async () => {

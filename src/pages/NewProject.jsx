@@ -16,14 +16,14 @@ import userstore from "../stores/userStore"
 import { useTranslation } from "react-i18next";
 import './NewProject.css';
 
-/* Componente NewProject: Responsável por criar um novo projeto, contém as 3 etapas de formulário*/
+/* NewProject Component: Responsible for creating a new project, contains the 3 form steps */
 
 const NewProject = () => {
   const token = Cookies.get("authToken");
   const user = userstore((state) => state.user);
   const { t } = useTranslation();
 
-  // Define um objeto 'creator' com informações detalhadas do criador do projeto.
+  // Defines an object 'creator' with detailed information about the project creator.
   const creator = {
     userId: user.id,
     firstName: user.firstName,
@@ -33,18 +33,18 @@ const NewProject = () => {
     approvalStatus: "CREATOR",
   };
 
-  // Utiliza o hook useState para definir o passo atual do processo de criação do projeto, iniciando em 1.
+  // Uses the useState hook to define the current step of the project creation process, starting at 1.
   const [step, setStep] = useState(1);
 
-  // Utiliza o hook useState para gerir o estado do avatar, inicialmente nulo.
+  // Uses the useState hook to manage the state of the avatar, initially null.
   const [avatar, setAvatar] = useState(null);
 
-  // Utiliza o hook useState para gerir o estado dos inputs do formulário de criação do projeto.
+  // Uses the useState hook to manage the state of the project creation form inputs.
   const [inputs, setInputs] = useState({
     name: "",
     location: "",
     description: "",
-    slots: 1,
+    slots: 4,
     skills: [],
     interests: [],
     materials: [],
@@ -54,7 +54,7 @@ const NewProject = () => {
     teamMembers: [creator],
   });
 
-  // Define uma função para atualizar o estado dos inputs. Recebe um objeto 'inputs3' e atualiza o estado.
+  // Define a function to update the state of the inputs. It takes an object 'inputs3' and updates the state.
   const setInputs2 = (inputs3) => {
     setInputs(inputs3);
   };
@@ -68,7 +68,7 @@ const NewProject = () => {
   const [error, setError] = useState("");
 
 
-  // Utiliza o hook useEffect para ir buscar os laboratórios, utilizadores, sugestões de skills e sugestões de keywords.
+  // Use the useEffect hook to fetch labs, users, skill suggestions, and keyword suggestions.
   useEffect(() => {
     const fetchLabs = async () => {
       const res = await getLabs(token);
@@ -101,13 +101,13 @@ const NewProject = () => {
     fetchUsers();
   }, []);
 
-  // Define uma função para tratar a mudança nos inputs. Recebe um evento 'e' e atualiza o estado dos inputs.
+  // Define a function to handle input changes. It takes an event 'e' and updates the state of the inputs.
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputs({ ...inputs, [name]: value });
   };
 
-  // Define uma função para tratar o upload de imagem. Recebe um evento 'e' e atualiza o estado do avatar.
+  // Define a function to handle image upload. It takes an event 'e' and updates the state of the avatar.
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -121,7 +121,7 @@ const NewProject = () => {
     });
   };
 
-  // Define uma função para adicionar um campo. Recebe um campo 'field' e atualiza o estado dos inputs.
+  // Define a function to add a field. It takes a field 'field' and updates the state of the inputs.
   const addField = (field) => {
     setInputs({
       ...inputs,
@@ -129,21 +129,22 @@ const NewProject = () => {
     });
   };
 
-  // Define uma função para remover um campo. Recebe um índice 'index' e um campo 'field' e atualiza o estado dos inputs.
+
+  // Define a function to remove a field. It takes an index 'index' and a field 'field' and updates the state of the inputs.
   const handleDelete = (index, field) => {
     const newArray = [...inputs[field]];
     newArray.splice(index, 1);
     setInputs({ ...inputs, [field]: newArray });
   };
 
-  // Define uma função para tratar a mudança num array. Recebe um array 'selected', um índice 'index' e um campo 'field'.
+  // Define a function to handle array change. It takes a selected array, an index, and a field.
   const handleArrayChange = (selected, index, field) => {
     const newArray = [...inputs[field]];
     newArray[index] = selected.length ? selected[0].name : "";
     setInputs({ ...inputs, [field]: newArray });
   };
 
-  // Previne a entrada de caracteres não desejados em campos numéricos.
+  // Prevents the entry of unwanted characters in numeric fields.
   const handleKeyPress = (e) => {
     if (e.key === "e" || e.key === "+" || e.key === "-") {
       e.preventDefault();
@@ -155,7 +156,7 @@ const NewProject = () => {
     setShowResourcesModal(true);
   };
 
-  // Remove um membro da equipe do projeto.
+  // Remove a team member from the project.
   const removeTeamMember = (index) => {
     const newTeamMembers = [...inputs.teamMembers];
     newTeamMembers.splice(index, 1);
@@ -165,17 +166,17 @@ const NewProject = () => {
     setInputs({ ...inputs, teamMembers: newTeamMembers });
   };
 
-  // Avança para o próximo passo do formulário.
+  // Proceeds to the next step of the form.
   const nextStep = () => {
     setStep(step + 1);
   };
 
-  // Retorna ao passo anterior do formulário.
+  // Goes back to the previous step of the form.
   const prevStep = () => {
     setStep(step - 1);
   };
 
-  // Renderiza o componente correspondente ao passo atual do formulário.
+  // Renders the component corresponding to the current step of the form.
   const renderStep = () => {
     switch (step) {
       case 1:
