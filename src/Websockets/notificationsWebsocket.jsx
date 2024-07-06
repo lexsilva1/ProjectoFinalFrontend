@@ -81,7 +81,22 @@ const useStartWebSocket = (token) => {
       case MessageType.REJECT:
         const newNotifications = notifications.filter((notification) => messageObj.notificationId !== notification.notificationId);
         setNotifications([...newNotifications, messageObj]);
-      
+      case MessageType.INVITE:
+      case MessageType.APPLY:
+      case MessageType.EXCLUDE:
+      case MessageType.PROMOTED:
+      case MessageType.DEMOTED:
+      case MessageType.TASK_ASSIGN:
+      case MessageType.TASK_DOING:
+      case MessageType.TASK_COMPLETE:
+      case MessageType.PROJECT_COMPLETE:
+      case MessageType.PROJECT_CANCEL:
+      case MessageType.PROJECT_APPROVED:
+      case MessageType.PROJECT_READY:
+      case MessageType.PROJECT_DOING:
+      case MessageType.CHAT:
+          setNotifications([messageObj, ...notifications]);
+          break;
       
 
   }

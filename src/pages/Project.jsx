@@ -19,7 +19,7 @@ import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { FaTrash, FaPencilAlt  } from 'react-icons/fa';
 import { Container, Row, Col } from 'react-bootstrap';
-import { set } from "date-fns";
+
 
 
 const Project = () => {
@@ -52,10 +52,9 @@ const Project = () => {
 
   const handleConfirmCancel = async () => {
     setShowWarningModal(false);
-    const status = "Cancelled";
+    const status = 'Cancelled';
     try {
       await updateProjectStatus(token, project.name, status);
-
       console.log("Project status updated to Cancelled");
     } catch (error) {
       console.error("Failed to update project status:", error);
@@ -250,7 +249,7 @@ const Project = () => {
             </div>
           )}
           <Row>
-            <Col md={6}>
+            <Col md={8}>
               <p className="card-text-project">
                 <strong>Laboratory: </strong> {project.lab}
               </p>
@@ -330,7 +329,7 @@ const Project = () => {
                 </>
               )}
             </Col>
-            <Col md={6}>
+            <Col md={4}>
               {" "}
               {isMember && (
                 <div
@@ -347,7 +346,7 @@ const Project = () => {
                             padding: "20px",
                           }}
                         >
-                          Materials:
+                          Materials
                         </th>
                       </tr>
                       <tr>
@@ -358,17 +357,12 @@ const Project = () => {
                             alignItems: "center",
                           }}
                         >
-                          Name:
+                          Name
                         </th>
                         <th
-                          style={{
-                            width: "10%",
-                            fontSize: "0.9rem",
-                            alignItems: "center",
-                            textAlign: "right",
-                          }}
+                          style={{ width: "10%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
                         >
-                          Quantity:
+                          Quantity
                         </th>
                       </tr>
                     </thead>
