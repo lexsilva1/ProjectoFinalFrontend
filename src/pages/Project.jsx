@@ -17,7 +17,7 @@ import ChatIcon from "../components/ChatIcon";
 import ProjectChat from "../components/ProjectChat";
 import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaPencilAlt  } from 'react-icons/fa';
 import { Container, Row, Col } from 'react-bootstrap';
 
 
@@ -40,6 +40,8 @@ const Project = () => {
   const [logUpdateTrigger, setLogUpdateTrigger] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
+  const [description, setDescription] = useState("");
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };
@@ -75,8 +77,7 @@ const Project = () => {
   const handleCloseResourcesModal = () => setShowResourcesModal(false);
 
   const handleResourceSelected = (resource) => {
-    console.log("Resource selected:", resource);
-    // Add your logic here for when a resource is selected
+
   };
 
   const changeStatus = (newStatus) => {
@@ -199,6 +200,14 @@ const Project = () => {
     const isCurrentUserAppManager = currentUser.role < 2;
     console.log(currentUser.role);
 
+    const toggleEditDescription = () => {
+      setIsEditingDescription(!isEditingDescription);
+      // Inicializar a descrição editável com a descrição atual do projeto ao alternar para edição
+      if (!isEditingDescription) {
+        setDescription(project.description || "");
+      }
+    };
+
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -245,8 +254,24 @@ const Project = () => {
                 <strong>Laboratory: </strong> {project.lab}
               </p>
               <p className="card-text-project">
-                <strong>Description: </strong>
-                {project.description}
+                <strong>Description: </strong>{" "}
+                {!isEditingDescription ? ( // Renderizar texto estático ou campo de edição
+                  <>
+                    {project.description}
+                    <FaPencilAlt
+                      className="edit-description-icon"
+                      onClick={toggleEditDescription}
+                    />
+                  </>
+                ) : (
+                  <textarea
+                    className="form-control"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={toggleEditDescription}
+                    autoFocus
+                  />
+                )}
               </p>
               <p className="card-text-project">
                 <strong>Keywords: </strong>

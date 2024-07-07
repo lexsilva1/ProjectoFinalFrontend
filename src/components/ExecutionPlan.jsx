@@ -260,9 +260,12 @@ const handleDeleteTask = async (task) => {
 
   return (
     <div className="execution-plan">
-      <div>
-        <label htmlFor="viewMode">View Mode: </label>
-        <select id="viewMode" value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+      <div style={{backgroundColor: "var(--contrast-color", height: "60px", borderTopRightRadius:"5px", borderTopLeftRadius:"5px"}}>
+        <label htmlFor="viewMode" style={{color:"white", margin:"15px"}}>View Mode: </label>
+        <select id="viewMode" style={{borderRadius:"5px"}} value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+          <option value={viewMode.Hour}>Hour</option>
+          <option value={viewMode.QuarterDay}>Quarter Day</option>
+          <option value={viewMode.HalfDay}>Half Day</option>
           <option value={viewMode.Day}>Day</option>
           <option value={viewMode.Week}>Week</option>
           <option value={viewMode.Month}>Month</option>
@@ -285,7 +288,7 @@ const handleDeleteTask = async (task) => {
         <div>No tasks available</div>
       )}
      
-     <button className="btn btn-primary mt-3" onClick={() => { setIsEditMode(false); setShowTaskModal(true); }}>
+     <button className="btn btn-primary mt-3" style={{margin: "10px", float: "right", width: "150px"}} onClick={() => { setIsEditMode(false); setShowTaskModal(true); }}>
      Add Task
       </button>
 

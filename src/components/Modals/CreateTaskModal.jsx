@@ -117,6 +117,11 @@ const CreateTaskModal = ({
       .map((task) => <div key={task.id}>{task.title}</div>);
   };
 
+  const removeSelectedMember = (memberId) => {
+    const updatedMembers = selectedMembers.filter(member => member.id !== memberId);
+    setSelectedMembers(updatedMembers);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -175,8 +180,15 @@ const CreateTaskModal = ({
     }
   }, [isEditMode, selectedTask, projectMembers]);
 
+  const statusLabels = {
+    NOT_STARTED: "Not Started",
+    IN_PROGRESS: "In Progress",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
+  };
+
   const renderStatusDropdown = () => (
-    <DropdownButton id="status-dropdown" title="Status">
+    <DropdownButton id="status-dropdown" title={statusLabels[status] || "Select Status"}>
       <Dropdown.Item onClick={() => setStatus("NOT_STARTED")}>Not Started</Dropdown.Item>
       <Dropdown.Item onClick={() => setStatus("IN_PROGRESS")}>In Progress</Dropdown.Item>
       <Dropdown.Item onClick={() => setStatus("COMPLETED")}>Completed</Dropdown.Item>
@@ -198,13 +210,19 @@ const CreateTaskModal = ({
         </button>
       </div>
       <div className="modal-content-container">
-        <div className="modal-info">
+        <div className="modal-info" style={{ width: "60%", marginRight: "40px", marginLeft: "40px", marginTop: "12px !important" }}>
           <form onSubmit={handleSubmit}>
-          <div className="form-group">
-      {renderStatusDropdown()}
-    </div>
             <div className="form-group">
-              <label>Title</label>
+            
+              {isEditMode && (
+                <>
+                  <label style={{fontWeight: 'bold'}}>Status:</label>
+                  {renderStatusDropdown()}
+                </>
+              )}
+            </div>
+            <div className="form-group">
+              <label style={{fontWeight: 'bold'}}>Title:</label>
               <input
                 type="text"
                 value={title}
@@ -212,88 +230,104 @@ const CreateTaskModal = ({
               />
             </div>
             <div className="form-group">
-              <label>Description</label>
+              <label style={{fontWeight: 'bold'}}>Description:</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="form-group">
-              <label>Start Date</label>
+              <label style={{fontWeight: 'bold'}}>Start Date:</label>
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
               />
             </div>
             <div className="form-group">
-              <label>End Date</label>
+              <label style={{fontWeight: 'bold'}}>End Date:</label>
               <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
               />
             </div>
-            <button type="submit" className="submit-button">
-              {isEditMode ? "Update Task" : "Create Task"}
-            </button>
+            <div style={{ width: "87%", textAlign: "right", position: "absolute", bottom: "20px" }}>
+              <button type="submit" className="btn btn-primary mt-3">
+                {isEditMode ? "Update Task" : "Create Task"}
+              </button>
+            </div>
           </form>
         </div>
-        <div
-          className="members-selection"
-          style={{ marginRight: "220px", marginTop: "12px" }}
-        >
+        <div className="members-selection" style={{ width: "100%", marginRight: "40px", marginLeft: "40px", marginTop: "15px" }}>
           <div className="responsible-section">
-            <label>Responsible</label>
+            <label style={{fontWeight: 'bold'}}>Responsible:</label>
             <button
               type="button"
               className="action-button"
               onClick={() => handleMembersClick("responsible")}
             >
-              Responsible
+              +
             </button>
             {selectedResponsible && (
-              <div className="selected-user">
+              <div className="selected-user" style={{ margin: "15px" }}>
                 <img
                   src={selectedResponsible.photo || Avatar}
                   alt={selectedResponsible.firstName}
                   className="user-avatar"
                 />
-                <span>
+                <span style={{marginLeft: "10px"}}>
                   {selectedResponsible.firstName} {selectedResponsible.lastName}
                 </span>
+                <button
+                  type="button"
+                  className="remove-button"
+                  style={{ marginLeft: "10px", border: "none", color: "red", backgroundColor: "transparent"}}
+                  onClick={() => setSelectedResponsible(null)}
+                >
+                  X
+                </button>
               </div>
             )}
           </div>
           <div className="members-section" style={{ marginTop: "40px" }}>
-            <label>Members</label>
+            <label style={{fontWeight: 'bold'}}>Members:</label>
             <button
               type="button"
-              className="action-button"
+              className="action-button circle-button"
               onClick={() => handleMembersClick("member")}
             >
-              Members
+              +
             </button>
             {selectedMembers.map((member) => (
-              <div key={member.id} className="selected-user">
+              <div key={member.id} className="selected-user" style={{ margin: "15px" }}>
                 <img
                   src={member.photo || Avatar}
                   alt={member.firstName}
                   className="user-avatar"
                 />
-                <span>
+                <span style={{marginLeft: "10px"}}>
                   {member.firstName} {member.lastName}
                 </span>
+                <button
+                  type="button"
+                  className="remove-button"
+                  style={{ marginLeft: "10px", border: "none", color: "red", backgroundColor: "transparent"}}
+                  onClick={() => removeSelectedMember(member.id)}
+                >
+                  X
+                </button>
               </div>
             ))}
           </div>
-          <div className="external-executors">
-            <label>External Executors</label>
+          <div className="external-executors" style={{ marginTop: "40px" }}>
+            <label style={{fontWeight: 'bold'}}>External Executors:</label>
             <input
               type="text"
               value={externalExecutors}
+              style={{ width: "100%", height: "30px", borderRadius: "5px", border: "1px solid #ccc"}}
               onChange={(e) => setExternalExecutors(e.target.value)}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ marginTop: "50px" }}>
             <DropdownButton id="dropdown-basic-button" title="Dependencies">
               {tasks.map((task) => (
                 <Dropdown.Item
@@ -309,7 +343,9 @@ const CreateTaskModal = ({
             </div>
           </div>
         </div>
+
       </div>
+
       <MembersModal
         isOpen={isMembersModalOpen}
         onRequestClose={() => setIsMembersModalOpen(false)}
