@@ -9,18 +9,19 @@ const ResourcesStats = () => {
   const [selectedDataProject, setSelectedDataProject] = useState({});
   const [allResourcesByProject, setAllResourcesByProject] = useState({});
   const [allResourcesByLab, setAllResourcesByLab] = useState({});
-  const [selectLab, setSelectLab] = useState('ALL LABS');
-  const [selectProject, setSelectProject] = useState('ALL PROJECTS');
+  const [selectLab, setSelectLab] = useState('Coimbra');
+  const [selectProject, setSelectProject] = useState('Forge X');
   const token = Cookies.get('authToken');
 
   useEffect(() => {
     getResourceStatistics(token)
       .then((data) => {
         setAllResourcesByLab(data.resourceQuantityPerLab);
-        setSelectedData(data.resourceQuantityPerLab['ALL LABS']);
+        setSelectedData(data.resourceQuantityPerLab['Coimbra']);
         setAllResourcesByProject(data.resourceQuantityPerProject);
-        setSelectedDataProject(data.resourceQuantityPerProject['ALL PROJECTS']);
+        setSelectedDataProject(data.resourceQuantityPerProject['Forge X']);
         console.log(data);
+        console.log (data.resourceQuantityPerLab['Coimbra']);
       })
       .catch((error) => {
         console.error(error);
