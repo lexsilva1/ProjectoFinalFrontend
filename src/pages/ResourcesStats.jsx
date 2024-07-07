@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Dropdown } from 'react-bootstrap';
 import VersatileBarChart from '../components/VersatileBarChat';
 import { getResourceStatistics } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
+import Header from '../components/Header';
+import Sidebar from '../components/SideBar';
+import './ResourcesStats.css';
+
 
 const ResourcesStats = () => {
   const [selectedData, setSelectedData] = useState({});
@@ -40,6 +44,12 @@ const ResourcesStats = () => {
 
   return (
     <>
+      <Header />
+      <div style={{ display: "flex" }}>
+        <Sidebar />
+      <Container fluid className="my-custom-container">
+        <Row >
+        <Col xs={12} md={6}>
       <div>
         <h2>Lab Resource Quantities</h2>
         <Dropdown>
@@ -54,6 +64,8 @@ const ResourcesStats = () => {
         </Dropdown>
         <VersatileBarChart data={selectedData} />
       </div>
+    </Col>
+    <Col xs={12} md={6}>
       <div>
         <h2>Project Resource Quantities</h2>
         <Dropdown>
@@ -68,6 +80,10 @@ const ResourcesStats = () => {
         </Dropdown>
         <VersatileBarChart data={selectedDataProject} />
       </div>
+    </Col>
+  </Row>
+</Container>
+    </div>
     </>
   );
 };

@@ -441,8 +441,8 @@ const Project = () => {
             )}
             {(isCurrentUserProjectManager || isCurrentUserAppManager) &&
               project.status !== "Cancelled" && (
-                <div>
-                  <button onClick={handleCancelProjectClick}>
+                <div style={{textAlign: "right"}}>
+                  <button className= "cancel-project-button" onClick={handleCancelProjectClick}>
                     Cancel Project
                   </button>
                   <WarningModal
@@ -454,8 +454,8 @@ const Project = () => {
                 </div>
               )}
             {isCurrentUserAppManager && project.status === "Cancelled" && (
-              <div>
-                <button onClick={handleOpenModal}>Restore Project</button>
+              <div style={{textAlign: "center"}}>
+                <button className = "restore-project" onClick={handleOpenModal}>Restore Project</button>
                 <WarningModal
                   isOpen={showModal}
                   message="Are you sure you want to restore this project?"
