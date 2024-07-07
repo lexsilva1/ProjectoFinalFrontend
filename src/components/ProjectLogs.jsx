@@ -29,6 +29,15 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
   const logTypeMessages = {
     UPDATE_PROJECT_STATUS: "Update Project Status",
     PROJECT_CREATED: "Project Created",
+    APPLY_USER: "User Applied to Project",
+    USER_LEFT: "User Left Project",
+    ACCEPT_USER: "User Accepted to Project",
+    INVITE_USER: "User Invited to Project",
+    PROMOTE_USER: "User Promoted to Project Manager",
+    DEMOTE_USER: "User Demoted from Project Manager",
+    REMOVE_USER: "User Removed from Project",
+    CREATE_TASK: "Task Created",
+    UPDATE_TASK: "Task Updated",
   };
 
   useEffect(() => {

@@ -22,6 +22,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 
 
+
 const Project = () => {
   const { projectName } = useParams();
   const [isChatOpen, setIsChatOpen] = React.useState(false);
@@ -255,7 +256,7 @@ const Project = () => {
               </p>
               <p className="card-text-project">
                 <strong>Description: </strong>{" "}
-                {!isEditingDescription ? ( // Renderizar texto estático ou campo de edição
+                {!isEditingDescription ? ( 
                   <>
                     {project.description}
                     <FaPencilAlt
@@ -352,7 +353,7 @@ const Project = () => {
                       <tr>
                         <th
                           style={{
-                            width: "20%",
+                            width: "60%",
                             fontSize: "0.9rem",
                             alignItems: "center",
                           }}
@@ -360,7 +361,7 @@ const Project = () => {
                           Name
                         </th>
                         <th
-                          style={{ width: "10%", backgroundColor: "#f0f0f0", fontSize: "0.9rem", alignItems: "center"}}
+                          style={{ width: "20%", fontSize: "0.9rem", alignItems: "right"}}
                         >
                           Quantity
                         </th>
@@ -375,6 +376,7 @@ const Project = () => {
                             </td>
                             <td style={{ textAlign: "right" }}>
                               <button
+                              style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
                                 onClick={() =>
                                   updateResourceToProject(
                                     token,
@@ -388,6 +390,7 @@ const Project = () => {
                               </button>
                               {material.quantity}
                               <button
+                               style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
                                 onClick={() =>
                                   updateResourceToProject(
                                     token,
@@ -402,6 +405,7 @@ const Project = () => {
                             </td>
                             <td>
                               <button
+                               style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
                                 onClick={() =>
                                   removeResourceToProject(
                                     token,
@@ -514,7 +518,7 @@ const Project = () => {
       {isChatOpen && <ProjectChat isOpen={isChatOpen} onClose={toggleChat} />}
       <div className="app-container">
         <Sidebar />
-        <div className="project-container">
+        <div className={`project-container ${!isMember ? "non-member" : ""}`}>
           <div className="container mt-5">
             {isMember && (
               <nav>

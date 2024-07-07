@@ -55,3 +55,21 @@
     margin-left: 70px;
     margin-top: 40px;
 }
+
+@media (max-width: 480px) {
+    .footer {
+        height: 400px;
+    
+    }
+
+    .footer-container {
+        align-items: center;
+        background-color: var(--contrast-color);
+
+    }
+
+    .footer-section {
+        margin-top: 40px;
+    }
+}
+

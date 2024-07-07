@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import {
+  Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink
+} from 'reactstrap';
 import { getResources } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
 import Sidebar from '../components/SideBar';
-import { FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch } from 'react-icons/fa';
+import {
+  FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch
+} from 'react-icons/fa';
 import './Inventory.css';
 import CreateResourceModal from '../components/Modals/CreateResourceModal';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-/* Componente Inventory: Responsável por exibir a lista de recursos disponíveis no inventário. 
-Os recursos podem ser ordenados, filtrados e paginados.
-Botões para adicionar um novo recurso e visualizar estatísticas. */
 
 const Inventory = () => {
   const [resources, setResources] = useState([]);
@@ -29,7 +29,6 @@ const Inventory = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Função para buscar os recursos disponíveis no inventário
   const fetchResources = async () => {
     const resourcesData = await getResources(token);
     console.log(resourcesData);
@@ -40,13 +39,11 @@ const Inventory = () => {
     fetchResources();
   }, [token]);
 
-  // Função para filtrar os recursos de acordo com o termo de procura
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Resetar para a primeira página em uma nova pesquisa
   };
 
-  // Função para ordenar a lista de recursos
   const requestSort = (key) => {
     let direction = "ascending";
     if (
@@ -59,7 +56,6 @@ const Inventory = () => {
     setSortConfig({ key, direction });
   };
 
-  // Função para ordenar e filtrar os recursos
   const sortedResources = React.useMemo(() => {
     let sortableResources = [...resources];
     if (sortConfig !== null) {
@@ -76,7 +72,6 @@ const Inventory = () => {
     return sortableResources;
   }, [resources, sortConfig]);
 
-  // Função para filtrar os recursos de acordo com o termo de procura
   const filteredResources = React.useMemo(() => {
     return sortedResources.filter((resource) =>
       ["name", "brand", "identifier", "supplier"].some(
@@ -90,8 +85,7 @@ const Inventory = () => {
     );
   }, [sortedResources, searchTerm]);
 
-  // Função para paginar os recursos 
-    const currentResources = React.useMemo(() => {
+  const currentResources = React.useMemo(() => {
     const firstIndex = (currentPage - 1) * itemsPerPage;
     const lastIndex = firstIndex + itemsPerPage;
     return filteredResources.slice(firstIndex, lastIndex);
@@ -99,7 +93,6 @@ const Inventory = () => {
 
   const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
 
-  // Função para renderizar a seta de ordenação
   const renderSortArrow = (columnName) => {
     if (sortConfig && sortConfig.key === columnName) {
       return sortConfig.direction === "ascending" ? "▲" : "▼";
@@ -246,4 +239,3 @@ const Inventory = () => {
 };
 
 export default Inventory;
-

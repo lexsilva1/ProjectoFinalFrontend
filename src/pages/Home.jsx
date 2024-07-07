@@ -33,6 +33,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
+  const [visibleProjectsCount, setVisibleProjectsCount] = useState(9); // Novo estado
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
   const currentUser = userStore((state) => state.user);
@@ -181,7 +182,7 @@ const Home = () => {
     });
   };
 
-  const displayedProjects = sortProjects(filterProjects(projects));
+  const displayedProjects = sortProjects(filterProjects(projects)).slice(0, visibleProjectsCount);
 
   return (
     <>
@@ -222,26 +223,8 @@ const Home = () => {
         {!isLoggedIn && <InfoBox3 />}
         {!isLoggedIn && <InfoBox4 />}
         <div className="content" style={{ flexGrow: 1 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              margin: "1rem 0",
-              justifyContent: "flex-start",
-              paddingLeft: "10rem",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid",
-                padding: "0.5rem",
-                borderRadius: "20px",
-                height: "2.5rem",
-                backgroundColor: "white",
-              }}
+          <div className="search-bar-home">
+            <div className="sort-bar-home"
             >
               <FaSearch />
               <input
@@ -268,7 +251,7 @@ const Home = () => {
                   height: "2.5rem",
                   width: "10rem",
                   margin: "2rem",
-                  backgroundColor: "trasparent",
+                  backgroundColor: "transparent",
                 }}
               >
                 <option value="">Sort by...</option>
@@ -293,12 +276,21 @@ const Home = () => {
           {isLoading ? (
             <p>Loading...</p>
           ) : (
-            <div className="project-grid">
-              {displayedProjects.map((project) => (
-                <div className="project-card-container" key={project.name}>
-                  <ProjectCard project={project} isLoggedIn={isLoggedIn} />
+            <div>
+              <div className="project-grid">
+                {displayedProjects.map((project) => (
+                  <div className="project-card-container" key={project.name}>
+                    <ProjectCard project={project} isLoggedIn={isLoggedIn} />
+                  </div>
+                ))}
+              </div>
+              {visibleProjectsCount < projects.length && (
+                <div className="show-more-container">
+                  <button className="show-more-button" onClick={() => setVisibleProjectsCount(visibleProjectsCount + 9)}>
+                    Show more
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
           )}
         </div>

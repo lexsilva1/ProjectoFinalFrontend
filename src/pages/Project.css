@@ -10,6 +10,14 @@ margin: 0px;
 margin-bottom: 0px!important; 
 }
 
+.project-container.non-member {
+    margin-top: 100px; 
+  }
+  
+  .card.shadow-lg.w-100.project-info-card {
+    margin-top: 0; 
+  }
+
 .project-team-member {
     display: flex;
     flex-direction: column;

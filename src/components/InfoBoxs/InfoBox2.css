@@ -1,7 +1,6 @@
 .blue-square {
     background-color: #2e6b75;
     width: 90%;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,4 +50,43 @@
     font-size: 62px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+  
+  @media (max-width: 992px) {
+
+  }
+  
+  @media (max-width: 768px) {
+
+  }
+  
+  @media (max-width: 576px) {
+
+  }
+
+  
+  
+  @media (max-width: 480px) {
+ .blue-square {
+    width: 90%;
+
+}
+
+.white-card {
+    width: 90%;
+
+  }
+
+  .white-card h1 {
+    font-size: 1em;
+    margin: 20px;
+  }
+
+  .white-card p {
+ 
+    margin: 20px;
+    color: #6c7577;
+    font-size: 0.5em;
+}
+
 }

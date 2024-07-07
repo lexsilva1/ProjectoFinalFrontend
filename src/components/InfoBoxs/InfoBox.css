@@ -47,3 +47,40 @@
     animation: fadeIn 3s ease-out; 
     animation-fill-mode: forwards;
 }
+
+@media (max-width: 768px) {
+    .infoBox {
+        width: 100%!important;
+        
+    }
+    .title {
+        margin-bottom: 20px;
+        font-size: 2em!important;
+    }
+    .text {
+        font-size: 0.8em;
+    }
+    .ending {
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 480px) {
+.infoBox {
+  width: 100%!important;
+  height: 300px!important;
+}
+
+.title {
+    margin-bottom: 20px;
+  font-size: 1.3em!important;
+
+}
+.ending {
+    font-size: 1em!important;
+}
+
+.text {
+    font-size: 0.8em!important;
+}
+}

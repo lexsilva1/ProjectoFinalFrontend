@@ -27,6 +27,10 @@ const ProjectTeamTab = ({ project }) => {
     (member) => member.userId === currentUser.id
   )?.isProjectManager;
 
+  const isCurrentUserCreator = localTeamMembers?.find(
+    (member) => member.userId === currentUser.id
+  )?.approvalStatus === "CREATOR";
+
   const members =
     localTeamMembers?.filter(
       (member) =>
@@ -369,7 +373,9 @@ const ProjectTeamTab = ({ project }) => {
             textAlign: "right",
           }}
         >
+          {!isCurrentUserCreator && (
           <Button onClick={handleOpenLeaveProjectWarningModal}>Leave Project</Button>
+          )}
         </div>
       </Card.Footer>
       <WarningModal

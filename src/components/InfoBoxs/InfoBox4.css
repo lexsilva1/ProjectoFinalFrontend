@@ -19,3 +19,17 @@
 .nowrap {
     white-space: nowrap; 
 }
+
+@media (max-width: 480px) {
+
+.white-box4 {
+    margin-right: 0%;
+    align-items: flex-start;
+    text-align: left !important;
+    
+}
+.unique-title {
+    font-size: 1.5em!important;
+    margin-left: -75%;
+}
+}
