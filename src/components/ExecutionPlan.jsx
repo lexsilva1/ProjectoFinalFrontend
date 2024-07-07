@@ -10,6 +10,7 @@ import { Gantt, Task} from 'gantt-task-react'
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const token = Cookies.get('authToken');
   const [tasks, setTasks] = useState([]);
+  const[seeDeleted, setSeeDeleted] = useState(false);
   const [viewMode, setViewMode] = useState('Day'); 
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [updatedPing, setUpdatedPing] = useState(false);
@@ -71,6 +72,9 @@ const handleSaveTask = (updatedTask) => {
     };
     fetchTasks();
   }, [name, token,updatedPing]);
+ 
+ 
+ 
   const parseDate = (dateString) => {
     const date = new Date(dateString);
     return isNaN(date) ? new Date() : date;
@@ -91,30 +95,26 @@ const handleSaveTask = (updatedTask) => {
     type: 'project',
   };
   let tasksFormatted = [];
- 
-  
+
   // Prepara as tarefas formatadas para o Google Gantt Chart
-  tasksFormatted = tasks.map((task) => {
-   
-  return {
-    id: task.id,
-    name: task.title,
-    start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
-    end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
-    
-    progress: task.status === 'COMPLETED' ? 100 :(task.status === 'IN_PROGRESS' ? 50 : 0), // Adjust as necessary
-    dependencies: task.dependencies,
-    isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED' ? true : false, // Adjust as necessary
-    styles: { 
-      progressColor: '#ffbb54', 
-      progressSelectedColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')),
-      backgroundColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')) // Adjust as necessary
-    },
-    type: task.title === 'Final Presentation' ? 'milestone' : 'task',
-   
-  };
- 
-})
+  // Filter tasks based on `seeDeleted` flag and task status
+  tasksFormatted = tasks.filter(task => seeDeleted ? task.status === 'CANCELLED' : task.status !== 'CANCELLED').map((task) => {
+    return {
+      id: task.id,
+      name: task.title,
+      start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
+      end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
+      progress: task.status === 'COMPLETED' ? 100 : (task.status === 'IN_PROGRESS' ? 50 : 0), // Adjust as necessary
+      dependencies: task.dependencies,
+      isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED', // Adjust as necessary
+      styles: { 
+        progressColor: '#ffbb54', 
+        progressSelectedColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')),
+        backgroundColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')) // Adjust as necessary
+      },
+      type: task.title === 'Final Presentation' ? 'milestone' : 'task',
+    };
+  });
 
 tasksFormatted.push(formatedProjectTask);
 //tasksFormatted = tasksFormatted.sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -153,7 +153,6 @@ const onDateChange = async (task) => {
   }
 };
 const onProgressChange = async (task) => {
-  debugger;
   tasks.forEach(async (t) => {
     if (t.id === task.id) {
     if(task.dependencies.length > 0){
@@ -211,10 +210,52 @@ const onProgressChange = async (task) => {
   });
 };
   
-const rtl = false;
+const handleDeleteTask = async (task) => {
+  // Clone tasks array to avoid direct state mutation
+  let updatedTasks = [...tasks];
+  let taskFound = false;
+
+  // Update the task status to 'CANCELLED' if found
+  updatedTasks = updatedTasks.map((t) => {
+    if (t.id === task.id) {
+      taskFound = true;
+      return { ...t, status: 'CANCELLED' };
+    }
+    return t;
+  });
+
+  // Early exit if task is not found
+  if (!taskFound) {
+    console.log('Task not found');
+    return;
+  }
+
+  // Update the state only if the task is found and updated
+  setTasks(updatedTasks);
+
+  // Find and set the task to update
+  const taskToUpdate = updatedTasks.find((t) => t.id === task.id);
+  setTaskToUpdate(taskToUpdate);
+
+  // Log the task to update
+  console.log('TaskToUpdate:', taskToUpdate);
+
+  // Update the task in the backend
+  await updateTask(token, name, taskToUpdate).then(() => {
+    // Optionally, refresh tasks from the backend here
+    console.log('Task updated successfully');
+    setTaskToUpdate(null); // Reset taskToUpdate state
+    setUpdatedPing(!updatedPing);
+  }).catch((error) => {
+    console.error('Failed to update task:', error);
+  });
+};
+
+
 
   const addTask = (task) => {
     setTasks([...tasks, task]);
+    setUpdatedPing(!updatedPing);
   };
 
   return (
@@ -222,14 +263,13 @@ const rtl = false;
       <div>
         <label htmlFor="viewMode">View Mode: </label>
         <select id="viewMode" value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-          <option value={viewMode.Hour}>Hour</option>
-          <option value={viewMode.QuarterDay}>Quarter Day</option>
-          <option value={viewMode.HalfDay}>Half Day</option>
           <option value={viewMode.Day}>Day</option>
           <option value={viewMode.Week}>Week</option>
           <option value={viewMode.Month}>Month</option>
           <option value={viewMode.Year}>Year</option>
         </select>
+        <label htmlFor="seeDeleted">See Deleted Tasks: </label>
+        <input id="seeDeleted" type="checkbox" checked={seeDeleted} onChange={(e) => setSeeDeleted(e.target.checked)} />
       </div>
 {tasks && tasks.length > 0 ? (
         <Gantt
@@ -238,8 +278,8 @@ const rtl = false;
           onDateChange={(task) => onDateChange(task)}
           onDoubleClick={(task) => handleTaskDoubleClick(task)}
           onProgressChange={(task) => onProgressChange(task)}
-          onTaskDelete={(task) => console.log('Task deleted:', task)} 
-          rtl={rtl}
+          onDelete={(task) => handleDeleteTask(task)} 
+          
         />
       ) : (
         <div>No tasks available</div>
@@ -257,6 +297,8 @@ const rtl = false;
   tasks={tasks}
   selectedTask={isEditMode ? selectedTask : null}
   isEditMode={isEditMode}
+  setUpadatePing={() => setUpdatedPing(!updatedPing)}
+  
 />
       )}
     </div>

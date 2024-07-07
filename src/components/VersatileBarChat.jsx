@@ -9,6 +9,7 @@ const VersatileBarChart = ({ data }) => {
   }));
 
   return (
+chartData.length > 0 ? (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -19,6 +20,9 @@ const VersatileBarChart = ({ data }) => {
         <Bar dataKey="value" fill="#8884d8" />
       </BarChart>
     </ResponsiveContainer>
+) : (
+    <p>No data available</p>
+  )
   );
 };
 

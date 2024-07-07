@@ -38,6 +38,19 @@ export const createResource = async (token, resourceDto) => {
         }
     }
 };
+export const getResourceStatistics = async (token) => {
+    const response = await fetch(resourcesURL + '/statistics', {
+        headers: {
+            'token': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.json();
+    }
+};
 
 
      

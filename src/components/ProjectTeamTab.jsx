@@ -120,6 +120,7 @@ const ProjectTeamTab = ({ project }) => {
   const handleAcceptApplication = async (member) => {
     try {
       await manageInvitesApplications(
+        
         token,
         project.name,
         member.userId,

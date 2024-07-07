@@ -17,6 +17,7 @@ const CreateTaskModal = ({
   tasks,
   selectedTask,
   isEditMode,
+  setUpadatePing
 }) => {
   const [projectMembers, setProjectMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
@@ -151,7 +152,7 @@ const CreateTaskModal = ({
         console.error("Error creating task:", error);
       }
     }
-
+    setUpadatePing();
     closeModal();
   };
 
