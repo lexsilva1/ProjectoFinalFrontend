@@ -263,9 +263,6 @@ const handleDeleteTask = async (task) => {
       <div style={{backgroundColor: "var(--contrast-color", height: "60px", borderTopRightRadius:"5px", borderTopLeftRadius:"5px"}}>
         <label htmlFor="viewMode" style={{color:"white", margin:"15px"}}>View Mode: </label>
         <select id="viewMode" style={{borderRadius:"5px"}} value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-          <option value={viewMode.Hour}>Hour</option>
-          <option value={viewMode.QuarterDay}>Quarter Day</option>
-          <option value={viewMode.HalfDay}>Half Day</option>
           <option value={viewMode.Day}>Day</option>
           <option value={viewMode.Week}>Week</option>
           <option value={viewMode.Month}>Month</option>
