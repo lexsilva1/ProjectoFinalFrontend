@@ -42,6 +42,8 @@ const Profile = () => {
   const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const isOwnProfile = user?.id == userId;
   const { t } = useTranslation();
+
+ 
   
 
   const [formValues, setFormValues] = useState({
@@ -305,22 +307,27 @@ const Profile = () => {
     console.log("profile selected", selected);
   };
 
-  // Função para alterar a privacidade do perfil
   const togglePrivacy = async () => {
     try {
-      const newPrivacyStatus = profile.isPrivate ? 0 : 1;
+      const newPrivacyStatus = profile.privacy ? false : true;
       await setPrivacy(token, newPrivacyStatus);
       setProfile((prevProfile) => ({
         ...prevProfile,
-        isPrivate: newPrivacyStatus,
+        privacy: newPrivacyStatus,
       }));
     } catch (error) {
       console.error("Error changing privacy status:", error);
     }
   };
 
+ 
+
+  if (profile) { 
+    // Ensure profile is defined before accessing its properties
+    if (profile.privacy === true && !isOwnProfile) {
+
   return (
-    <>
+<>
       <Header />
       <Container fluid className="profile-container">
         <Row className="profile-row">
@@ -331,19 +338,57 @@ const Profile = () => {
           <Col md={12} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>
-                {isOwnProfile && (
+                <Row>
+                  <Col md={3} className="text-center mb-3">
+                    <Image
+                      src={imagePreview || profile?.userPhoto || Avatar}
+                      alt="Profile"
+                      roundedCircle
+                      className="profile-image"
+                    />
+                  </Col>
+                  <Col md={8}>
+                    <h2 className="profile-name">
+                      {profile?.firstName} {profile?.lastName}
+                    </h2>
+                    
+                    <hr />
+                    </Col>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                    <p>{t("This profile is private.")}</p>
+                    </div>
+                    </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
+}
+};
+
+  return (
+    <>
+      <Header />
+      <Container fluid className="profile-container">
+        <Row className="profile-row">
+          <Col md={12} className="profile-main-content">
+            <Card className="profile-card">
+              <Card.Body>
+              {isOwnProfile && (
                   <div className="privacy-icon">
                     <Button
                       className="iconPrivacy"
                       variant="outline-secondary"
                       onClick={togglePrivacy}
                     >
-                      {profile?.isPrivate ? <LockFill /> : <UnlockFill />}
+                      {profile?.privacy ? <LockFill /> : <UnlockFill />}
                     </Button>
                     <span className="privacy-text">
-                      {profile?.isPrivate
-                        ? t("Private Profile")
-                        : t("Public Profile")}
+                      {profile?.privacy
+                        ? "Private Profile"
+                        : "Public Profile"}
                     </span>
                   </div>
                 )}

@@ -12,7 +12,10 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const { t } = useTranslation();
   const showLogin = userStore((state) => state.showLogin);
   const setShow = userStore((state) => state.setShowLogin);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setLoginError(false); 
+  };
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const notifications = userStore((state) => state.notifications);
@@ -80,10 +83,11 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
                 Forgot your password?
               </a>
             </Form.Group>
-
+    <div className="d-flex justify-content-center">
             <button type="submit" className="custom-button">
               {t("Login")}
             </button>
+    </div>
           </Form>
         </Modal.Body>
       </Modal>

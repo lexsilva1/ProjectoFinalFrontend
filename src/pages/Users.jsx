@@ -78,7 +78,6 @@ const Users = () => {
     >
       <Header />
       <div style={{ display: "flex", flex: "1" }}>
-        <Sidebar />
         <div style={{ flex: "1", overflow: "auto" }}>
           <BannerUsers />
           <form onSubmit={handleSubmit} className="search-form">

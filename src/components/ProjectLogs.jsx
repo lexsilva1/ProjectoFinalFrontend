@@ -183,7 +183,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
                   {new Date(log.time).toLocaleString()}
                 </Badge>
                 {log.userId && userDetails[log.userId] && (
-                  <span style={{marginLeft: "25px"}}>{userDetails[log.userId].firstName}</span>
+                  <span style={{marginLeft: "25px"}}>{userDetails[log.userId].firstName} {userDetails[log.userId].lastName}</span>
                 )}
               </div>
               <div className="log-icon">

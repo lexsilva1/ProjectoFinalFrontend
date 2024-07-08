@@ -2,7 +2,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: var(--primary-color);
 }
+
+.offcanvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
 .notifications-canva .offcanvas-title {
     font-size: 1.5rem;

@@ -21,7 +21,6 @@ const Inventory = () => {
     direction: "ascending",
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Número máximo de itens por página
   const token = Cookies.get("authToken");
@@ -112,7 +111,6 @@ const Inventory = () => {
     <>
       <Header />
       <div style={{ display: "flex" }}>
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
         <Container className="inventory-container">
           <Row className="mb-4">
             <Col className="inventory-header">

@@ -1,10 +1,9 @@
 :root {
---primary-color: #f2f2f2;
---secondary-color: #6c7577;
---contrast-color: #2e6b75;
---dark-color: #242423;
---details-color: #b9cdd0;
-
+  --primary-color: #f2f2f2;
+  --secondary-color: #6c7577;
+  --contrast-color: #2e6b75;
+  --dark-color: #242423;
+  --details-color: #b9cdd0;
 }
 
 body {
@@ -13,31 +12,33 @@ body {
   font-family: 'Outfit', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
   color: var(--dark-color);
   --bs-primary: var(--contrast-color);
   --bs-primary-rgb: var(--contrast-color);
   --bs-btn-color: var(--primary-color);
   --bs-btn-bg: var(--contrast-color);
 }
-body.contrast{
+
+body.contrast {
   --primary-color: #e6eed6;
   --secondary-color: #dde2c6;
   --contrast-color: #a72608;
   --dark-color: #090c02;
   --details-color: #bbc5aa;
 }
-body.light{
-  --primary-color: #c5e0d8;
-  --secondary-color: #b5ffe9;
-  --contrast-color: #ceabb1;
-  --dark-color: #444545;
-  --details-color: #c9c9c9;
+
+body.light {
+  --primary-color: #f2f2f2;
+  --secondary-color: #6c7577;
+  --contrast-color: #2e6b75;
+  --dark-color: #242423;
+  --details-color: #b9cdd0;
 }
-body.dark{
+
+body.dark {
   --primary-color: #2e3138;
   --secondary-color: #6c6f7d;
-  --contrast-color: #60463b;
+  --contrast-color: #2e6b75;
   --dark-color: #ccc9e7;
   --details-color: #856a5d;
 }

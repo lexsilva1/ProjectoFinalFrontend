@@ -6,7 +6,6 @@ import "./Project.css";
 import avatarProject from "../multimedia/Images/avatarProject.jpg";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
-import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal";
 import ResourcesModal from "../components/Modals/ResourcesModal";
@@ -657,8 +656,8 @@ const Project = () => {
             )}
             {(isCurrentUserProjectManager || isCurrentUserAppManager) &&
               project.status !== "Cancelled" && (
-                <div>
-                  <button onClick={handleCancelProjectClick}>
+                <div style={{textAlign: "right"}}>
+                  <button className= "cancel-project-button" onClick={handleCancelProjectClick}>
                     Cancel Project
                   </button>
                   <WarningModal
@@ -670,8 +669,8 @@ const Project = () => {
                 </div>
               )}
             {isCurrentUserAppManager && project.status === "Cancelled" && (
-              <div>
-                <button onClick={handleOpenModal}>Restore Project</button>
+              <div style={{textAlign: "center"}}>
+                <button className = "restore-project" onClick={handleOpenModal}>Restore Project</button>
                 <WarningModal
                   isOpen={showModal}
                   message="Are you sure you want to restore this project?"
@@ -733,7 +732,6 @@ const Project = () => {
       {isMember && <ChatIcon onChatIconClick={toggleChat} />}
       {isChatOpen && <ProjectChat isOpen={isChatOpen} onClose={toggleChat} />}
       <div className="app-container">
-        <Sidebar />
         <div className={`project-container ${!isMember ? "non-member" : ""}`}>
           <div className="container mt-5">
             {isMember && (

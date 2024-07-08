@@ -12,3 +12,18 @@
     background-color: var(--secondary-color);
     color: color-mix(in srgb, var(--contrast-color), black 25%);
 }
+
+.custom-button-login{
+background-color: var (--contrast-color);
+color: var(--primary-color);
+border: none;
+border-radius: 20px;
+padding: 10px 20px;
+font-size: 1rem;
+cursor: pointer;
+height: 50px;
+width: 300px;
+margin: 20px;
+align-items: center;
+transition: transform 0.3s ease;
+}

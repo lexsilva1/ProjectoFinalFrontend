@@ -5,6 +5,7 @@
     bottom: 0;
     height: 350px;
     width: 100%;
+    margin-top: 100px;
 }
 
 
@@ -37,7 +38,7 @@
 }
 
 .footer p {
-    font-size: 1em; 
+    font-size: 0.8em; 
     margin-bottom: 5px;
     color: var(--details-color);
    
@@ -47,6 +48,8 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    
+    background-color: var(--contrast-color);
 }
 
 .footer-section {

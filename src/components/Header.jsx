@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, Link } from 'react-router-dom';
 import userStore from '../stores/userStore';
-import './Header.css';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom'; 
 import { logout } from '../services/userServices';
 import Avatar from '../multimedia/Images/Avatar.jpg';
-import logo2 from '../multimedia/Images/logo2.png';
-import { FaBell } from 'react-icons/fa';
-import { Button } from 'react-bootstrap';
-import { FaEnvelope } from 'react-icons/fa';
-import  useStartWebSocket  from '../Websockets/notificationsWebsocket';
+import { FaBell, FaUser } from 'react-icons/fa';
+import { Button, Offcanvas } from 'react-bootstrap';
+import useStartWebSocket from '../Websockets/notificationsWebsocket';
 import NotificationsCanva from './NotificationsCanva';
-import { getNotifications } from '../services/notificationService';
+import logo2 from '../multimedia/Images/logo2.png';
+import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJournalPlus } from "react-icons/bs";
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import './Header.css';
 
 const Header = () => {
   const { t, i18n } = useTranslation();
@@ -23,21 +23,27 @@ const Header = () => {
   const navigate = useNavigate();
   const user = userStore((state) => state.user);
   const authToken = Cookies.get("authToken");
-  const { startWebSocket} =  useStartWebSocket(authToken);
+  const { startWebSocket } = useStartWebSocket(authToken);
   const setNotifications = userStore((state) => state.setNotifications);
   const notifications = userStore((state) => state.notifications);
   const [showNotifications, setShowNotifications] = useState(false);
-  // Call useStartWebSocket at the top level, conditionally activating it based on isLoggedIn
+  const [showOffCanvas, setShowOffCanvas] = useState(false);
+  const [showThemeSubmenu, setShowThemeSubmenu] = useState(false);
+  const userId = userStore((state) => state.user?.id);
+  const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
+
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
       startWebSocket(authToken);
- // This is incorrect and will be addressed below
     }
-  }, [isLoggedIn, authToken]);
+    document.body.className = theme;
+  }, [isLoggedIn, authToken, theme]);
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);
   const toggleNotifications = () => setShowNotifications(!showNotifications);
+  const toggleOffCanvas = () => setShowOffCanvas(!showOffCanvas);
+  const toggleThemeSubmenu = () => setShowThemeSubmenu(!showThemeSubmenu);
 
   const handleLogout = () => {
     logout();
@@ -53,27 +59,88 @@ const Header = () => {
     Cookies.set("i18nextLng", lng);
   };
 
+  const changeTheme = (newTheme) => {
+    setTheme(newTheme);
+    Cookies.set('theme', newTheme);
+  };
+
   return (
     <div className="header">
       <div className="logo">
-        
+        <img src={logo2} alt="logo" />
       </div>
       <div className="actions">
         {!authToken && (
           <>
-            <Button variant="outline" className="button2" onClick={handleShowRegister}>
+            <Button className="button2" onClick={handleShowRegister}>
               {t("Sign Up")}
             </Button>
-            <Button variant="outline" className="button" onClick={handleShow}>
+            <Button className="button-login" onClick={handleShow}>
               {t("Login")}
             </Button>
           </>
         )}
         {authToken && user && (
           <>
-            <FaEnvelope className="messages-icon" onClick={() => navigate("/messages")} />
-            <FaBell className="notification-icon" onClick={toggleNotifications} />
-            <div className="user-info">
+            <div className="icon-links">
+              <OverlayTrigger
+                key="projects"
+                placement="bottom"
+                style={{ backgroundColor: "var(--contrast-color)" }}
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Projects")}</Tooltip>}
+              >
+                <Link to="/">
+                  <BsJournals className="header-icon" />
+                </Link>
+              </OverlayTrigger>
+
+              <OverlayTrigger
+                key="createProject"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Create Project")}</Tooltip>}
+              >
+                <Link to="/new-project">
+                  <BsJournalPlus className="header-icon" />
+                </Link>
+              </OverlayTrigger>
+              <OverlayTrigger
+                key="users"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Users")}</Tooltip>}
+              >
+                <Link to="/users">
+                  <BsPeople className="header-icon" />
+                </Link>
+              </OverlayTrigger>
+              <OverlayTrigger
+                key="inventory"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Inventory")}</Tooltip>}
+              >
+                <Link to="/inventory">
+                  <BsFileEarmarkText className="header-icon" />
+                </Link>
+              </OverlayTrigger>
+              <OverlayTrigger
+                key="dashboard"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Dashboard")}</Tooltip>}
+              >
+                <Link to="/dashboard">
+                  <BsGraphUp className="header-icon" />
+                </Link>
+              </OverlayTrigger>
+              <OverlayTrigger
+                key="messages"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-messages`}>{t("Messages")}</Tooltip>}
+              >
+                <span onClick={() => navigate("/messages")}>
+                  <BsEnvelope className="header-icon" />
+                </span>
+              </OverlayTrigger>
+            </div>
+            <div className="user-info" onClick={toggleOffCanvas}>
               <img
                 src={user.image ? user.image : Avatar}
                 alt={`${user.firstName} ${user.lastName}`}
@@ -81,9 +148,7 @@ const Header = () => {
               />
               <span className="user-name-header">{`${user.firstName}`}</span>
             </div>
-            <Button variant="outline" className="button" onClick={handleLogout}>
-              {t("Logout")}
-            </Button>
+            <FaBell className="header-icon-notification" onClick={toggleNotifications} />
           </>
         )}
         <div className="language-buttons">
@@ -95,7 +160,58 @@ const Header = () => {
           </Button>
         </div>
       </div>
-      {isLoggedIn && <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />}
+      {isLoggedIn && (
+        <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />
+      )}
+      {isLoggedIn && (
+        <Offcanvas
+          show={showOffCanvas}
+          onHide={toggleOffCanvas}
+          placement="end"
+          style={{
+            width: "300px",
+            borderBottomLeftRadius: "20px",
+            borderTopLeftRadius: "20px",
+            top: "70px",
+            height: "80%",
+          }}
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{`${user.firstName} ${user.lastName}`}</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <ul className="offcanvas-menu">
+              <li>
+                <Link to={`/profile/${userId}`}>
+                  <FaUser className="header-icon" />
+                  {t("Profile & Visibility")}
+                </Link>
+              </li>
+              <li>
+                <button onClick={toggleThemeSubmenu}>
+                  {t("Theme")}
+                  {showThemeSubmenu && (
+                    <ul className="theme-submenu">
+                      <li>
+                        <button onClick={() => changeTheme("light")}>{t("Light")}</button>
+                      </li>
+                      <li>
+                        <button onClick={() => changeTheme("dark")}>{t("Dark")}</button>
+                      </li>
+                    </ul>
+                  )}
+                </button>
+              </li>
+              <li>
+                <Link to="/help">{t("Help")}</Link>
+              </li>
+              <li>
+                <Button onClick={handleLogout}>{t("Logout")}</Button>
+              </li>
+            </ul>
+          </Offcanvas.Body>
+        </Offcanvas>
+      )}
     </div>
   );
 };

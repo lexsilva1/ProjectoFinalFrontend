@@ -147,3 +147,44 @@ margin-bottom: 0px!important;
     pointer-events: none;
     cursor: default;
   }
+
+  .cancel-project-button {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 20px !important;
+    padding: 10px 10px !important;
+    font-size: 1rem;
+    cursor: pointer;
+    height: 40px;
+    width: 150px!important;
+    margin: 20px;
+    align-items: center;
+    transition: transform 0.3s ease; 
+
+  }
+
+    .cancel-project-button:hover {
+        transform: scale(1.1);
+    }
+
+    .restore-project {
+        background-color: var(--contrast-color);
+        color: var(--primary-color);
+        border: none;
+        border-radius: 20px !important;
+        padding: 10px 10px !important;
+        font-size: 1rem;
+        cursor: pointer;
+        height: 50px;
+        width: 170px!important;
+        margin: 20px;
+        align-items: center;
+        transition: transform 0.3s ease; 
+    }
+
+    .restore-project:hover {
+        background-color: var(--details-color);
+        color: var(--contrast-color);
+        transform: scale(1.1);
+    }

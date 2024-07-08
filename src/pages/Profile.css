@@ -10,11 +10,12 @@
 
 
 .profile-card {
-  border: none !important;
-  box-shadow: none !important;
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.9);
   border-radius: 15px;
-  background-color: transparent !important;
-  padding-top: 3rem; 
+  background-color: white;
+  padding-top: 2rem; 
+  padding-bottom: 2rem;
   width: auto !important;
   min-height: 80vh;
 
