@@ -61,14 +61,14 @@ const ProjectList = ({ userId }) => {
 
   return (
     <div className="project-list-card"> 
-      <h4>Projectos:</h4>
+      <h6>Projects:</h6>
       <div>
-        <label>Ordenar por: </label>
-        <select onChange={(e) => setSortType(e.target.value)} value={sortType}>
+        <label>Sort by: </label>
+        <select onChange={(e) => setSortType(e.target.value)} value={sortType} style={{borderRadius: "10px", marginLeft: "10px"}}>
           <option value="status">Status</option>
           <option value="creationDate">Data de Criação</option>
         </select>
-        <button onClick={toggleSortOrder}>
+        <button onClick={toggleSortOrder} style={{backgroundColor: "transparent", border: "none"}}>
           {sortOrder === "asc" ? "^" : "v"}
         </button>
       </div>

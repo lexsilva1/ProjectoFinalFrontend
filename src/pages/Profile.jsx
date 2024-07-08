@@ -375,7 +375,10 @@ const Profile = () => {
         <Row className="profile-row">
           <Col md={12} className="profile-main-content">
             <Card className="profile-card">
-              <Card.Body>
+              <div style={{backgroundColor: "var(--details-color", height: "110px", borderTopLeftRadius:"15px", borderTopRightRadius: "15px", marginTop: "-32px"}}>
+                </div>
+              <Card.Body style={{marginTop: "-85px"}}>
+              
               {isOwnProfile && (
                   <div className="privacy-icon">
                     <Button
@@ -411,6 +414,7 @@ const Profile = () => {
                       </div>
                     )}
                   </Col>
+                  
                   <Col md={8}>
                     <h2 className="profile-name">
                       {profile?.firstName} {profile?.lastName}
@@ -425,6 +429,7 @@ const Profile = () => {
                       )}
                     </h2>
                     <hr />
+                    
                     <Row>
                       <Col md={4}>
                         {editMode ? (

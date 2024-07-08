@@ -115,7 +115,7 @@ const Inventory = () => {
           <Row className="mb-4">
             <Col className="inventory-header">
               <Col>
-                <h1 className="inventory-title">{t("Inventory")}</h1>
+                <h2 className="inventory-title">{t("Inventory")}</h2>
               </Col>
               <InputGroup>
                 <div className="search-input">

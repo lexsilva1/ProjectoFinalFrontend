@@ -39,13 +39,10 @@ const Messages = () => {
     <>
       <Header />
       <Row>
-        <Col xs={3}>
-          <Sidebar />
-        </Col>
-        <Container className='messages-container'>
+        <Container className='messages-container' style={{marginTop:"120px"}}>
           <div>
             <Row>
-              <Col md={2} style={{ backgroundColor: "var(--details-color)",  border: "none", borderRadius: "10px", margin: "0" }}>
+              <Col md={2} style={{ backgroundColor: "var(--details-color)",  border: "none", borderRadius: "5px", margin: "0" }}>
               <MessageSidebar onInboxClick={resetSelectedUserMessages} />
               </Col>
               <Col md={10}>

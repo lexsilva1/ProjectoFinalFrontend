@@ -57,12 +57,15 @@ code {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  transition: transform 0.3s ease; 
+
 }
 
 .btn-primary:hover {
   background-color: var(--details-color)!important;
   color: var(--contrast-color)!important;
   border: var(--contrast-color)!important;
+  transform: scale(1.1);
 }
 
 .btn-secondary {
