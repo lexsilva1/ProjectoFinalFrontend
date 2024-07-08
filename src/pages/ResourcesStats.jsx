@@ -5,7 +5,9 @@ import { getResourceStatistics } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
 import Sidebar from '../components/SideBar';
+import CustomPieChart from '../components/CustomPieChart';
 import './ResourcesStats.css';
+import { Pie } from 'recharts';
 
 
 const ResourcesStats = () => {
@@ -16,6 +18,7 @@ const ResourcesStats = () => {
   const [selectLab, setSelectLab] = useState('Coimbra');
   const [selectProject, setSelectProject] = useState('Forge X');
   const token = Cookies.get('authToken');
+  const [hash, setHash] = useState([]);
 
   useEffect(() => {
     getResourceStatistics(token)
@@ -24,6 +27,7 @@ const ResourcesStats = () => {
         setSelectedData(data.resourceQuantityPerLab['Coimbra']);
         setAllResourcesByProject(data.resourceQuantityPerProject);
         setSelectedDataProject(data.resourceQuantityPerProject['Forge X']);
+        setHash(data.allresources)
         console.log(data);
         console.log (data.resourceQuantityPerLab['Coimbra']);
       })
@@ -51,6 +55,7 @@ const ResourcesStats = () => {
         <Row >
         <Col xs={12} md={6}>
       <div>
+        
         <h2>Lab Resource Quantities</h2>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -79,6 +84,15 @@ const ResourcesStats = () => {
           </Dropdown.Menu>
         </Dropdown>
         <VersatileBarChart data={selectedDataProject} />
+        
+      </div>
+    </Col>
+  </Row>
+  <Row>
+    <Col xs={12} md={6}>
+      <div>
+        <h2>Resource Types</h2>
+       {hash && <CustomPieChart data={hash} />}
       </div>
     </Col>
   </Row>
