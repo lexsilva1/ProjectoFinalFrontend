@@ -13,3 +13,17 @@ export const getNotifications = async (token, queryParams) => {
     console.log(response);
     return response;
 }
+export const markAsRead = async (token, notificationId) => {
+    console.log('notificationId', notificationId);
+    const response = await fetch(notificationsURL + '/read/' + notificationId, {
+        method: 'PUT',
+        headers: {
+            'token': token
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }else{
+        return response;
+    }
+}

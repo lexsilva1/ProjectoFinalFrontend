@@ -106,7 +106,7 @@ const Step2 = ({
           const newSkill = {
             name: skill.name,
             skillType,
-            projetcId: 0,
+            projectName: null,
             id: null,
           };
           delete newSkill.customOption;
@@ -153,7 +153,7 @@ const Step2 = ({
           const newInterest = {
             name: interest.name,
             interestType,
-            projectId: 0,
+            projectName: null,
             id: null,
           };
           delete newInterest.customOption;

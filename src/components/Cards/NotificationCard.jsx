@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import userStore from "../../stores/userStore";
 import avatarProject from "../../multimedia/Images/avatarProject.jpg";
 import { set } from "react-hook-form";
+import { markAsRead } from "../../services/notificationService";
 
 const NotificationCard = ({ notification }) => {
   const { projectName, date, type, isRead, notificationId, otherUserid } =
@@ -23,7 +24,7 @@ const NotificationCard = ({ notification }) => {
   const notifications = userStore((state) => state.notifications);
   const setNotifications = userStore((state) => state.setNotifications);
   const [projectImage, setProjectImage] = useState("");
-
+  
   useEffect(() => {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
@@ -33,14 +34,20 @@ const NotificationCard = ({ notification }) => {
     fetchProject();
   }, [projectName, token]);
 
-  const handleClick = () => {
+  const handleClick = async  () => {
+    markAsRead(token, notification.notificationId).then(() => {
+    
+    notification.isRead = true;
+    
     if (projectName.includes(" ")) {
       const formattedProjectName = projectName.replace(" ", "%20");
       navigate(`/project/${formattedProjectName}`);
     } else {
       navigate(`/project/${projectName}`);
     }
-  };
+   });
+
+  }
   const handleAccept = async (event) => {
     event.stopPropagation();
     let operation = "ACCEPT_INVITATION";
