@@ -22,8 +22,9 @@ const MessageCard = ({ message }) => {
         const newUserList = userList.map(user => {
             if (user.id === message.id) {
                 return { ...user, isRead: true };
-            }
+            }else{
             return user;
+            }
         });
         navigate(`/messages/${message.id}`);
         setUserList(newUserList);

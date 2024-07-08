@@ -19,7 +19,12 @@ import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { FaTrash, FaPencilAlt  } from 'react-icons/fa';
 import { Container, Row, Col } from 'react-bootstrap';
-
+import TypeModal from "../components/Modals/TypeModal";
+import { getLabs } from "../services/labServices";
+import { Typeahead } from 'react-bootstrap-typeahead';
+import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
+import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
+import { use } from "i18next";
 
 
 
@@ -43,6 +48,183 @@ const Project = () => {
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [description, setDescription] = useState("");
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [labs, setLabs] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [interests, setInterests] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [interestTypes, setInterestTypes] = useState([]);
+  const [skillTypes, setSkillTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
+  const [modalType, setModalType] = useState("");
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [projectId, setProjectId] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (token) {
+
+
+          const [
+            allLabs,
+            allSkills,
+            allInterests,
+            fetchedSkillTypes,
+            fetchedInterestTypes,
+          ] = await Promise.all([
+            getLabs(token),
+            getSkills(token),
+            getInterests(token),
+            getSkillTypes(),
+            getInterestTypes(),
+          ]);
+
+          setLabs(allLabs);
+          setSkills(
+            allSkills.filter(
+              (skill) => !project?.skills?.some((s) => s.id === skill.id)
+            )
+          );
+          setInterests(
+            allInterests.filter(
+              (interest) =>
+                !project?.interests?.some((i) => i.id === interest.id)
+            )
+          );
+          setSkillTypes(fetchedSkillTypes);
+          setInterestTypes(fetchedInterestTypes);
+
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+  }, [ project, token]);
+
+  useEffect(() => {
+    setSelectedInterests(project.interests || []);
+    setSelectedSkills(project.skills || []);
+  }, [project]);
+
+  const onTypeSelect = (type) => {
+    setSelectedType(type);
+    if (resolveOnSkillTypeSelected) {
+      resolveOnSkillTypeSelected(type);
+      setResolveOnSkillTypeSelected(null);
+    }
+  };
+  const handleOpenTypeModal = (type) => {
+    setModalType(type);
+    setShowTypeModal(true);
+  };
+
+  // Função para fechar o modal de adição de skill ou interesse
+  const handleCloseTypeModal = () => {
+    setShowTypeModal(false);
+  };
+  // Função para adicionar ou remover skills
+  const handleSkillsChange = async (selected) => {
+    debugger;
+    if (selected.length > selectedSkills.length) {
+      const newSkills = selected.filter(
+        (skill) => !selectedSkills.some((s) => s.name === skill.name)
+      );
+      for (const skill of newSkills) {
+        try {
+          if (!skills.some((s) => s.name === skill.name)) {
+            setModalType(skill.name);
+            const skillTypeSelected = new Promise((resolve) => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenModal("skill");
+            skill.skillType = await skillTypeSelected;
+            skill.projetcName = project.name;
+            skill.id = null;
+            delete skill.customOption;
+            const result = await createSkill(token, skill);
+            setSkills((prevSkills) => [...prevSkills, result]);
+            setSelectedType("");
+          } else {
+            skill.projectName = project.name;
+            const result = await createSkill(token, skill);
+          }
+        } catch (error) {
+          console.error("Error creating skill:", error);
+        }
+      }
+    } else if (selected.length < selectedSkills.length) {
+     
+      const removedSkills = selectedSkills.filter(
+        (skill) => !selected.some((s) => s.name === skill.name)
+      );
+      console.log("removedSkills", removedSkills);
+      console.log("selectedSkills", selectedSkills);
+      console.log("selected", selected);
+      for (const skill of removedSkills) {
+        try {
+          console.log("skill", skill);
+          skill.projectName = project.name;
+          const result = await deleteSkill(token, skill);
+        } catch (error) {
+          console.error("Error deleting skill:", error);
+        }
+        
+      }
+    }
+    setSelectedSkills(selected);
+  };
+
+  // Função para adicionar ou remover interesses
+  const handleInterestsChange = async (selected) => {
+    if (selected.length > selectedInterests.length) {
+      const newInterests = selected.filter(
+        (interest) => !selectedInterests.some((i) => i.name === interest.name)
+      );
+      for (const interest of newInterests) {
+        try {
+         
+          if (!interests.some((i) => i.name === interest.name)) {
+            setModalType(interest.name);
+            const interestTypeSelected = new Promise((resolve) => {
+              setResolveOnSkillTypeSelected(() => resolve);
+            });
+            handleOpenTypeModal("interest");
+            interest.interestType = await interestTypeSelected;
+            interest.projectName = project.name;
+            interest.id = null;
+            delete interest.customOption;
+            const result = await createInterest(token, interest);
+            setInterests((prevInterests) => [...prevInterests, result]);
+            setSelectedType("");
+          } else {
+            interest.projectName = project.name;
+            const result = await createInterest(token, interest);
+          }
+        } catch (error) {
+          console.error("Error creating interest:", error);
+        }
+      }
+    } else if (selected.length < selectedInterests.length) {
+      const removedInterests = selectedInterests.filter(
+        (interest) => !selected.some((i) => i.name === interest.name)
+      );
+      for (const interest of removedInterests) {
+        try {
+          interest.projectName = project.name;
+          const result = await deleteInterest(token, interest);
+        } catch (error) {
+          console.error("Error deleting interest:", error);
+        }
+      }
+    }
+    setSelectedInterests(selected);
+    console.log("profile selectedInterests", selectedInterests);
+    console.log("profile selected", selected);
+  };
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };
@@ -145,6 +327,8 @@ const Project = () => {
       const projectData = await getProjectByName(token, encodedProjectName);
       setProject(projectData);
       setStatus(projectData.status);
+      
+      console.log(projectData);
     };
 
     fetchProject();
@@ -274,30 +458,62 @@ const Project = () => {
                   />
                 )}
               </p>
-              <p className="card-text-project">
-                <strong>Keywords: </strong>
-                {project.interests &&
-                  project.interests.map((interest, index) => (
-                    <span
-                      key={`${project.id}-keyword-${index}`}
-                      className="badge badge-dark mr-2 mb-2"
-                    >
-                      {interest}
-                    </span>
-                  ))}
-              </p>
-              <p className="card-text-project">
-                <strong>Skills: </strong>
-                {project.skills &&
-                  project.skills.map((skill, index) => (
-                    <span
-                      key={`${project.id}-skill-${index}`}
-                      className="badge badge-light mr-2 mb-2"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-              </p>
+              <Col md={3} style={{ marginLeft: "0px" }}>
+                        <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
+                        {isCurrentUserProjectManager ? (
+                          <Typeahead
+                            id="skills-typeahead"
+                            labelKey="name"
+                            multiple
+                            onChange={handleSkillsChange}
+                            options={skills}
+                            allowNew
+                            newSelectionPrefix="Add a new skill: "
+                            placeholder= {t("Choose your skills...")}
+                            selected={selectedSkills}
+                          />
+                        ) : (
+                          <div>
+                            {selectedSkills.map((skill, index) => (
+                              <span key={index} className="user-pill">
+                                {skill.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
+                          {t("Interests")}
+                        </h4>
+                        {isCurrentUserProjectManager ? (
+                          <Typeahead
+                            id="interests-typeahead"
+                            labelKey="name"
+                            multiple
+                            onChange={handleInterestsChange}
+                            options={interests}
+                            allowNew
+                            newSelectionPrefix="Add a new interest: "
+                            placeholder= {t("Choose your interests...")}
+                            selected={selectedInterests}
+                          />
+                        ) : (
+                          <div>
+                            {selectedInterests.map((interest, index) => (
+                              <span key={index} className="user-pill">
+                                {interest.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                              <TypeModal
+      show={showTypeModal}
+      onHide={handleCloseTypeModal}
+      title={`Add ${modalType}`}
+      type={modalType}
+      types={modalType === "skill" ? skillTypes : interestTypes}
+      onTypeSelect={onTypeSelect}
+    />
+                      </Col>
               {!isMember && (
                 <>
                   <p className="card-text-project">

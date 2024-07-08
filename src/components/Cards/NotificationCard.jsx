@@ -17,10 +17,12 @@ const NotificationCard = ({ notification }) => {
     const notifications = userStore((state) => state.notifications);
     const setNotifications = userStore((state) => state.setNotifications);
     
-const handleClick = () =>{
+const handleClick = (event) =>{
     if(projectName.includes(' ')) {
         const formattedProjectName = projectName.replace(' ', '%20');    
         navigate(`/project/${formattedProjectName}`);
+        notification.isRead = true;
+
     }
     else {
         navigate(`/project/${projectName}`);
@@ -35,7 +37,6 @@ const handleClick = () =>{
            newNotification.isRead = true;
               const newNotifications = notifications.filter((notification) => notification.notificationId !== notificationId);
                 setNotifications([...newNotifications, newNotification]);
-console.log(newNotifications);
         }
         
     }

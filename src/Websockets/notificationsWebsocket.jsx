@@ -66,7 +66,7 @@ const useStartWebSocket = (token) => {
       window.location.replace('/');
       break;
       case MessageType.LAST_MESSAGE:
-      
+      console.log(messageObj.isRead);
 
       userstore.setState({userList: userList.map((user) => {
         if(user.sender.id === messageObj.sender.id){

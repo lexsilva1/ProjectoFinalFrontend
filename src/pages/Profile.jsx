@@ -211,6 +211,7 @@ const Profile = () => {
 
   // Função para adicionar ou remover skills
   const handleSkillsChange = async (selected) => {
+    debugger;
     if (selected.length > selectedSkills.length) {
       const newSkills = selected.filter(
         (skill) => !selectedSkills.some((s) => s.name === skill.name)
@@ -224,7 +225,7 @@ const Profile = () => {
             });
             handleOpenModal("skill");
             skill.skillType = await skillTypeSelected;
-            skill.projetcId = 0;
+            skill.projectName = null;
             skill.id = null;
             delete skill.customOption;
             const result = await createSkill(token, skill);
@@ -238,15 +239,21 @@ const Profile = () => {
         }
       }
     } else if (selected.length < selectedSkills.length) {
+     
       const removedSkills = selectedSkills.filter(
         (skill) => !selected.some((s) => s.name === skill.name)
       );
+      console.log("removedSkills", removedSkills);
+      console.log("selectedSkills", selectedSkills);
+      console.log("selected", selected);
       for (const skill of removedSkills) {
         try {
+          console.log("skill", skill);
           const result = await deleteSkill(token, skill);
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
+
       }
     }
     setSelectedSkills(selected);
@@ -267,7 +274,7 @@ const Profile = () => {
             });
             handleOpenModal("interest");
             interest.interestType = await interestTypeSelected;
-            interest.projectId = 0;
+            interest.projectName = null;
             interest.id = null;
             delete interest.customOption;
             const result = await createInterest(token, interest);
@@ -284,6 +291,7 @@ const Profile = () => {
       const removedInterests = selectedInterests.filter(
         (interest) => !selected.some((i) => i.name === interest.name)
       );
+
       for (const interest of removedInterests) {
         try {
           const result = await deleteInterest(token, interest);
@@ -475,7 +483,7 @@ const Profile = () => {
                           <div>
                             {selectedSkills.map((skill, index) => (
                               <span key={index} className="user-pill">
-                                {skill}
+                                {skill.name}
                               </span>
                             ))}
                           </div>
@@ -499,7 +507,7 @@ const Profile = () => {
                           <div>
                             {selectedInterests.map((interest, index) => (
                               <span key={index} className="user-pill">
-                                {interest}
+                                {interest.name}
                               </span>
                             ))}
                           </div>

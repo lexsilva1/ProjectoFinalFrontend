@@ -44,6 +44,8 @@ export const createSkill = async (token, skill) => {
     return result;
 }
 export const deleteSkill = async (token, skillDto) => {
+    console.log(skillDto);
+    debugger;
     const response = await fetch(baseURL + 'skills/removeSkill', {
         method: 'DELETE',
         headers: {

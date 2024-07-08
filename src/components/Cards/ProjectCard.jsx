@@ -46,7 +46,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
               <strong>{t("Keywords")}:</strong>
               {project.interests?.map((interest, index) => (
                 <Badge key={`${project.id}-keyword-${index}`} className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2">
-                  {interest}
+                  {interest.name}
                 </Badge>
               ))}
             </p>
@@ -54,7 +54,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
               <strong>{t("Skills")}:</strong>
               {project.skills?.map((skill, index) => (
                 <Badge key={`${project.id}-skill-${index}`} className="project-card-badge project-card-badge-light mr-2 mb-2 px-2">
-                  {skill}
+                  {skill.name}
                 </Badge>
               ))}
             </p>
