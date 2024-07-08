@@ -96,10 +96,11 @@ const RegisterModal = () => {
               "By clicking continue, you will need to check your email to confirm your account."
             )}
           </p>
-
+<div className="d-flex justify-content-center">
           <button type="submit" className="custom-button">
             {t("Register")}
           </button>
+</div>
         </Form>
       </Modal.Body>
     </Modal>

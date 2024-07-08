@@ -230,8 +230,7 @@ const NewProject = () => {
       <div style={{ position: "absolute", top: 0, width: "100%" }}>
         <Header />
       </div>
-      <Sidebar />
-      <Container>
+      <Container style={{marginTop: "100px"}}>
         <Card className="project-card">
         <CardHeader className="CardHeader-create-project blue-card-header">{t("Create New Project")}</CardHeader>
           <CardBody>

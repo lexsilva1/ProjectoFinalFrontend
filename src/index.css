@@ -20,6 +20,7 @@ body {
   --bs-btn-color: var(--primary-color);
   --bs-btn-bg: var(--contrast-color);
 }
+
 body.contrast{
   --primary-color: #e6eed6;
   --secondary-color: #dde2c6;

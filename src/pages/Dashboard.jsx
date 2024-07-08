@@ -85,7 +85,6 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <Header />
-            <Sidebar />
             <Container ref={contentRef} id="export-pdf" className="mt-4">
                 <h1 className="text-center mb-4">ForgeXperimental Projects Dashboard </h1>
                 <Row className="mb-4">

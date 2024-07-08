@@ -365,10 +365,6 @@ const Profile = () => {
       <Header />
       <Container fluid className="profile-container">
         <Row className="profile-row">
-          <div>
-            <Sidebar />
-          </div>
-
           <Col md={12} className="profile-main-content">
             <Card className="profile-card">
               <Card.Body>

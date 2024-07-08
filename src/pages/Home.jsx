@@ -22,7 +22,6 @@ import { useTranslation } from "react-i18next";
 import './Home.css';
 
 const Home = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const isLoggedIn = userStore((state) => state.isLoggedIn);
   const [banner, setBanner] = useState(1);
   const [projects, setProjects] = useState([]);
@@ -192,15 +191,6 @@ const Home = () => {
       <div style={{ position: "fixed", width: "100%", zIndex: 1000 }}>
         <Header />
       </div>
-      {isLoggedIn && (
-        <div
-          style={{ paddingTop: "70px", position: "absolute", width: "100%" }}
-        >
-          <div style={{ position: "fixed" }}>
-            <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-          </div>
-        </div>
-      )}
       <div>
         <div style={{ display: "flex" }}>
           {!isLoggedIn && <InfoBox />}

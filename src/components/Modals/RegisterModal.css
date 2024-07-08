@@ -25,14 +25,19 @@
 }
 
 .custom-button {
-    background-color: #39394f ; 
-    border: none ; 
-    padding: 8px 80px ; 
-    border-radius: 5px ; 
-    color: white ; 
-    display: block ; 
-    margin: 0 auto ; 
-    transition: box-shadow 0.3s ; 
+    background-color: var(--contrast-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 3rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+    background-color: var(--details-color);
+    color: var(--contrast-color);
 }
 
 .info-text {
