@@ -10,7 +10,7 @@ import { Button, Offcanvas } from 'react-bootstrap';
 import useStartWebSocket from '../Websockets/notificationsWebsocket';
 import NotificationsCanva from './NotificationsCanva';
 import logo2 from '../multimedia/Images/logo2.png';
-import { BsGraphUp, BsFileEarmarkText, BsPeople ,  BsEnvelope, BsJournals, BsJournalPlus   } from "react-icons/bs";
+import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJournalPlus } from "react-icons/bs";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import './Header.css';
 
@@ -30,15 +30,14 @@ const Header = () => {
   const [showOffCanvas, setShowOffCanvas] = useState(false);
   const [showThemeSubmenu, setShowThemeSubmenu] = useState(false);
   const userId = userStore((state) => state.user?.id);
-  const [theme, setTheme] = useState('light'); // Estado para o tema
+  const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
 
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
       startWebSocket(authToken);
     }
-  }, [isLoggedIn, authToken]);
-
-  
+    document.body.className = theme;
+  }, [isLoggedIn, authToken, theme]);
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);
@@ -60,16 +59,20 @@ const Header = () => {
     Cookies.set("i18nextLng", lng);
   };
 
+  const changeTheme = (newTheme) => {
+    setTheme(newTheme);
+    Cookies.set('theme', newTheme);
+  };
+
   return (
     <div className="header">
-      <div className="logo"></div>
+      <div className="logo">
+        <img src={logo2} alt="logo" />
+      </div>
       <div className="actions">
         {!authToken && (
           <>
-            <Button
-              className="button2"
-              onClick={handleShowRegister}
-            >
+            <Button className="button2" onClick={handleShowRegister}>
               {t("Sign Up")}
             </Button>
             <Button className="button-login" onClick={handleShow}>
@@ -84,9 +87,7 @@ const Header = () => {
                 key="projects"
                 placement="bottom"
                 style={{ backgroundColor: "var(--contrast-color)" }}
-                overlay={
-                  <Tooltip id={`tooltip-journals`}>{t("Projects")}</Tooltip>
-                }
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Projects")}</Tooltip>}
               >
                 <Link to="/">
                   <BsJournals className="header-icon" />
@@ -96,12 +97,7 @@ const Header = () => {
               <OverlayTrigger
                 key="createProject"
                 placement="bottom"
-                overlay={
-                  <Tooltip id={`tooltip-journals`}>
-                    {t("Create Project")}{" "}
-                    {/* Substitua "Journals" pela tradução ou texto desejado */}
-                  </Tooltip>
-                }
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Create Project")}</Tooltip>}
               >
                 <Link to="/new-project">
                   <BsJournalPlus className="header-icon" />
@@ -110,9 +106,7 @@ const Header = () => {
               <OverlayTrigger
                 key="users"
                 placement="bottom"
-                overlay={
-                  <Tooltip id={`tooltip-journals`}>{t("Users")}</Tooltip>
-                }
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Users")}</Tooltip>}
               >
                 <Link to="/users">
                   <BsPeople className="header-icon" />
@@ -121,12 +115,7 @@ const Header = () => {
               <OverlayTrigger
                 key="inventory"
                 placement="bottom"
-                overlay={
-                  <Tooltip id={`tooltip-journals`}>
-                    {t("Inventory")}{" "}
-                    {/* Substitua "Journals" pela tradução ou texto desejado */}
-                  </Tooltip>
-                }
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Inventory")}</Tooltip>}
               >
                 <Link to="/inventory">
                   <BsFileEarmarkText className="header-icon" />
@@ -135,25 +124,21 @@ const Header = () => {
               <OverlayTrigger
                 key="dashboard"
                 placement="bottom"
-                overlay={
-                  <Tooltip id={`tooltip-journals`}>{t("Dashboard")}</Tooltip>
-                }
+                overlay={<Tooltip id={`tooltip-journals`}>{t("Dashboard")}</Tooltip>}
               >
                 <Link to="/dashboard">
                   <BsGraphUp className="header-icon" />
                 </Link>
               </OverlayTrigger>
               <OverlayTrigger
-  key="messages"
-  placement="bottom"
-  overlay={
-    <Tooltip id={`tooltip-messages`}>{t("Messages")}</Tooltip>
-  }
->
-  <span onClick={() => navigate("/messages")}>
-    <BsEnvelope className="header-icon" />
-  </span>
-</OverlayTrigger>
+                key="messages"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-messages`}>{t("Messages")}</Tooltip>}
+              >
+                <span onClick={() => navigate("/messages")}>
+                  <BsEnvelope className="header-icon" />
+                </span>
+              </OverlayTrigger>
             </div>
             <div className="user-info" onClick={toggleOffCanvas}>
               <img
@@ -163,34 +148,20 @@ const Header = () => {
               />
               <span className="user-name-header">{`${user.firstName}`}</span>
             </div>
-            <FaBell
-              className="header-icon-notification"
-              onClick={toggleNotifications}
-            />
+            <FaBell className="header-icon-notification" onClick={toggleNotifications} />
           </>
         )}
         <div className="language-buttons">
-          <Button
-            variant="outline"
-            className="language-button"
-            onClick={() => changeLanguage("pt")}
-          >
+          <Button variant="outline" className="language-button" onClick={() => changeLanguage("pt")}>
             PT
           </Button>
-          <Button
-            variant="outline"
-            className="language-button"
-            onClick={() => changeLanguage("en")}
-          >
+          <Button variant="outline" className="language-button" onClick={() => changeLanguage("en")}>
             EN
           </Button>
         </div>
       </div>
       {isLoggedIn && (
-        <NotificationsCanva
-          show={showNotifications}
-          handleClose={() => setShowNotifications(false)}
-        />
+        <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />
       )}
       {isLoggedIn && (
         <Offcanvas
@@ -222,14 +193,10 @@ const Header = () => {
                   {showThemeSubmenu && (
                     <ul className="theme-submenu">
                       <li>
-                        <button onClick={() => alert("Luz")}>
-                          {t("Light")}
-                        </button>
+                        <button onClick={() => changeTheme("light")}>{t("Light")}</button>
                       </li>
                       <li>
-                        <button onClick={() => alert("Escuro")}>
-                          {t("Dark")}
-                        </button>
+                        <button onClick={() => changeTheme("dark")}>{t("Dark")}</button>
                       </li>
                     </ul>
                   )}

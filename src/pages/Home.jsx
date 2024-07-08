@@ -241,7 +241,7 @@ const Home = () => {
                   height: "2.5rem",
                   width: "10rem",
                   margin: "2rem",
-                  backgroundColor: "transparent",
+                  backgroundColor: "white",
                 }}
               >
                 <option value="">Sort by...</option>

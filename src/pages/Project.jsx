@@ -6,7 +6,6 @@ import "./Project.css";
 import avatarProject from "../multimedia/Images/avatarProject.jpg";
 import Avatar from "../multimedia/Images/Avatar.jpg";
 import Header from "../components/Header";
-import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal";
 import ResourcesModal from "../components/Modals/ResourcesModal";
@@ -517,7 +516,6 @@ const Project = () => {
       {isMember && <ChatIcon onChatIconClick={toggleChat} />}
       {isChatOpen && <ProjectChat isOpen={isChatOpen} onClose={toggleChat} />}
       <div className="app-container">
-        <Sidebar />
         <div className={`project-container ${!isMember ? "non-member" : ""}`}>
           <div className="container mt-5">
             {isMember && (
