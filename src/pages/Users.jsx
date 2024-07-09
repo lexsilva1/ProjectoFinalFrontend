@@ -51,7 +51,7 @@ const Users = () => {
           return (
             user.skills &&
             user.skills.some(
-              (skill) => skill && skill.toLowerCase().includes(lowercasedFilter)
+              (skill) => skill && skill.name.toLowerCase().includes(lowercasedFilter)
             )
           );
         case "interest":
@@ -59,7 +59,7 @@ const Users = () => {
             user.interests &&
             user.interests.some(
               (interest) =>
-                interest && interest.toLowerCase().includes(lowercasedFilter)
+                interest && interest.name.toLowerCase().includes(lowercasedFilter)
             )
           );
         default:
