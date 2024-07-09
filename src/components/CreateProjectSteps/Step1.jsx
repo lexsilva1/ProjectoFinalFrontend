@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { useTranslation } from "react-i18next";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 /* Componente Step1: Responsável pela primeira etapa de um formulário, recebe várias props 
 escolha do nome, localizaçao do lab, imagem, data de início e data de fim*/
@@ -22,6 +24,12 @@ const Step1 = ({
     const fileName = event.target.files[0] ? event.target.files[0].name : t("No file selected");
     setSelectedFileName(fileName);
   };
+
+    // Função específica para manipular mudanças no ReactQuill
+    const handleQuillChange = (value, name) => {
+      handleInputChange({ target: { name, value } });
+    };
+    
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -58,13 +66,10 @@ const Step1 = ({
             </FormGroup>
             <FormGroup className="my-form-group">
               <Label for="description">{t("Description")}</Label>
-              <Input
-                type="textarea"
-                name="description"
-                id="description"
-                onChange={handleInputChange}
-                className="short-input textarea-input"
+              <ReactQuill
+                theme="snow"
                 value={inputs.description}
+                onChange={(content) => handleQuillChange(content, 'description')}
                 style={{ height: "250px", resize: "none" }}
               />
             </FormGroup>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
@@ -59,6 +60,11 @@ const Project = () => {
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [projectId, setProjectId] = useState("");
+
+  const createMarkup = (html) => {
+    return { __html: DOMPurify.sanitize(html) };
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -441,7 +447,7 @@ const Project = () => {
                 <strong>Description: </strong>{" "}
                 {!isEditingDescription ? ( 
                   <>
-                    {project.description}
+                    <span dangerouslySetInnerHTML={createMarkup(project.description)}></span>
                     <FaPencilAlt
                       className="edit-description-icon"
                       onClick={toggleEditDescription}

@@ -4,4 +4,12 @@
     padding: 20px; /* Ajuste conforme necessário */
     margin: 80px; /* Ajuste conforme necessário */
   }
+.lab-chart-button {
+    background-color: transparent !important;
+    color: var(--dark-color) !important;
+}
 
+.lab-chart-button:hover {
+    background-color: transparent !important;
+    color: var(--contrast-color) !important;
+}

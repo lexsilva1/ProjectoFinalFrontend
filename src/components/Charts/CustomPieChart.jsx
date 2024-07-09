@@ -73,8 +73,8 @@ class CustomPieChart extends PureComponent {
             data={transformedData}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={80}
+            innerRadius={120}
+            outerRadius={140}
             fill="#8884d8"
             dataKey="value"
             onMouseEnter={this.onPieEnter}

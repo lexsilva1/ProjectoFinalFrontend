@@ -1,4 +1,5 @@
 import React from "react";
+import DOMPurify from "dompurify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import avatarProject from "../../multimedia/Images/avatarProject.jpg";
 import "./ProjectCard.css";
@@ -26,6 +27,10 @@ const ProjectCard = ({ project, isLoggedIn }) => {
   const isMember = isLoggedIn && project.teamMembers?.some(member =>
     member.userId === currentUser.id && (member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
   );
+
+  const createMarkup = (html) => {
+    return { __html: DOMPurify.sanitize(html) };
+  };
 
   return (
     <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
@@ -59,7 +64,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
               ))}
             </p>
             <p className="project-card-card-text">
-              <strong>{t("Description")}:</strong> {project.description}
+              <strong>{t("Description")}:</strong> <span dangerouslySetInnerHTML={createMarkup(project.description)}></span>
             </p>
           </div>
           {isLoggedIn && (
@@ -68,7 +73,7 @@ const ProjectCard = ({ project, isLoggedIn }) => {
                 to={`/project/${project.name}`}
                 className="project-card-btn project-card-btn-primary"
               >
-                {isMember ? "Open Project" : "See Details"}
+                {isMember ? t("Open Project") : t("See Details")}
               </Link>
             </div>
           )}
