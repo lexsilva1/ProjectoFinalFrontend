@@ -12,6 +12,7 @@ import NotificationsCanva from './NotificationsCanva';
 import logo2 from '../multimedia/Images/logo2.png';
 import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJournalPlus } from "react-icons/bs";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { markAsSeen } from '../services/notificationService';
 import './Header.css';
 
 const Header = () => {
@@ -24,7 +25,6 @@ const Header = () => {
   const user = userStore((state) => state.user);
   const authToken = Cookies.get("authToken");
   const { startWebSocket } = useStartWebSocket(authToken);
-  const setNotifications = userStore((state) => state.setNotifications);
   const notifications = userStore((state) => state.notifications);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showOffCanvas, setShowOffCanvas] = useState(false);
@@ -37,11 +37,12 @@ const Header = () => {
       startWebSocket(authToken);
     }
     document.body.className = theme;
+    setShowOffCanvas(false);
   }, [isLoggedIn, authToken, theme]);
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);
-  const toggleNotifications = () => setShowNotifications(!showNotifications);
+  const toggleNotifications = () => setShowNotifications(!showNotifications) && markAsSeen(authToken);
   const toggleOffCanvas = () => setShowOffCanvas(!showOffCanvas);
   const toggleThemeSubmenu = () => setShowThemeSubmenu(!showThemeSubmenu);
 
@@ -64,10 +65,16 @@ const Header = () => {
     Cookies.set('theme', newTheme);
   };
 
+  // Função para verificar notificações não vistas
+  const hasUnseenNotifications = () => {
+    return notifications.some(notification => !notification.seen);
+  };
+
+
   return (
     <div className="header">
       <div className="logo">
-        <img src={logo2} alt="logo" />
+        {isLoggedIn && <img src={logo2} alt="logo" />}
       </div>
       <div className="actions">
         {!authToken && (
@@ -93,7 +100,6 @@ const Header = () => {
                   <BsJournals className="header-icon" />
                 </Link>
               </OverlayTrigger>
-
               <OverlayTrigger
                 key="createProject"
                 placement="bottom"
@@ -140,6 +146,10 @@ const Header = () => {
                 </span>
               </OverlayTrigger>
             </div>
+            <div className="notification-icon-wrapper" onClick={toggleNotifications}>
+              <FaBell className="header-icon-notification" />
+              {hasUnseenNotifications() && <span className="notification-badge"></span>}
+            </div>
             <div className="user-info" onClick={toggleOffCanvas}>
               <img
                 src={user.image ? user.image : Avatar}
@@ -148,7 +158,6 @@ const Header = () => {
               />
               <span className="user-name-header">{`${user.firstName}`}</span>
             </div>
-            <FaBell className="header-icon-notification" onClick={toggleNotifications} />
           </>
         )}
         <div className="language-buttons">
@@ -177,36 +186,47 @@ const Header = () => {
           }}
         >
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>{`${user.firstName} ${user.lastName}`}</Offcanvas.Title>
+            <div>
+              <h6>{t("Account")}</h6>
+            </div>
           </Offcanvas.Header>
+          <div style={{ marginLeft: "15px" }}>
+            <Offcanvas.Title>
+              <img
+                src={user.image ? user.image : Avatar}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="user-avatar"
+              />
+              {` ${user.firstName} ${user.lastName}`}
+            </Offcanvas.Title>
+          </div>
           <Offcanvas.Body>
             <ul className="offcanvas-menu">
-              <li>
+              <li className="offcanvas-option">
                 <Link to={`/profile/${userId}`}>
-                  <FaUser className="header-icon" />
                   {t("Profile & Visibility")}
                 </Link>
               </li>
-              <li>
+              <li className="offcanvas-option">
                 <button onClick={toggleThemeSubmenu}>
                   {t("Theme")}
                   {showThemeSubmenu && (
                     <ul className="theme-submenu">
                       <li>
-                        <button onClick={() => changeTheme("light")}>{t("Light")}</button>
+                        <button className='temas' onClick={() => changeTheme("light")}>{t("Light")}</button>
                       </li>
                       <li>
-                        <button onClick={() => changeTheme("dark")}>{t("Dark")}</button>
+                        <button className='temas' onClick={() => changeTheme("dark")}>{t("Dark")}</button>
                       </li>
                     </ul>
                   )}
                 </button>
               </li>
-              <li>
+              <li className="offcanvas-option">
                 <Link to="/help">{t("Help")}</Link>
               </li>
-              <li>
-                <Button onClick={handleLogout}>{t("Logout")}</Button>
+              <li className="offcanvas-option">
+                <button onClick={handleLogout}>{t("Logout")}</button>
               </li>
             </ul>
           </Offcanvas.Body>

@@ -50,7 +50,7 @@
   border-radius: 50%;
   padding: 5px;
   rotate: 45deg;
-  margin-left: 10px;
+  margin-right: 20px;
 }
 
 .button,
@@ -136,7 +136,7 @@
 }
 
 .custom-offcanvas .offcanvas {
-  width: 100px !important; /* Ajuste este valor para a largura desejada */
+  width: 100px !important; 
 }
 .offcanvas-menu {
   list-style: none;
@@ -182,3 +182,32 @@
   padding: 0.7rem 2.2rem;
 }
 
+.offcanvas-option:hover {
+  background-color: #f0f0f0; 
+}
+
+
+
+.temas {
+font-size: 14px!important;
+}
+
+.temas:hover {
+  background-color: #b3b1b1; 
+}
+
+.notification-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+}

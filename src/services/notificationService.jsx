@@ -27,3 +27,17 @@ export const markAsRead = async (token, notificationId) => {
         return response;
     }
 }
+
+export const markAsSeen = async (token) => {
+    const response = await fetch(notificationsURL + '/seen', {
+        method: 'PUT',
+        headers: {
+            'token': token
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }else{
+        return response;
+    }
+}
