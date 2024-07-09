@@ -60,7 +60,7 @@ const Project = () => {
     useState(null);
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
-  
+  const [showSaveButton, setShowSaveButton] = useState(false);
  
   const [selectedLab, setSelectedLab] = useState(project.lab);
 
@@ -388,11 +388,12 @@ const Project = () => {
 
     const toggleEditDescription = () => {
       setIsEditingDescription(!isEditingDescription);
-      // Inicializar a descrição editável com a descrição atual do projeto ao alternar para edição
+      setShowSaveButton(!isEditingDescription);
       if (!isEditingDescription) {
         setDescription(project.description || "");
       }
     };
+  
 
       // Função para lidar com a mudança na descrição
   const handleDescriptionChange = (value) => {
@@ -418,8 +419,10 @@ const Project = () => {
     };
     try {
       await updateProject(token, project.name, projectDto);
+      setIsEditingDescription(false);
+      setShowSaveButton(false);
+      setDescription(description);
       alert('Projeto atualizado com sucesso!');
-      // Atualize o estado do componente aqui, se necessário
     } catch (error) {
       console.error('Erro ao atualizar o projeto:', error);
       alert('Erro ao atualizar o projeto.');
@@ -490,37 +493,39 @@ const Project = () => {
                 )}
               </p>
               <div>
-              <p className="card-text-project">
-                <strong>Description: </strong>
-                </p>
-                <div style={{marginLeft: "40px", marginTop: "-35px"}}>
-                {!isEditingDescription ? (
-                  <>
-                    <span
-                      dangerouslySetInnerHTML={createMarkup(
-                        description
-                      )}
-                    ></span>
-                    <FaPencilAlt
-                      className="edit-description-icon"
-                      onClick={toggleEditDescription}
-                    />
-                  </>
-                ) : (
-                  <>
-                  <ReactQuill 
-                    theme="snow"
-                    style={{width: "97%"}}
-                    value={description}
-                    onChange={setDescription} 
+            <p className="card-text-project">
+              <strong>Description: </strong>
+            </p>
+            <div style={{ marginLeft: "40px", marginTop: "-35px" }}>
+              {!isEditingDescription ? (
+                <>
+                  <span
+                    dangerouslySetInnerHTML={createMarkup(
+                      project.description
+                    )}
+                  ></span>
+                  <FaPencilAlt
+                    className="edit-description-icon"
+                    onClick={toggleEditDescription}
                   />
-                  <div>
-                  <button onClick={handleSave}>Save</button>
-                  </div>
-                  </>
-                )}
-                </div>
-              </div>
+                </>
+              ) : (
+                <>
+                  <ReactQuill
+                    theme="snow"
+                    style={{ width: "97%" }}
+                    value={description}
+                    onChange={setDescription}
+                  />
+                  {showSaveButton && (
+                    <div>
+                      <button onClick={handleSave}>Save</button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
              
          <div style={{margin: "40px"}}>
                 <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
