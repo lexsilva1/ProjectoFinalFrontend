@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import ReactQuill from 'react-quill';
+
 import 'react-quill/dist/quill.snow.css';
 
 /* Componente Step1: Responsável pela primeira etapa de um formulário, recebe várias props 
