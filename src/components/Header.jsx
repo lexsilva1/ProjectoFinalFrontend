@@ -42,9 +42,15 @@ const Header = () => {
 
   const handleShow = () => setShowLogin(true);
   const handleShowRegister = () => setShowRegister(true);
-  const toggleNotifications = () => setShowNotifications(!showNotifications) && markAsSeen(authToken);
-  const toggleOffCanvas = () => setShowOffCanvas(!showOffCanvas);
+  const toggleNotifications = () => setShowNotifications(!showNotifications) ;
+  const toggleOffCanvas =  () => setShowOffCanvas(!showOffCanvas);
   const toggleThemeSubmenu = () => setShowThemeSubmenu(!showThemeSubmenu);
+  const markNotificationsAsSeen = async () => {
+    toggleNotifications();
+    markAsSeen(authToken);
+    };
+
+
 
   const handleLogout = () => {
     logout();
@@ -146,7 +152,7 @@ const Header = () => {
                 </span>
               </OverlayTrigger>
             </div>
-            <div className="notification-icon-wrapper" onClick={toggleNotifications}>
+            <div className="notification-icon-wrapper" onClick={markNotificationsAsSeen}>
               <FaBell className="header-icon-notification" />
               {hasUnseenNotifications() && <span className="notification-badge"></span>}
             </div>

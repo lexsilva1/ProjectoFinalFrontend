@@ -103,8 +103,18 @@ const useStartWebSocket = (token) => {
       case MessageType.PROJECT_READY:
       case MessageType.PROJECT_DOING:
       case MessageType.PROJECT_REJECTED:
-      
-          setNotifications([messageObj, ...notifications]);
+          const existingNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
+          if (existingNotification) {
+            const updatedNotifications = notifications.map((notification) => {
+              if (notification.notificationId === messageObj.notificationId) {
+                return messageObj;
+              }
+              return notification;
+            });
+            setNotifications(updatedNotifications);
+          } else {
+            setNotifications([messageObj, ...notifications]);
+          }
           break;
     case MessageType.CHAT:
           

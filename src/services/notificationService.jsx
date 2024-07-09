@@ -38,6 +38,6 @@ export const markAsSeen = async (token) => {
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }else{
-        return response;
+        return response.text();
     }
 }
