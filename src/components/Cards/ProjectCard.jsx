@@ -11,13 +11,14 @@ import { useTranslation } from "react-i18next";
 const ProjectCard = ({ project, isLoggedIn }) => {
   const { t } = useTranslation();
   const currentUser = userStore((state) => state.user);
+  const status = project.status == "In_Progress" ? "In Progress" : project.status;
 
   const getStatusClass = (status) => {
     switch (status) {
       case "Planning": return "project-card-status project-card-status-planning";
       case "Ready": return "project-card-status project-card-status-ready";
       case "Approved": return "project-card-status project-card-status-approved";
-      case "In Progress": return "project-card-status project-card-status-in-progress";
+      case "In_Progress": return "project-card-status project-card-status-in-progress";
       case "Cancelled": return "project-card-status project-card-status-cancelled";
       case "Finished": return "project-card-status project-card-status-finished";
       default: return "project-card-status";
@@ -45,25 +46,35 @@ const ProjectCard = ({ project, isLoggedIn }) => {
             <h5 className="project-card-card-title">{project.name}</h5>
             <div className={getStatusClass(project.status)}>
               <div className="project-card-status-bar"></div>
-              {t(project.status)}
+              {t(status)}
             </div>
             <p className="project-card-card-text">
               <strong>{t("Keywords")}:</strong>
-              {project.interests?.map((interest, index) => (
-                <Badge key={`${project.id}-keyword-${index}`} className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2">
-                  {interest.name}
-                </Badge>
-              ))}
+              {project.interests?.slice(0, 3).map((interest, index) => (
+  <Badge key={`${project.id}-keyword-${index}`} className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2">
+    {interest.name}
+  </Badge>
+))}
+{project.interests?.length > 3 && (
+  <Badge className="project-card-badge project-card-badge-light mr-2 mb-2 px-2">
+    +{project.interests.length - 3} more
+  </Badge>
+)}
             </p>
             <p className="project-card-card-text">
-              <strong>{t("Skills")}:</strong>
-              {project.skills?.map((skill, index) => (
-                <Badge key={`${project.id}-skill-${index}`} className="project-card-badge project-card-badge-light mr-2 mb-2 px-2">
-                  {skill.name}
-                </Badge>
-              ))}
-            </p>
-            <p className="project-card-card-text">
+  <strong>{t("Skills")}:</strong>
+  {project.skills?.slice(0, 3).map((skill, index) => (
+    <Badge key={`${project.id}-skill-${index}`} className="project-card-badge project-card-badge-dark mr-2 mb-2 px-2">
+      {skill.name}
+    </Badge>
+  ))}
+  {project.skills?.length > 3 && (
+    <Badge className="project-card-badge project-card-badge-light mr-2 mb-2 px-2">
+      +{project.skills.length - 3} more
+    </Badge>
+  )}
+</p>
+            <p className="project-card-card-text lineclamp">
               <strong>{t("Description")}:</strong> <span dangerouslySetInnerHTML={createMarkup(project.description)}></span>
             </p>
           </div>
