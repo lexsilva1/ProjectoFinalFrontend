@@ -199,6 +199,11 @@ font-size: 14px!important;
 .notification-icon-wrapper {
   position: relative;
   display: inline-block;
+  transition: transform 0.3s ease; 
+}
+
+.notification-icon-wrapper:hover {
+  transform: scale(1.2);
 }
 
 .notification-badge {
@@ -210,4 +215,5 @@ font-size: 14px!important;
   background-color: red;
   border-radius: 50%;
   border: 2px solid white;
+  left: 16px;
 }

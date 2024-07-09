@@ -11,8 +11,8 @@
     bottom: auto !important;
     margin-right: -50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 60%!important;
-    height: 80% !important;
+    width: 70%!important;
+    height: 85% !important;
     padding: 20px !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
@@ -53,6 +53,7 @@
   .form-group label {
     display: block;
     margin-bottom: 5px;
+    display: flex;
   }
   
   .form-group input,
@@ -140,7 +141,6 @@
   }
 
   .modal-content-container {
-    display: flex;
     justify-content: space-between;
   }
   

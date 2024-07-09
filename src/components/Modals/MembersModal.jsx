@@ -12,7 +12,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    width: '40%',
+    maxwidth: '40%',
     padding: '20px',
     borderRadius: '10px', 
     position: 'relative', 
@@ -23,9 +23,12 @@ const MembersModal = ({ isOpen, onRequestClose, members, handleSelectUser, selec
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filtrar membros com base no termo de pesquisa
-  const filteredMembers = members.filter(member =>
-    `${member.firstName} ${member.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+
+  const filteredMembers = members.filter(member => member.approvalStatus === 'CREATOR' || member.approvalStatus === 'MEMBER')
+    .filter(member => `${member.firstName} ${member.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  
 
   return (
     <Modal 

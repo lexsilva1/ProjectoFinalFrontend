@@ -136,26 +136,35 @@ const Header = () => {
               <OverlayTrigger
                 key="dashboard"
                 placement="bottom"
-                overlay={<Tooltip id={`tooltip-journals`}>{t("Dashboard")}</Tooltip>}
+                overlay={<Tooltip id={`tooltip-dashboard`}>{t("Dashboard")}</Tooltip>}
               >
                 <Link to="/dashboard">
                   <BsGraphUp className="header-icon" />
                 </Link>
               </OverlayTrigger>
               <OverlayTrigger
-                key="messages"
-                placement="bottom"
-                overlay={<Tooltip id={`tooltip-messages`}>{t("Messages")}</Tooltip>}
-              >
-                <span onClick={() => navigate("/messages")}>
-                  <BsEnvelope className="header-icon" />
-                </span>
-              </OverlayTrigger>
+  key="messages"
+  placement="bottom"
+  overlay={<Tooltip id={`tooltip-messages`}>{t("Messages")}</Tooltip>}
+>
+  <span onClick={() => navigate("/messages")} style={{ position: 'relative' }}>
+    <BsEnvelope className="header-icon" />
+    {<span className="notification-badge"></span>}
+  </span>
+</OverlayTrigger>
             </div>
+            <OverlayTrigger
+                key="notifications"
+                placement="bottom"
+                overlay={<Tooltip id={`tooltip-notification`}>{t("Notifications")}</Tooltip>}
+              >
+                <div> 
             <div className="notification-icon-wrapper" onClick={markNotificationsAsSeen}>
               <FaBell className="header-icon-notification" />
               {hasUnseenNotifications() && <span className="notification-badge"></span>}
             </div>
+            </div>
+            </OverlayTrigger>
             <div className="user-info" onClick={toggleOffCanvas}>
               <img
                 src={user.image ? user.image : Avatar}
@@ -163,7 +172,9 @@ const Header = () => {
                 className="user-avatar"
               />
               <span className="user-name-header">{`${user.firstName}`}</span>
+              
             </div>
+            
           </>
         )}
         <div className="language-buttons">

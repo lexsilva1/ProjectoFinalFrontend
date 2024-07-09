@@ -5,7 +5,10 @@ import { getTasks, updateTask } from '../services/projectServices';
 import Cookies from 'js-cookie';
 import "gantt-task-react/dist/index.css";
 import { Gantt, Task } from 'gantt-task-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import './ExecutionPlan.css';
+
 
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const token = Cookies.get('authToken');
@@ -259,7 +262,18 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       {tasks.map((task) => (
         <li className="accordion-item" key={task.id}>
           <input id={`task-${task.id}`} className="hide" type="checkbox" />
-          <label htmlFor={`task-${task.id}`} className="accordion-label">{task.title}</label>
+          <label htmlFor={`task-${task.id}`} className="accordion-label">
+            {task.title}
+            <FontAwesomeIcon
+              icon={faEdit}
+              onClick={() => {
+                setSelectedTask(task);
+                setIsEditMode(true);
+                setShowTaskModal(true);
+              }}
+              style={{ marginLeft: '10px', cursor: 'pointer' }}
+            />
+          </label>
           <div className="accordion-child">
             <p>Start: {format(task.start, 'yyyy-MM-dd')}</p>
             <p>End: {format(task.end, 'yyyy-MM-dd')}</p>
@@ -277,15 +291,19 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   return (
     <div className="execution-plan">
       <div style={{ backgroundColor: "var(--contrast-color", height: "60px", borderTopRightRadius: "5px", borderTopLeftRadius: "5px" }}>
-        <label htmlFor="viewMode" style={{ color: "white", margin: "15px" }}>View Mode: </label>
-        <select id="viewMode" style={{ borderRadius: "5px" }} value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-          <option value="Day">Day</option>
-          <option value="Week">Week</option>
-          <option value="Month">Month</option>
-          <option value="Year">Year</option>
-        </select>
-        <label htmlFor="seeDeleted">See Deleted Tasks: </label>
-        <input id="seeDeleted" type="checkbox" checked={seeDeleted} onChange={(e) => setSeeDeleted(e.target.checked)} />
+        {!isMobile && (
+          <div>
+            <label htmlFor="viewMode" style={{ color: "white", margin: "15px" }}>View Mode: </label>
+            <select id="viewMode" style={{ borderRadius: "5px" }} value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+              <option value="Day">Day</option>
+              <option value="Week">Week</option>
+              <option value="Month">Month</option>
+              <option value="Year">Year</option>
+            </select>
+            <label htmlFor="seeDeleted">See Deleted Tasks: </label>
+            <input id="seeDeleted" type="checkbox" checked={seeDeleted} onChange={(e) => setSeeDeleted(e.target.checked)} />
+          </div>
+        )}
       </div>
       {isMobile ? renderMobileView() : (
         tasks && tasks.length > 0 ? (

@@ -6,9 +6,12 @@ import { getProjectByName, createTask, updateTask } from "../../services/project
 import Cookies from "js-cookie";
 import MembersModal from "./MembersModal";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Col, Row } from 'react-bootstrap';
 import "./CreateTaskModal.css";
-import { set, format } from "date-fns";
+import { format } from "date-fns";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 
 const CreateTaskModal = ({
   closeModal,
@@ -188,7 +191,7 @@ const CreateTaskModal = ({
   };
 
   const renderStatusDropdown = () => (
-    <DropdownButton id="status-dropdown" title={statusLabels[status] || "Select Status"}>
+    <DropdownButton style = {{backgroundColor: "transparent", marginLeft:"20px"}} id="status-dropdown" title={statusLabels[status] || "Select Status"}>
       <Dropdown.Item onClick={() => setStatus("NOT_STARTED")}>Not Started</Dropdown.Item>
       <Dropdown.Item onClick={() => setStatus("IN_PROGRESS")}>In Progress</Dropdown.Item>
       <Dropdown.Item onClick={() => setStatus("COMPLETED")}>Completed</Dropdown.Item>
@@ -210,54 +213,57 @@ const CreateTaskModal = ({
         </button>
       </div>
       <div className="modal-content-container">
-        <div className="modal-info" style={{ width: "60%", marginRight: "40px", marginLeft: "40px", marginTop: "12px !important" }}>
+      <Row>
+      <Col xs={12} md={6}>
+        <div className="modal-info" style={{marginLeft: "40px", marginRight: "40px", marginBottom: "40px"}}>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
             
               {isEditMode && (
                 <>
-                  <label style={{fontWeight: 'bold'}}>Status:</label>
-                  {renderStatusDropdown()}
+                  <label style={{fontWeight: 'bold'}}>Status:  {renderStatusDropdown()}</label>
                 </>
               )}
             </div>
-            <div className="form-group">
-              <label style={{fontWeight: 'bold'}}>Title:</label>
-              <input
+            <div className="form-group" style={{marginTop: "30px"}}>
+              <label style={{fontWeight: 'bold'}}>Title: <input
                 type="text"
                 value={title}
+                style={{ marginLeft: "10px"}}
                 onChange={(e) => setTitle(e.target.value)}
-              />
+              /></label>
+           
             </div>
-            <div className="form-group">
-              <label style={{fontWeight: 'bold'}}>Description:</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label style={{fontWeight: 'bold'}}>Start Date:</label>
-              <DatePicker
+            <div className="form-group" style={{marginTop: "30px"}}>
+  <label style={{ fontWeight: 'bold' }}>Description:</label>
+  <ReactQuill 
+    value={description}
+    onChange={(value) => setDescription(value)}
+  />
+</div>
+
+            <div className="form-group" style={{marginTop: "40px"}}>
+              <label style={{fontWeight: 'bold'}}>Start Date: <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
-              />
+              /></label>
+
             </div>
-            <div className="form-group">
-              <label style={{fontWeight: 'bold'}}>End Date:</label>
-              <DatePicker
+            <div className="form-group" style={{marginTop: "20px"}}>
+              <label style={{fontWeight: 'bold'}}>End Date: <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
-              />
+              /></label>
+
             </div>
-            <div style={{ width: "87%", textAlign: "right", position: "absolute", bottom: "20px" }}>
-              <button type="submit" className="btn btn-primary mt-3">
-                {isEditMode ? "Update Task" : "Create Task"}
-              </button>
-            </div>
+            
+
           </form>
         </div>
-        <div className="members-selection" style={{ width: "100%", marginRight: "40px", marginLeft: "40px", marginTop: "15px" }}>
+      </Col>
+      <Col xs={12} md={6}>
+      
+        <div className="members-selection" >
           <div className="responsible-section">
             <label style={{fontWeight: 'bold'}}>Responsible:</label>
             <button
@@ -269,7 +275,7 @@ const CreateTaskModal = ({
             </button>
             {selectedResponsible && (
               <div className="selected-user" style={{ margin: "15px" }}>
-                <img
+                <img 
                   src={selectedResponsible.photo || Avatar}
                   alt={selectedResponsible.firstName}
                   className="user-avatar"
@@ -319,13 +325,14 @@ const CreateTaskModal = ({
             ))}
           </div>
           <div className="external-executors" style={{ marginTop: "40px" }}>
-            <label style={{fontWeight: 'bold'}}>External Executors:</label>
-            <input
+            <label style={{fontWeight: 'bold', width: '100%'}}>External Executors:  <input
               type="text"
               value={externalExecutors}
-              style={{ width: "100%", height: "30px", borderRadius: "5px", border: "1px solid #ccc"}}
+              style={{ width: "60%", marginLeft: "10px", borderRadius: "5px", border: "1px solid #ccc"}}
               onChange={(e) => setExternalExecutors(e.target.value)}
             />
+            </label>
+           
           </div>
           <div className="form-group" style={{ marginTop: "50px" }}>
             <DropdownButton id="dropdown-basic-button" title="Dependencies">
@@ -342,7 +349,16 @@ const CreateTaskModal = ({
               {renderDependencyNames()}
             </div>
           </div>
+          
         </div>
+
+</Col>
+<div style={{ textAlign: 'right'}}>
+              <button type="submit" className="btn btn-primary mt-3">
+                {isEditMode ? "Update Task" : "Create Task"}
+              </button>
+            </div>
+</Row>
 
       </div>
 
