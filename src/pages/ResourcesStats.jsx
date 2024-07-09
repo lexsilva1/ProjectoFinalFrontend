@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Dropdown } from 'react-bootstrap';
-import VersatileBarChart from '../components/VersatileBarChat';
+import VersatileBarChart from '../components/Charts/VersatileBarChat';
 import { getResourceStatistics } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
 import Sidebar from '../components/SideBar';
-import CustomPieChart from '../components/CustomPieChart';
+import CustomPieChart from '../components/Charts/CustomPieChart';
 import './ResourcesStats.css';
 import { Pie } from 'recharts';
 
@@ -20,16 +20,27 @@ const ResourcesStats = () => {
   const token = Cookies.get('authToken');
   const [hash, setHash] = useState([]);
 
+  const replaceVilaReal = (data) => {
+    const newData = {};
+    Object.keys(data).forEach(key => {
+      const newKey = key.replace(/Vila_Real/g, 'Vila Real');
+      newData[newKey] = data[key];
+    });
+    return newData;
+  };
+
   useEffect(() => {
     getResourceStatistics(token)
       .then((data) => {
-        setAllResourcesByLab(data.resourceQuantityPerLab);
-        setSelectedData(data.resourceQuantityPerLab['Coimbra']);
-        setAllResourcesByProject(data.resourceQuantityPerProject);
-        setSelectedDataProject(data.resourceQuantityPerProject['Forge X']);
-        setHash(data.allresources)
+        const processedLabData = replaceVilaReal(data.resourceQuantityPerLab);
+        const processedProjectData = replaceVilaReal(data.resourceQuantityPerProject);
+        
+        setAllResourcesByLab(processedLabData);
+        setSelectedData(processedLabData['Coimbra']); 
+        setAllResourcesByProject(processedProjectData);
+        setSelectedDataProject(processedProjectData['Forge X']); 
+        setHash(data.allresources);
         console.log(data);
-        console.log (data.resourceQuantityPerLab['Coimbra']);
       })
       .catch((error) => {
         console.error(error);
@@ -50,15 +61,14 @@ const ResourcesStats = () => {
     <>
       <Header />
       <div style={{ display: "flex" }}>
-        <Sidebar />
-      <Container fluid className="my-custom-container">
+      <Container fluid className="my-custom-container" style={{ marginTop: "100px"}}>
         <Row >
+    
         <Col xs={12} md={6}>
       <div>
-        
-        <h2>Lab Resource Quantities</h2>
+        <h4  style={{marginBottom: "20px"}}>Lab Resource Quantities</h4>
         <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
+          <Dropdown.Toggle className="lab-chart-button" id="dropdown-basic">
             {selectLab}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -72,9 +82,9 @@ const ResourcesStats = () => {
     </Col>
     <Col xs={12} md={6}>
       <div>
-        <h2>Project Resource Quantities</h2>
+        <h4  style={{marginBottom: "20px"}}>Project Resource Quantities</h4>
         <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
+          <Dropdown.Toggle className="lab-chart-button" id="dropdown-basic">
             {selectProject}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -86,16 +96,16 @@ const ResourcesStats = () => {
         <VersatileBarChart data={selectedDataProject} />
         
       </div>
-    </Col>
+    </Col> 
   </Row>
-  <Row>
-    <Col xs={12} md={6}>
+  <div style={{display: "flex", justifyContent: "center", marginTop:"60px"}}>
+  <Col xs={12} md={4}>
       <div>
-        <h2>Resource Types</h2>
+        <h4>Resource Types</h4>
        {hash && <CustomPieChart data={hash} />}
       </div>
     </Col>
-  </Row>
+  </div>
 </Container>
     </div>
     </>
