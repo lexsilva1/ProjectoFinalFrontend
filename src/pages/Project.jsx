@@ -501,7 +501,7 @@ const Project = () => {
                 <>
                   <span
                     dangerouslySetInnerHTML={createMarkup(
-                      project.description
+                      description
                     )}
                   ></span>
                   <FaPencilAlt
