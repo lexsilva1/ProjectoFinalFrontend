@@ -434,6 +434,23 @@ export const updateResourceToProject = async (token, projectName, resourceId, qu
     }
 };
 
+export const updateProject = async (token, projectName, projectDto) => {
+    const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(projectDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+};
+
 
 
 

@@ -10,7 +10,7 @@ import Header from "../components/Header";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal";
 import ResourcesModal from "../components/Modals/ResourcesModal";
-import { getProjectByName, projectApplication, updateProjectStatus, removeResourceToProject, updateResourceToProject } from "../services/projectServices";
+import { getProjectByName, projectApplication, updateProjectStatus, removeResourceToProject, updateResourceToProject, updateProject } from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -18,15 +18,15 @@ import ProjectChat from "../components/ProjectChat";
 import ProjectLogs from "../components/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { FaTrash, FaPencilAlt  } from 'react-icons/fa';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import TypeModal from "../components/Modals/TypeModal";
 import { getLabs } from "../services/labServices";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
 import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
-import { use } from "i18next";
-
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { set } from "date-fns";
 
 const Project = () => {
   const { projectName } = useParams();
@@ -56,22 +56,22 @@ const Project = () => {
   const [interestTypes, setInterestTypes] = useState([]);
   const [skillTypes, setSkillTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
+    useState(null);
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
-  const [projectId, setProjectId] = useState("");
+  
+ 
+  const [selectedLab, setSelectedLab] = useState(project.lab);
 
   const createMarkup = (html) => {
     return { __html: DOMPurify.sanitize(html) };
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (token) {
-
-
           const [
             allLabs,
             allSkills,
@@ -100,7 +100,6 @@ const Project = () => {
           );
           setSkillTypes(fetchedSkillTypes);
           setInterestTypes(fetchedInterestTypes);
-
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -108,7 +107,7 @@ const Project = () => {
     };
 
     fetchData();
-  }, [ project, token]);
+  }, [project, token]);
 
   useEffect(() => {
     setSelectedInterests(project.interests || []);
@@ -162,7 +161,6 @@ const Project = () => {
         }
       }
     } else if (selected.length < selectedSkills.length) {
-     
       const removedSkills = selectedSkills.filter(
         (skill) => !selected.some((s) => s.name === skill.name)
       );
@@ -177,7 +175,6 @@ const Project = () => {
         } catch (error) {
           console.error("Error deleting skill:", error);
         }
-        
       }
     }
     setSelectedSkills(selected);
@@ -191,7 +188,6 @@ const Project = () => {
       );
       for (const interest of newInterests) {
         try {
-         
           if (!interests.some((i) => i.name === interest.name)) {
             setModalType(interest.name);
             const interestTypeSelected = new Promise((resolve) => {
@@ -240,7 +236,7 @@ const Project = () => {
 
   const handleConfirmCancel = async () => {
     setShowWarningModal(false);
-    const status = 'Cancelled';
+    const status = "Cancelled";
     try {
       await updateProjectStatus(token, project.name, status);
       console.log("Project status updated to Cancelled");
@@ -264,9 +260,7 @@ const Project = () => {
   const handleShowResourcesModal = () => setShowResourcesModal(true);
   const handleCloseResourcesModal = () => setShowResourcesModal(false);
 
-  const handleResourceSelected = (resource) => {
-
-  };
+  const handleResourceSelected = (resource) => {};
 
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
@@ -332,7 +326,9 @@ const Project = () => {
       const projectData = await getProjectByName(token, encodedProjectName);
       setProject(projectData);
       setStatus(projectData.status);
-      
+      setSelectedLab(projectData.lab);
+      setDescription(projectData.description);
+
       console.log(projectData);
     };
 
@@ -398,6 +394,39 @@ const Project = () => {
       }
     };
 
+      // Função para lidar com a mudança na descrição
+  const handleDescriptionChange = (value) => {
+    setDescription(value);
+  };
+
+  // Função para lidar com a mudança no laboratório selecionado
+  const handleLabChange = async (event) => {
+    console.log(event.target.value);
+     setSelectedLab(event.target.value);
+    const projectDto = {
+      lab: event.target.value,
+      description: description,
+    };
+   await updateProject(token, project.name,projectDto); 
+  };
+
+  // Função para salvar as alterações
+  const handleSave = async () => {
+    const projectDto = {
+      lab: selectedLab,
+      description: description,
+    };
+    try {
+      await updateProject(token, project.name, projectDto);
+      alert('Projeto atualizado com sucesso!');
+      // Atualize o estado do componente aqui, se necessário
+    } catch (error) {
+      console.error('Erro ao atualizar o projeto:', error);
+      alert('Erro ao atualizar o projeto.');
+    }
+  };
+  
+
     return (
       <div className="card shadow-lg w-100">
         <img
@@ -439,86 +468,118 @@ const Project = () => {
             </div>
           )}
           <Row>
-            <Col md={8}>
+            <Col md={12}>
               <p className="card-text-project">
-                <strong>Laboratory: </strong> {project.lab}
+                <strong>Laboratory: </strong> {" "}
+                { isCurrentUserProjectManager ? (
+                  <select
+                  value = {selectedLab}
+                  onChange={(e) => 
+                    handleLabChange(e)
+                    
+                  }
+                  >
+                    {labs.map((lab) => (
+                      <option key={lab.location} value={lab.location}>
+                        {lab.location}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  project.lab
+                )}
               </p>
+              <div>
               <p className="card-text-project">
-                <strong>Description: </strong>{" "}
-                {!isEditingDescription ? ( 
+                <strong>Description: </strong>
+                </p>
+                <div style={{marginLeft: "40px", marginTop: "-35px"}}>
+                {!isEditingDescription ? (
                   <>
-                    <span dangerouslySetInnerHTML={createMarkup(project.description)}></span>
+                    <span
+                      dangerouslySetInnerHTML={createMarkup(
+                        project.description
+                      )}
+                    ></span>
                     <FaPencilAlt
                       className="edit-description-icon"
                       onClick={toggleEditDescription}
                     />
                   </>
                 ) : (
-                  <textarea
-                    className="form-control"
+                  <>
+                  <ReactQuill 
+                    theme="snow"
+                    style={{width: "97%"}}
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    onBlur={toggleEditDescription}
-                    autoFocus
+                    onChange={setDescription} 
                   />
+                  <div>
+                  <button onClick={handleSave}>Save</button>
+                  </div>
+                  </>
                 )}
-              </p>
-              <Col md={3} style={{ marginLeft: "0px" }}>
-                        <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
-                        {isCurrentUserProjectManager ? (
-                          <Typeahead
-                            id="skills-typeahead"
-                            labelKey="name"
-                            multiple
-                            onChange={handleSkillsChange}
-                            options={skills}
-                            allowNew
-                            newSelectionPrefix="Add a new skill: "
-                            placeholder= {t("Choose your skills...")}
-                            selected={selectedSkills}
-                          />
-                        ) : (
-                          <div>
-                            {selectedSkills.map((skill, index) => (
-                              <span key={index} className="user-pill">
-                                {skill.name}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
-                          {t("Interests")}
-                        </h4>
-                        {isCurrentUserProjectManager ? (
-                          <Typeahead
-                            id="interests-typeahead"
-                            labelKey="name"
-                            multiple
-                            onChange={handleInterestsChange}
-                            options={interests}
-                            allowNew
-                            newSelectionPrefix="Add a new interest: "
-                            placeholder= {t("Choose your interests...")}
-                            selected={selectedInterests}
-                          />
-                        ) : (
-                          <div>
-                            {selectedInterests.map((interest, index) => (
-                              <span key={index} className="user-pill">
-                                {interest.name}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                              <TypeModal
-      show={showTypeModal}
-      onHide={handleCloseTypeModal}
-      title={`Add ${modalType}`}
-      type={modalType}
-      types={modalType === "skill" ? skillTypes : interestTypes}
-      onTypeSelect={onTypeSelect}
-    />
-                      </Col>
+                </div>
+              </div>
+             
+         <div style={{margin: "40px"}}>
+                <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
+                {isCurrentUserProjectManager ? (
+<Typeahead
+  id="skills-typeahead"
+  labelKey="name"
+  className="custom-typeahead"
+  multiple
+  onChange={handleSkillsChange}
+  options={skills}
+  allowNew
+  newSelectionPrefix="Add a new skill: "
+  placeholder={t("Choose your skills...")}
+  selected={selectedSkills}
+/>
+                ) : (
+                  <div>
+                    {selectedSkills.map((skill, index) => (
+                      <span key={index} className="user-pill">
+                        {skill.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
+                  {t("Interests")}
+                </h4>
+                {isCurrentUserProjectManager ? (
+                  <Typeahead
+                    id="interests-typeahead"
+                    labelKey="name"
+                    className="custom-typeahead"
+                    multiple
+                    onChange={handleInterestsChange}
+                    options={interests}
+                    allowNew
+                    newSelectionPrefix="Add a new interest: "
+                    placeholder={t("Choose your interests...")}
+                    selected={selectedInterests}
+                  />
+                ) : (
+                  <div>
+                    {selectedInterests.map((interest, index) => (
+                      <span key={index} className="user-pill">
+                        {interest.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <TypeModal
+                  show={showTypeModal}
+                  onHide={handleCloseTypeModal}
+                  title={`Add ${modalType}`}
+                  type={modalType}
+                  types={modalType === "skill" ? skillTypes : interestTypes}
+                  onTypeSelect={onTypeSelect}
+                />
+              </div>
               {!isMember && (
                 <>
                   <p className="card-text-project">
@@ -582,7 +643,11 @@ const Project = () => {
                           Name
                         </th>
                         <th
-                          style={{ width: "20%", fontSize: "0.9rem", alignItems: "right"}}
+                          style={{
+                            width: "20%",
+                            fontSize: "0.9rem",
+                            alignItems: "right",
+                          }}
                         >
                           Quantity
                         </th>
@@ -597,7 +662,11 @@ const Project = () => {
                             </td>
                             <td style={{ textAlign: "right" }}>
                               <button
-                              style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
+                                style={{
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  cursor: "pointer",
+                                }}
                                 onClick={() =>
                                   updateResourceToProject(
                                     token,
@@ -611,7 +680,11 @@ const Project = () => {
                               </button>
                               {material.quantity}
                               <button
-                               style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
+                                style={{
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  cursor: "pointer",
+                                }}
                                 onClick={() =>
                                   updateResourceToProject(
                                     token,
@@ -626,7 +699,11 @@ const Project = () => {
                             </td>
                             <td>
                               <button
-                               style={{backgroundColor: "transparent", border: "none", cursor: "pointer"}}
+                                style={{
+                                  backgroundColor: "transparent",
+                                  border: "none",
+                                  cursor: "pointer",
+                                }}
                                 onClick={() =>
                                   removeResourceToProject(
                                     token,
@@ -662,8 +739,11 @@ const Project = () => {
             )}
             {(isCurrentUserProjectManager || isCurrentUserAppManager) &&
               project.status !== "Cancelled" && (
-                <div style={{textAlign: "right"}}>
-                  <button className= "cancel-project-button" onClick={handleCancelProjectClick}>
+                <div style={{ textAlign: "right" }}>
+                  <button
+                    className="cancel-project-button"
+                    onClick={handleCancelProjectClick}
+                  >
                     Cancel Project
                   </button>
                   <WarningModal
@@ -675,8 +755,10 @@ const Project = () => {
                 </div>
               )}
             {isCurrentUserAppManager && project.status === "Cancelled" && (
-              <div style={{textAlign: "center"}}>
-                <button className = "restore-project" onClick={handleOpenModal}>Restore Project</button>
+              <div style={{ textAlign: "center" }}>
+                <button className="restore-project" onClick={handleOpenModal}>
+                  Restore Project
+                </button>
                 <WarningModal
                   isOpen={showModal}
                   message="Are you sure you want to restore this project?"

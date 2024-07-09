@@ -188,3 +188,7 @@ margin-bottom: 0px!important;
         color: var(--contrast-color);
         transform: scale(1.1);
     }
+
+    .custom-typeahead .rbt-input-multi {
+        width: 100%
+      }
