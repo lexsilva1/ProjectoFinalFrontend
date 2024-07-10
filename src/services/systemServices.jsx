@@ -2,8 +2,27 @@ import baseURL from './baseURL';
 
 const systemURL = baseURL + 'systemVariables';
 
-const getMaxUsers = async () => {
-    const response = await fetch(systemURL + '/maxUsers', {
+export const setSystemVariables= async (token, systemVariablesDto) => {
+    const response = await fetch(`${systemURL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token,
+        },
+        body: JSON.stringify (systemVariablesDto)
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    } else {
+        return response.text();
+    }
+};
+
+
+export const getSystemVariables = async (token) => {
+    const response = await fetch(systemURL, {
         headers: {
             'Content-Type': 'application/json',
             'token': token,
@@ -11,9 +30,9 @@ const getMaxUsers = async () => {
     });
 
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    } else {
+        return await response.json();
     }
-
-    const maxUsers = await response.json();
-    return maxUsers;
 };

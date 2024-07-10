@@ -78,6 +78,13 @@ code {
 
 }
 
+.btn-secondary:hover {
+  background-color: var(--secondary-color)!important;
+  color: var(--primary-color)!important;
+  border: var(--contrast-color)!important;
+  transform: scale(1.1);
+}
+
 .btn {
   --bs-btn-color: var(--contrast-color);
   --bs-btn-bg: var(--primary-color);

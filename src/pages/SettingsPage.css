@@ -1,0 +1,45 @@
+.settings-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.settings-card {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.settings-card h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.settings-card .form-group {
+    margin-bottom: 20px;
+}
+
+.settings-card .form-control {
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.settings-card .btn-primary {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.settings-card .btn-primary:hover {
+    background-color: #0056b3;
+}

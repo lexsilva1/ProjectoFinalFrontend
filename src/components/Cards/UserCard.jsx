@@ -4,12 +4,16 @@ import Avatar from '../../multimedia/Images/Avatar.jpg';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import userStore from '../../stores/userStore';
-import { FiMail } from 'react-icons/fi'; // Ícone para enviar mensagem
-import { AiOutlineUser } from 'react-icons/ai'; // Ícone para ver perfil
+import { FiMail } from 'react-icons/fi'; 
+import { AiOutlineUser } from 'react-icons/ai'; 
 
 const UserCard = ({ user }) => {
+  const currentUser = userStore((state) => state.user);
   const navigate = useNavigate();
   const { firstName, lastName, userPhoto, privacy, userId } = user;
+
+
+
 const setSelectedUserMessages = userStore(state => state.setSelectedUserMessages);
   const handleSendMessage = () => {
     console.log('clicked', userId);
@@ -17,6 +21,10 @@ const setSelectedUserMessages = userStore(state => state.setSelectedUserMessages
     navigate(`/messages/${userId}`);
   };
 
+  const isCurrentUserAppManager = currentUser.role < 2;
+  console.log(currentUser.role);
+
+  
 
   return (
     <div className="user-card">
@@ -28,16 +36,22 @@ const setSelectedUserMessages = userStore(state => state.setSelectedUserMessages
       </div>
       <div className="user-actions">
         <Button className="btn-icon" onClick={handleSendMessage}>
-          <FiMail /> {/* Ícone de enviar mensagem */}
+          <FiMail /> 
         </Button>
         {!privacy && (
           <Link to={`/profile/${userId}`}>
             <Button variant="secondary" className="btn-icon">
-              <AiOutlineUser /> {/* Ícone de ver perfil */}
+              <AiOutlineUser /> 
             </Button>
           </Link>
         )}
+             
       </div>
+      {isCurrentUserAppManager && (
+        <div className = "user-role">
+          <button className="promote-button">Promote to App Manager</button>
+    </div>
+  )}
     </div>
   );
 };
