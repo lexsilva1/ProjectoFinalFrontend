@@ -21,6 +21,19 @@
 
 }
 
+.edit-profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+}
+
+.form-label {
+ width: 50%;
+}
+
+
 .profile-image {
   width: 150px;
   height: 150px;
@@ -33,6 +46,35 @@
 .profile-name {
   font-size: 2rem;
   font-weight: bold;
+}
+
+.user-info-profile {
+ text-align: left;
+ margin-left: 30%;
+}
+
+
+@media (max-width: 680px) {
+  .profile-name {
+    display:  none;
+  }
+
+  .project-list-card {
+    margin-top: 1.5rem;
+    padding-left: 0;
+  }
+
+  .user-info-profile {
+    margin-left: 20%;
+  }
+
+}
+
+@media (max-width: 760px) {
+  .profile-name {
+    display:  none;
+  }
+
 }
 
 .profile-edit-button {

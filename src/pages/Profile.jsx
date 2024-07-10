@@ -352,7 +352,7 @@ const Profile = () => {
                       {profile?.firstName} {profile?.lastName}
                     </h2>
                     
-                    <hr />
+                    
                     </Col>
                     <div style={{ display: "flex", justifyContent: "center" }}>
                     <p>{t("This profile is private.")}</p>
@@ -375,9 +375,9 @@ const Profile = () => {
         <Row className="profile-row">
           <Col md={12} className="profile-main-content">
             <Card className="profile-card">
-              <div style={{backgroundColor: "var(--details-color", height: "110px", borderTopLeftRadius:"15px", borderTopRightRadius: "15px", marginTop: "-32px"}}>
+              <div style={{backgroundColor: "var(--details-color)", height: "110px", borderTopLeftRadius:"15px", borderTopRightRadius: "15px", marginTop: "-32px"}}>
                 </div>
-              <Card.Body style={{marginTop: "-85px"}}>
+              <Card.Body style={{marginTop: "-71px"}}>
               
               {isOwnProfile && (
                   <div className="privacy-icon">
@@ -390,35 +390,20 @@ const Profile = () => {
                     </Button>
                     <span className="privacy-text">
                       {profile?.privacy
-                        ? "Private Profile"
-                        : "Public Profile"}
+                        ? t("Private Profile")
+                        : t("Public Profile")}
                     </span>
                   </div>
                 )}
                 <Row>
-                  <Col md={3} className="text-center mb-3">
+                  <Col md={4} className="text-center mb-3">
                     <Image
                       src={imagePreview || profile?.userPhoto || Avatar}
                       alt="Profile"
                       roundedCircle
                       className="profile-image"
                     />
-                    {editMode && (
-                      <div className="mt-3">
-                        <Form.Group>
-                          <Form.Control
-                            type="file"
-                            onChange={handleImageUpload}
-                          />
-                        </Form.Group>
-                      </div>
-                    )}
-                  </Col>
-                  
-                  <Col md={8}>
-                    <h2 className="profile-name">
-                      {profile?.firstName} {profile?.lastName}
-                      {isOwnProfile && (
+{isOwnProfile && (
                         <Button
                           variant="outline-secondary"
                           onClick={() => setEditMode(!editMode)}
@@ -427,14 +412,21 @@ const Profile = () => {
                           <PencilSquare />
                         </Button>
                       )}
-                    </h2>
-                    <hr />
-                    
-                    <Row>
-                      <Col md={4}>
-                        {editMode ? (
+                    {editMode && (
+                      <div className="mt-3" style={{textAlign: "center"}}>
+                        <Form.Group>
+                          <Form.Control
+                            type="file"
+                            style={{ width: "60%", textAlign: "center", marginLeft: "20%"}}
+                            onChange={handleImageUpload}
+                          />
+                        </Form.Group>
+                      </div>
+                    )}
+                           {editMode ? (
+                            
                           <Form>
-                            <Form.Group>
+                            <Form.Group className="edit-profile">
                               <Form.Label>{t("First Name:")}</Form.Label>
                               <Form.Control
                                 type="text"
@@ -443,7 +435,7 @@ const Profile = () => {
                                 onChange={handleChange}
                               />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group className="edit-profile">
                               <Form.Label>{t("Last Name:")}</Form.Label>
                               <Form.Control
                                 type="text"
@@ -452,7 +444,7 @@ const Profile = () => {
                                 onChange={handleChange}
                               />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group className="edit-profile">
                               <Form.Label>Nickname:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -461,7 +453,7 @@ const Profile = () => {
                                 onChange={handleChange}
                               />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group className="edit-profile">
                               <Form.Label>{t("Usual Work Place:")}</Form.Label>
                               <Form.Control
                                 as="select"
@@ -476,7 +468,7 @@ const Profile = () => {
                                 ))}
                               </Form.Control>
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group className="edit-profile">
                               <Form.Label>Bio:</Form.Label>
                               <Form.Control
                                 as="textarea"
@@ -495,7 +487,7 @@ const Profile = () => {
                             </Button>
                           </Form>
                         ) : (
-                          <div>
+                          <div className="user-info-profile">
                             <p>
                               <strong>{t("First Name:")}</strong> {profile?.firstName}
                             </p>
@@ -503,7 +495,7 @@ const Profile = () => {
                               <strong>{t("Last Name:")}</strong> {profile?.lastName}
                             </p>
                             <p>
-                              <strong>Nickname:</strong> {profile?.nickname}
+                              <strong>{t("Nickname")}:</strong> {profile?.nickname}
                             </p>
                             <p>
                               <strong>{t("Usual Work Place:")}</strong>{" "}
@@ -513,10 +505,22 @@ const Profile = () => {
                               <strong>Bio:</strong> {profile?.bio}
                             </p>
                           </div>
+                        
                         )}
-                      </Col>
-                      <Col md={3} style={{ marginLeft: "0px" }}>
-                        <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
+                  </Col>
+                  
+                  <Col md={8}>
+                    <h2 className="profile-name" >
+                      {profile?.firstName} {profile?.lastName}
+
+                    </h2>
+                   
+                    
+                    <Row>
+                     
+                      <Col md={6} style={{ marginLeft: "0px", marginTop: "3%" }}>
+                        <h4 style={{ fontSize: "1rem" }}>
+                          <strong>{t("Skills")}:</strong></h4>
                         {isOwnProfile ? (
                           <Typeahead
                             id="skills-typeahead"
@@ -538,8 +542,8 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
-                          {t("Interests")}
+                        <h4 style={{ fontSize: "1rem", marginTop: "40px"}}>
+                          <strong>{t("Interests")}:</strong>
                         </h4>
                         {isOwnProfile ? (
                           <Typeahead
@@ -564,11 +568,12 @@ const Profile = () => {
                         )}
                       </Col>
                       <Col
-                        md={5}
+                        md={6}
                         style={{
                           display: "flex",
                           flexDirection: "column",
                           paddingLeft: "2rem",
+                          marginTop: "3%",
                         }}
                       >
                         <ProjectList userId={userId}/>
