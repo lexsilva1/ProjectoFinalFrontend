@@ -2,7 +2,7 @@ import React from 'react';
 import MessageCard from './Cards/MessageCard';
 
 const UserList = ({ users }) => {
-
+console.log(users);
 
 
     return (
