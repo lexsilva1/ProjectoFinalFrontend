@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
-import ConversationCard from '../components/Cards/ConversationCard'; 
+import ConversationCard from '../components/Cards/ConversationCard/ConversationCard';
 import userStore from '../stores/userStore';
 import { getMessages } from '../services/messageServices';
 import './Conversation.css';

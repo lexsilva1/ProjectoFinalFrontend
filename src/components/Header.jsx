@@ -31,6 +31,21 @@ const Header = () => {
   const [showThemeSubmenu, setShowThemeSubmenu] = useState(false);
   const userId = userStore((state) => state.user?.id);
   const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Limpeza do event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
@@ -57,6 +72,8 @@ const Header = () => {
     Cookies.remove("authToken");
     Cookies.remove("i18nextLng");
     userStore.setState({ user: null });
+    sessionStorage.clear();
+    localStorage.clear();
     setIsLoggedIn(false);
     navigate("/");
   };
@@ -80,7 +97,6 @@ const Header = () => {
   return (
     <div className="header">
       <div className="logo">
-        {isLoggedIn && <img src={logo2} alt="logo" />}
       </div>
       <div className="actions">
         {!authToken && (
@@ -177,6 +193,7 @@ const Header = () => {
             
           </>
         )}
+         {windowWidth >= 810 && (
         <div className="language-buttons">
           <Button variant="outline" className="language-button" onClick={() => changeLanguage("pt")}>
             PT
@@ -185,6 +202,7 @@ const Header = () => {
             EN
           </Button>
         </div>
+      )}
       </div>
       {isLoggedIn && (
         <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />
@@ -239,6 +257,28 @@ const Header = () => {
                   )}
                 </button>
               </li>
+              {windowWidth < 810 && (
+              <div className="language-menu">
+                    <Button variant="outline" className="language-button" onClick={toggleLanguageMenu}>
+      {t("Language")}
+    </Button>
+    {showLanguageMenu && (
+      <div className="language-options">
+         <li>
+                <button variant="outline" className="idioma-button" onClick={() => changeLanguage("pt")}>
+                  PT
+                </button>
+                </li>
+                <li>
+                <button variant="outline" className="idioma-button" onClick={() => changeLanguage("en")}>
+                  EN
+                </button>
+                </li>
+                </div>
+             
+            )}
+            </div>
+            )}
               <li className="offcanvas-option">
                 <Link to="/help">{t("Help")}</Link>
               </li>

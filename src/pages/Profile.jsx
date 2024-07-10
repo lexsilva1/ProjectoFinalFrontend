@@ -481,6 +481,7 @@ const Profile = () => {
                             <Button
                               variant="primary"
                               type="button"
+                              style={{ width: "40%", marginTop: "10px" }}
                               onClick={handleSave}
                             >
                               {t("Save")}

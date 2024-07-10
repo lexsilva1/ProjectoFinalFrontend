@@ -10,7 +10,7 @@ import {
   FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch
 } from 'react-icons/fa';
 import './Inventory.css';
-import CreateResourceModal from '../components/Modals/CreateResourceModal';
+import CreateResourceModal from '../components/Modals/CreateResourceModal/CreateResourceModal';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 

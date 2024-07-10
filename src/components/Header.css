@@ -28,6 +28,99 @@
   margin-right: 200px;
 }
 
+@media (max-width: 1200px) {
+  .icon-links {
+    gap: 60px;
+    margin-right: 100px;
+  }
+
+  .notification-icon-wrapper {
+    right: 20px;
+  }
+
+  .user-info {
+    right: 20px;
+    position: relative;
+  }
+}
+
+@media (max-width: 880px) {
+  .icon-links {
+    gap: 40px; /* Redefinido para 40px */
+    margin-right: 100px;
+  }
+
+  .notification-icon-wrapper {
+    right: 20px;
+  }
+
+  .user-info {
+    right: 20px;
+    position: relative;
+  }
+}
+
+@media (max-width: 780px) {
+  .icon-links {
+    gap: 30px; /* Redefinido para 10px */
+    margin-right: 100px;
+  }
+  .notification-icon-wrapper {
+    right: 20px;
+  }
+
+  .user-info {
+    right: 20px;
+    position: relative;
+  }
+}
+
+@media (max-width: 680px) {
+  .icon-links {
+    gap: 20px; /* Consistente com a regra acima */
+    margin-right: 100px;
+  }
+  .notification-icon-wrapper {
+    right: 20px;
+  }
+
+  .user-info {
+    right: 20px;
+    position: relative;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .icon-links {
+    gap: 20px; /* Consistente com a regra acima */
+    margin-right: 100px;
+  }
+  .notification-icon-wrapper {
+    right: 20px;
+  }
+
+  .user-info {
+    right: 20px;
+    position: relative;
+  }
+
+  .user-name-header {
+    display: none;
+  }
+}
+
+
+
+
+
+
+
+.idioma-button {
+  content: ""; 
+  display: inline-block; 
+  margin-right: 8px; 
+}
 .header-icon {
   color: var(--contrast-color);
   font-size: 1.5rem; 

@@ -1,0 +1,37 @@
+.conversation-card {
+  max-width: 60%; /* Limita a largura do card */
+
+}
+
+.align-right {
+  justify-content: flex-end; /* Alinha o card à direita */
+}
+
+.align-left {
+  justify-content: flex-start; /* Alinha o card à esquerda */
+}
+
+.custom-rounded-circle {
+  border-radius: 50%;
+}
+
+.custom-d-flex {
+  display: flex;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.custom-flex-row-reverse {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.w-100 {
+  margin: 0px;
+}
