@@ -3,33 +3,44 @@
     justify-content: center;
     margin-top: 5%;
     margin-bottom: 5%;
-    margin-right: 30%;
     text-align: center;
     display: flex;
     align-items: center;
 }
 
-.unique-title {
-
+.title-info4 {
     color: #2e6b75;
-    font-size: 4em!important;
-
+    font-size: 4em ;
 }
 
 .nowrap {
     white-space: nowrap; 
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1300px) {
+    .title-info4 {
+        font-size: 3em;
+    }
+}
 
-.white-box4 {
-    margin-right: 0%;
-    align-items: flex-start;
-    text-align: left !important;
-    
+@media (max-width: 770px) {
+    .white-box4 {
+        margin-left: 0%;
+        margin-right: 0%; /* Adicionado para garantir consistência */
+    }
+
+    .title-info4 {
+        font-size: 2em;
+    }
 }
-.unique-title {
-    font-size: 1.5em!important;
-    margin-left: -75%;
-}
+
+@media (max-width: 480px) {
+    .white-box4 {
+        align-items: flex-start;
+        text-align: left;
+    }
+    .title-info4 {
+        font-size: 1.5em;
+        margin-left: 0%; /* Alterado de -75% para 0% para evitar sobreposição ou posicionamento fora da tela */
+    }
 }

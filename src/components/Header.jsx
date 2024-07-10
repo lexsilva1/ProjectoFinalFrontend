@@ -37,7 +37,7 @@ const Header = () => {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
   const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
- 
+  const userRole = userStore((state) => state.user?.role);
 
 
   useEffect(() => {
@@ -194,16 +194,16 @@ const Header = () => {
             
           </>
         )}
-         {windowWidth >= 810 && (
-        <div className="language-buttons">
-          <Button variant="outline" className="language-button" onClick={() => changeLanguage("pt")}>
-            PT
-          </Button>
-          <Button variant="outline" className="language-button" onClick={() => changeLanguage("en")}>
-            EN
-          </Button>
-        </div>
-      )}
+{(!authToken || (authToken && windowWidth >= 810)) && (
+  <div className="language-buttons">
+    <Button variant="outline" className="language-button" onClick={() => changeLanguage("pt")}>
+      PT
+    </Button>
+    <Button variant="outline" className="language-button" onClick={() => changeLanguage("en")}>
+      EN
+    </Button>
+  </div>
+)}
       </div>
       {isLoggedIn && (
         <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />
@@ -275,9 +275,11 @@ const Header = () => {
              </button>
            </li>
             )}
-              <li className="offcanvas-option">
-                <Link to="/help">{t("Help")}</Link>
-              </li>
+       {userRole === 0 && (
+      <li className="offcanvas-option">
+        <Link to="/settings">{t("Application Settings")}</Link>
+      </li>
+    )}
               <li className="offcanvas-option">
                 <button onClick={handleLogout}>{t("Logout")}</button>
               </li>

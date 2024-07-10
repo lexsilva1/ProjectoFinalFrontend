@@ -1,6 +1,5 @@
 .user-card {
   width: 250px;
-  height: 320px;
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -86,4 +85,23 @@
   color: var(--contrast-color)!important;
   background-color: transparent !important;
   transform: scale(1.2);
+}
+
+.promote-button {
+  background-color: var(--primary-color);
+  color: var(--contrast-color);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  align-items: center;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+.promote-button:hover {
+  background-color: var(--contrast-color);
+  color: var(--primary-color);
+  transform: scale(1.1);
 }

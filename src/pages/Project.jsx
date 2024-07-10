@@ -25,8 +25,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
 import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { set } from "date-fns";
+import Button from 'react-bootstrap/Button';
 
 const Project = () => {
   const { projectName } = useParams();
@@ -476,6 +475,7 @@ const Project = () => {
                 <strong>Laboratory: </strong> {" "}
                 { isCurrentUserProjectManager ? (
                   <select
+                  style={{border: "solid 1px #c6c2c2", marginLeft: "10px", borderRadius: "5px"}}
                   value = {selectedLab}
                   onChange={(e) => 
                     handleLabChange(e)
@@ -492,43 +492,57 @@ const Project = () => {
                   project.lab
                 )}
               </p>
-              <div>
-            <p className="card-text-project">
-              <strong>Description: </strong>
-            </p>
-            <div style={{ marginLeft: "40px", marginTop: "-35px" }}>
-              {!isEditingDescription ? (
-                <>
-                  <span
-                    dangerouslySetInnerHTML={createMarkup(
-                      description
-                    )}
-                  ></span>
-                  <FaPencilAlt
-                    className="edit-description-icon"
-                    onClick={toggleEditDescription}
-                  />
-                </>
-              ) : (
-                <>
-                  <ReactQuill
-                    theme="snow"
-                    style={{ width: "97%" }}
-                    value={description}
-                    onChange={setDescription}
-                  />
-                  {showSaveButton && (
-                    <div>
-                      <button onClick={handleSave}>Save</button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+              <div >
+              <p className="card-text-project" style={{ 
+    display: "flex", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    border: "solid 1px #c6c2c2", 
+    padding: "5px", 
+    borderTopRightRadius: "5px",
+    borderTopLeftRadius: "5px",
+}}>
+    <strong>Description: </strong>
+    <FaPencilAlt
+      className="edit-description-icon"
+      onClick={toggleEditDescription}
+      style={{ cursor: "pointer" }} 
+    />
+</p>
+  <div style={{
+    marginLeft: isEditingDescription ? "40px" : "40px",
+    marginTop: isEditingDescription ? "-40.5px" : "-40.5px",
+    border: isEditingDescription ? "none" : "solid 1px #c6c2c2",
+    width: isEditingDescription ? "96.6%" : "93.7%",
+    borderBottomRightRadius: isEditingDescription ? "0px" : "5px",
+    borderBottomLeftRadius: isEditingDescription ? "0px" : "5px",
+  }}>
+    {!isEditingDescription ? (
+      <>
+        <span style={{ width: "90%"}} 
+          dangerouslySetInnerHTML={createMarkup(description)}
+        ></span>
+      </>
+    ) : (
+      <>
+        <ReactQuill
+          theme="snow"
+          style={{ width: "97%" }}
+          value={description}
+          onChange={setDescription}
+        />
+        {showSaveButton && (
+          <div>
+            <button onClick={handleSave}>Save</button>
           </div>
+        )}
+      </>
+    )}
+  </div>
+</div>
              
          <div style={{margin: "40px"}}>
-                <h4 style={{ fontSize: "1rem" }}>{t("Skills")}</h4>
+                <h4 style={{ fontSize: "1rem" }}>{t("Skills")}:</h4>
                 {isCurrentUserProjectManager ? (
 <Typeahead
   id="skills-typeahead"
@@ -552,7 +566,7 @@ const Project = () => {
                   </div>
                 )}
                 <h4 style={{ fontSize: "1rem", marginTop: "40px" }}>
-                  {t("Interests")}
+                  {t("Keywords")}:
                 </h4>
                 {isCurrentUserProjectManager ? (
                   <Typeahead
@@ -588,7 +602,7 @@ const Project = () => {
               {!isMember && (
                 <>
                   <p className="card-text-project">
-                    <strong>Team Members:</strong>
+                    <strong>{t("Team Members")}:</strong>
                   </p>
                   <div className="card-text-project">
                     {teamMembers &&
@@ -609,7 +623,7 @@ const Project = () => {
                       ))}
                   </div>
                   <p className="card-text-project">
-                    <strong>Slots available:</strong>{" "}
+                    <strong>{t("Slots available")}:</strong>{" "}
                     {project.maxTeamMembers !== undefined &&
                       project.teamMembers !== undefined &&
                       `${slotsAvailable}/${project.maxTeamMembers}`}
@@ -617,25 +631,37 @@ const Project = () => {
                 </>
               )}
             </Col>
-            <Col md={4}>
-              {" "}
+            <Col md={12}>
+            
               {isMember && (
                 <div
                   className="table-responsive"
-                  style={{ margin: "40px", width: "60%" }}
+                  style={{ margin: "40px", width: "93.7%" }}
                 >
                   <table className="table table-sm">
                     <thead>
                       <tr>
-                        <th
-                          colSpan="2"
-                          style={{
-                            textAlign: "center",
-                            padding: "20px",
-                          }}
-                        >
-                          Materials
-                        </th>
+                      <th
+  colSpan="2"
+  style={{
+    width: "100%",
+    padding: "10px",
+    border: "solid 1px #c6c2c2",
+    borderRadius: "5px",
+    alignItems: "center",
+  }}
+>
+  <div style={{
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%", 
+  }}>
+    <span style={{marginTop:"5px"}}>{t("Materials")}:</span> 
+    <Button variant="primary" onClick={handleShowResourcesModal}>
+      {t("Add resource/component")}
+    </Button>
+  </div>
+</th>
                       </tr>
                       <tr>
                         <th
@@ -643,29 +669,32 @@ const Project = () => {
                             width: "60%",
                             fontSize: "0.9rem",
                             alignItems: "center",
+                            padding: "10px",
                           }}
                         >
-                          Name
+                          {t("Name")}
                         </th>
                         <th
                           style={{
                             width: "20%",
                             fontSize: "0.9rem",
                             alignItems: "right",
+                            padding: "10px",
+                            
                           }}
                         >
-                          Quantity
+                          {t("Quantity")}
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
-                          <tr key={`${material.id}-${index}`}>
+                          <tr key={`${material.id}-${index}`} >
                             <td style={{ fontSize: "0.9rem" }}>
                               {material.name}
                             </td>
-                            <td style={{ textAlign: "right" }}>
+                            <td >
                               <button
                                 style={{
                                   backgroundColor: "transparent",
@@ -701,13 +730,13 @@ const Project = () => {
                               >
                                 +
                               </button>
-                            </td>
-                            <td>
                               <button
                                 style={{
                                   backgroundColor: "transparent",
                                   border: "none",
                                   cursor: "pointer",
+                                  width: "20px",
+                                  marginLeft: "60px",
                                 }}
                                 onClick={() =>
                                   removeResourceToProject(
@@ -725,9 +754,7 @@ const Project = () => {
                         ))}
                     </tbody>
                   </table>
-                  <button onClick={handleShowResourcesModal}>
-                    Add resource/component
-                  </button>
+
                   <ResourcesModal
                     show={showResourcesModal}
                     handleClose={handleCloseResourcesModal}

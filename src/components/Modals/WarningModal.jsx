@@ -7,10 +7,10 @@ const WarningModal = ({ isOpen, message, onCancel, onConfirm }) => {
 
   return (
     <Modal show={isOpen} onHide={onCancel} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Warning</Modal.Title>
+      <Modal.Header style={{backgroundColor: "var(--details-color)"}} closeButton>
+        <Modal.Title  >Warning</Modal.Title>
       </Modal.Header>
-      <Modal.Body>{message}</Modal.Body>
+      <Modal.Body   style={{textAlign: "center", padding: "20px", fontSize: "20px"}}>{message}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onCancel}>
           Cancel

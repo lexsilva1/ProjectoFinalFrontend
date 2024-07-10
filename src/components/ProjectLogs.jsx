@@ -151,19 +151,24 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
     setIsLoading(true);
     setError("");
     try {
+      // Obtém a data e hora atuais
+      const now = new Date();
+      const currentTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString();
+  
       const logDto = {
         log: annotation,
         taskId: selectedTask ? selectedTask.id : null,
-        otherUserId: selectedUser ? selectedUser.userId : null
+        otherUserId: selectedUser ? selectedUser.userId : null,
+        time: currentTime // Ajustado para a hora local
       };
-
-      console.log (logDto);
-
+  
+      console.log(logDto);
+  
       const newDto = await createProjectLog(token, projectName, logDto);
-      setLogs([...logs, newDto]);
+      setLogs([ newDto, ...logs]);
       setAnnotation("");
-      setSelectedTask(null); // Reset selected task
-      setSelectedUser(null); // Reset selected user
+      setSelectedTask(null);
+      setSelectedUser(null);
     } catch (error) {
       setError(`Failed to add annotation: ${error.message}`);
     } finally {
@@ -173,9 +178,10 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
 
   return (
     <Container className="project-logs d-flex flex-column">
-      <div className="logs-section flex-grow-1 overflow-auto">
+      <p className='logs-title'>Project Logs</p>
+      <div className="logs-section flex-grow-1 overflow-auto" style={{border: "solid 1px #ddd"}}>
         {logs && Array.isArray(logs) ? logs.map((log) => (
-          <Card key={log.id} className="log-card">
+          <Card key={log.id} className="log-card" style={{marginTop: "10px"}}>
             <Card.Header className="log-card-header">
               <div className="log-time">
                 <Badge>
@@ -192,20 +198,21 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
               <h5>{log.message}</h5>
               <div>{log.type === 'OTHER' ? log.log : (logTypeMessages[log.type] || log.type)}</div>
             </Card.Header>
-            {log.details && (
-              <Card.Body className="log-card-body">
-                <Card.Text className="log-details">{log.details}</Card.Text>
-              </Card.Body>
-            )}
+         
           </Card>
         )) : <p>No logs available.</p>}
       </div>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form className="mt-3">
-        <Form.Group controlId="annotation">
-          <Form.Label>Add Annotation</Form.Label>
-          <Form.Control as="textarea" rows="3" value={annotation} onChange={handleAnnotationChange} />
-        </Form.Group>
+      <Form.Group controlId="annotation">
+  <Form.Control
+    as="textarea"
+    rows="3"
+    value={annotation}
+    onChange={handleAnnotationChange}
+    placeholder="Add Annotation" 
+  />
+</Form.Group>
         {suggestions.length > 0 && (
           <ListGroup>
             {suggestions.map((suggestion) => (
@@ -217,7 +224,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
             ))}
           </ListGroup>
         )}
-        <Button variant="primary" onClick={onSave} disabled={isLoading}>
+        <Button variant="primary" style={{marginTop: "10px"}} onClick={onSave} disabled={isLoading}>
           {isLoading ? "Saving..." : "Save Annotation"}
         </Button>
       </Form>
