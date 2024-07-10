@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Modal, Form } from "react-bootstrap";
-import userStore from "../../stores/userStore";
-import "./RegisterModal.css";
+import userStore from "../../../stores/userStore";
+import "../RegisterModal/RegisterModal.css";
 import { useTranslation } from "react-i18next";
-import { login } from "../../services/userServices";
-import ResetPasswordModal from "./ResetPasswordModal";
-import { getNotifications } from "../../services/notificationService";
+import { login } from "../../../services/userServices";
+import ResetPasswordModal from "../ResetPasswordModal";
+import { getNotifications } from "../../../services/notificationService";
 import Cookies from 'js-cookie';
 
 const LoginModal = ({ handleOpenResetPasswordModal }) => {

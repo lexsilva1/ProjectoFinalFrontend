@@ -1,13 +1,10 @@
 .project-list-card {
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    border: none;
     border-radius: 8px;
-    padding: 20px;
     width: 100%;
     background-color: #fff;
     max-height: 400px;
     overflow: auto;
-
 }
 
 .project-card-profile {
@@ -21,13 +18,10 @@
     width: 100%;
     height: 70px;
     margin-bottom: 20px;
-    transition: transform 0.3s ease; 
+ 
 }
 
-.project-card-profile:hover {
-    transform: scale(1.07);
-}
-  
+
 .project-image-profile {
     width: 80px; 
     height: 50px;

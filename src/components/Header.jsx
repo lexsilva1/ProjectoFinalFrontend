@@ -33,6 +33,23 @@ const Header = () => {
   const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
   const unreadMessages = userStore((state) => state.unreadMessages);
   console.log(unreadMessages);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
+  const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
+ 
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Limpeza do event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
@@ -54,6 +71,16 @@ const Header = () => {
 
 
 
+  const handleLogout = () => {
+    logout();
+    Cookies.remove("authToken");
+    Cookies.remove("i18nextLng");
+    userStore.setState({ user: null });
+    sessionStorage.clear();
+    localStorage.clear();
+    setIsLoggedIn(false);
+    navigate("/");
+  };
     const handleLogout = () => {
       logout();
       Cookies.remove("authToken");
@@ -81,7 +108,6 @@ const Header = () => {
   return (
     <div className="header">
       <div className="logo">
-        {isLoggedIn && <img src={logo2} alt="logo" />}
       </div>
       <div className="actions">
         {!authToken && (
@@ -178,6 +204,7 @@ const Header = () => {
             
           </>
         )}
+         {windowWidth >= 810 && (
         <div className="language-buttons">
           <Button variant="outline" className="language-button" onClick={() => changeLanguage("pt")}>
             PT
@@ -186,6 +213,7 @@ const Header = () => {
             EN
           </Button>
         </div>
+      )}
       </div>
       {isLoggedIn && (
         <NotificationsCanva show={showNotifications} handleClose={() => setShowNotifications(false)} />
@@ -240,6 +268,23 @@ const Header = () => {
                   )}
                 </button>
               </li>
+              {windowWidth < 810 && (
+             <li className="offcanvas-option">
+             <button onClick={() => setShowLanguageSubmenu(!showLanguageSubmenu)}>
+               {t("Language")}
+               {showLanguageSubmenu && (
+                 <ul className="language-submenu">
+                   <li>
+                     <button className='idiomas' onClick={() => changeLanguage("pt")}>{t("PT")}</button>
+                   </li>
+                   <li>
+                     <button className='idiomas' onClick={() => changeLanguage("en")}>{t("EN")}</button>
+                   </li>
+                 </ul>
+               )}
+             </button>
+           </li>
+            )}
               <li className="offcanvas-option">
                 <Link to="/help">{t("Help")}</Link>
               </li>

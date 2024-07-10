@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Form } from "react-bootstrap";
-import userStore from "../../stores/userStore";
+import userStore from "../../../stores/userStore";
 import "./RegisterModal.css";
 import { useTranslation } from "react-i18next";
-import { registerUser } from "../../services/userServices";
+import { registerUser } from "../../../services/userServices";
 
 const RegisterModal = () => {
   const { t } = useTranslation();
@@ -96,11 +96,11 @@ const RegisterModal = () => {
               "By clicking continue, you will need to check your email to confirm your account."
             )}
           </p>
-<div className="d-flex justify-content-center">
-          <button type="submit" className="custom-button">
-            {t("Register")}
-          </button>
-</div>
+          <div className="d-flex justify-content-center">
+            <button type="submit" className="custom-button">
+              {t("Register")}
+            </button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

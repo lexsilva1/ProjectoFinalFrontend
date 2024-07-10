@@ -6,7 +6,8 @@
     margin-bottom: 0px !important;
     border-radius: 0px;
     margin-left: 0px;
-    height: 100px;
+    height: 90px;
+    margin-top: 5px;
 }
 
 .mail-message-card:hover {
@@ -15,9 +16,10 @@
 }
 
 .mail-sender {
-    font-size: 0.75rem;
+    font-size: 0.9rem!important;
     font-weight: bold;
     margin-left: 10px; 
+    color: var(--dark-color);
 }
 
 .mail-datetime {

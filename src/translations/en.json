@@ -65,5 +65,8 @@
     "Approved": "Approved",
     "In Progress": "In Progress",
     "Cancelled": "Cancelled",
-    "Finished": "Finished"
+    "Finished": "Finished",
+    "Sort by": "Sort by",
+    "Nickname": "Nickname"
+
   }

@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import CreateTaskModal from './Modals/CreateTaskModal'; 
-import { getTasks, updateTask } from '../services/projectServices';
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import CreateTaskModal from "./Modals/CreateTaskModal/CreateTaskModal";
+import { getTasks, updateTask } from "../services/projectServices";
+import Cookies from "js-cookie";
 import "gantt-task-react/dist/index.css";
-import { Gantt, Task } from 'gantt-task-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import './ExecutionPlan.css';
-
+import { Gantt, Task } from "gantt-task-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import "./ExecutionPlan.css";
 
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
-  const token = Cookies.get('authToken');
+  const token = Cookies.get("authToken");
   const [tasks, setTasks] = useState([]);
   const [seeDeleted, setSeeDeleted] = useState(false);
-  const [viewMode, setViewMode] = useState('Day');
+  const [viewMode, setViewMode] = useState("Day");
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [updatedPing, setUpdatedPing] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -29,9 +28,9 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       setIsMobile(window.innerWidth < 680);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -40,19 +39,21 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       try {
         const response = await getTasks(token, name);
         const tasksData = response.tasks || [];
-        const sortedTasks = tasksData.sort((a, b) => new Date(a.start) - new Date(b.start));
+        const sortedTasks = tasksData.sort(
+          (a, b) => new Date(a.start) - new Date(b.start)
+        );
         setTasks(sortedTasks);
         let projectProgress = 0;
         let completedTasks = 0;
         tasksData.forEach((task) => {
-          if (task.status === 'COMPLETED') {
+          if (task.status === "COMPLETED") {
             completedTasks++;
           }
         });
         projectProgress = (completedTasks / tasksData.length) * 100;
         setProjectProgress(projectProgress);
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        console.error("Error fetching tasks:", error);
         setTasks([]);
       }
     };
@@ -94,42 +95,65 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     dependencies: projectTask.dependencies,
     isDisabled: false,
     styles: {
-      progressColor: '#18c2de',
-      progressSelectedColor: '#2e6b75',
+      progressColor: "#18c2de",
+      progressSelectedColor: "#2e6b75",
     },
-    type: 'project',
+    type: "project",
   };
 
   let tasksFormatted = [];
 
-  tasksFormatted = tasks.filter(task => seeDeleted ? task.status === 'CANCELLED' : task.status !== 'CANCELLED').map((task) => {
-    return {
-      id: task.id,
-      name: task.title,
-      start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
-      end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
-      progress: task.status === 'COMPLETED' ? 100 : (task.status === 'IN_PROGRESS' ? 50 : 0),
-      dependencies: task.dependencies,
-      isDisabled: task.status === 'COMPLETED' || task.status === 'CANCELLED',
-      styles: {
-        progressColor: '#ffbb54',
-        progressSelectedColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e')),
-        backgroundColor: task.status === 'COMPLETED' ? '#e0f7fa' : (task.status === 'CANCELLED' ? '#fde2e4' : (task.status === 'IN_PROGRESS' ? '#6b18de' : '#6e030e'))
-      },
-      type: task.title === 'Final Presentation' ? 'milestone' : 'task',
-    };
-  });
+  tasksFormatted = tasks
+    .filter((task) =>
+      seeDeleted ? task.status === "CANCELLED" : task.status !== "CANCELLED"
+    )
+    .map((task) => {
+      return {
+        id: task.id,
+        name: task.title,
+        start: parseDate(new Date(task.start).toISOString().slice(0, 10)),
+        end: parseDate(new Date(task.end).toISOString().slice(0, 10)),
+        progress:
+          task.status === "COMPLETED"
+            ? 100
+            : task.status === "IN_PROGRESS"
+            ? 50
+            : 0,
+        dependencies: task.dependencies,
+        isDisabled: task.status === "COMPLETED" || task.status === "CANCELLED",
+        styles: {
+          progressColor: "#ffbb54",
+          progressSelectedColor:
+            task.status === "COMPLETED"
+              ? "#e0f7fa"
+              : task.status === "CANCELLED"
+              ? "#fde2e4"
+              : task.status === "IN_PROGRESS"
+              ? "#6b18de"
+              : "#6e030e",
+          backgroundColor:
+            task.status === "COMPLETED"
+              ? "#e0f7fa"
+              : task.status === "CANCELLED"
+              ? "#fde2e4"
+              : task.status === "IN_PROGRESS"
+              ? "#6b18de"
+              : "#6e030e",
+        },
+        type: task.title === "Final Presentation" ? "milestone" : "task",
+      };
+    });
 
   tasksFormatted.push(formatedProjectTask);
 
   tasksFormatted.sort((a, b) => {
-    if (a.type === 'project') {
+    if (a.type === "project") {
       return -1;
-    } else if (b.type === 'project') {
+    } else if (b.type === "project") {
       return 1;
-    } else if (a.type === 'milestone') {
+    } else if (a.type === "milestone") {
       return 1;
-    } else if (b.type === 'milestone') {
+    } else if (b.type === "milestone") {
       return -1;
     } else {
       return 0;
@@ -139,12 +163,14 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const onDateChange = async (task) => {
     for (const t of tasks) {
       if (t.id === task.id) {
-        t.start = format(task.start, 'yyyy-MM-dd\'T\'HH:mm:ss');
-        t.end = format(task.end, 'yyyy-MM-dd\'T\'HH:mm:ss');
+        t.start = format(task.start, "yyyy-MM-dd'T'HH:mm:ss");
+        t.end = format(task.end, "yyyy-MM-dd'T'HH:mm:ss");
         setTaskToUpdate(t);
 
         await updateTask(token, name, t).then(() => {
-          const updatedTasks = tasks.map(taskItem => taskItem.id === t.id ? t : taskItem);
+          const updatedTasks = tasks.map((taskItem) =>
+            taskItem.id === t.id ? t : taskItem
+          );
           addTask(t);
           setTasks(updatedTasks);
           setTaskToUpdate(null);
@@ -159,18 +185,20 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     tasks.forEach(async (t) => {
       if (t.id === task.id) {
         if (task.dependencies.length > 0) {
-          const dependenciesCompleted = task.dependencies.every(dependencyId => {
-            const dependencyTask = tasks.find(t => t.id === dependencyId);
-            return dependencyTask && dependencyTask.status === 'COMPLETED';
-          });
+          const dependenciesCompleted = task.dependencies.every(
+            (dependencyId) => {
+              const dependencyTask = tasks.find((t) => t.id === dependencyId);
+              return dependencyTask && dependencyTask.status === "COMPLETED";
+            }
+          );
 
           if (dependenciesCompleted) {
             if (task.progress === 100) {
-              t.status = 'COMPLETED';
+              t.status = "COMPLETED";
             } else if (task.progress > 0 && task.progress < 100) {
-              t.status = 'IN_PROGRESS';
+              t.status = "IN_PROGRESS";
             } else {
-              t.status = 'NOT_STARTED';
+              t.status = "NOT_STARTED";
             }
 
             tasks[tasks.indexOf(t)] = t;
@@ -183,17 +211,19 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
             tasksFormatted.forEach((t) => {
               if (t.id === task.id) {
                 t.progress = 0;
-                alert('You cannot complete this task because it has dependencies that are not completed');
+                alert(
+                  "You cannot complete this task because it has dependencies that are not completed"
+                );
               }
             });
           }
         } else {
           if (task.progress === 100) {
-            t.status = 'COMPLETED';
+            t.status = "COMPLETED";
           } else if (task.progress > 0 && task.progress < 100) {
-            t.status = 'IN_PROGRESS';
+            t.status = "IN_PROGRESS";
           } else {
-            t.status = 'NOT_STARTED';
+            t.status = "NOT_STARTED";
           }
 
           tasks[tasks.indexOf(t)] = t;
@@ -217,13 +247,13 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     updatedTasks = updatedTasks.map((t) => {
       if (t.id === task.id) {
         taskFound = true;
-        return { ...t, status: 'CANCELLED' };
+        return { ...t, status: "CANCELLED" };
       }
       return t;
     });
 
     if (!taskFound) {
-      console.log('Task not found');
+      console.log("Task not found");
       return;
     }
 
@@ -232,30 +262,32 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     const taskToUpdate = updatedTasks.find((t) => t.id === task.id);
     setTaskToUpdate(taskToUpdate);
 
-    await updateTask(token, name, taskToUpdate).then(() => {
-      console.log('Task updated successfully');
-      setTaskToUpdate(null);
-      setUpdatedPing(!updatedPing);
-    }).catch((error) => {
-      console.error('Failed to update task:', error);
-    });
+    await updateTask(token, name, taskToUpdate)
+      .then(() => {
+        console.log("Task updated successfully");
+        setTaskToUpdate(null);
+        setUpdatedPing(!updatedPing);
+      })
+      .catch((error) => {
+        console.error("Failed to update task:", error);
+      });
   };
   const findDependencies = (dependencies, tasks) => {
     if (!dependencies) {
       return [];
     }
-    return dependencies.map((dependency) => {
-      const task = tasks.find((t) => t.id === dependency);
-      return task ? task.title : undefined;
-    }).filter(title => title !== undefined);
+    return dependencies
+      .map((dependency) => {
+        const task = tasks.find((t) => t.id === dependency);
+        return task ? task.title : undefined;
+      })
+      .filter((title) => title !== undefined);
   };
 
-  
   const addTask = (task) => {
     setTasks([...tasks, task]);
     setUpdatedPing(!updatedPing);
   };
-  
 
   const renderMobileView = () => (
     <ul className="accordion">
@@ -271,16 +303,27 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
                 setIsEditMode(true);
                 setShowTaskModal(true);
               }}
-              style={{ marginLeft: '10px', cursor: 'pointer' }}
+              style={{ marginLeft: "10px", cursor: "pointer" }}
             />
           </label>
           <div className="accordion-child">
-            <p>Start: {format(task.start, 'yyyy-MM-dd')}</p>
-            <p>End: {format(task.end, 'yyyy-MM-dd')}</p>
-            <p>Status: {task.status === 'COMPLETED' ? 'Completed' : task.status === 'IN_PROGRESS' ? 'In Progress' : task.status === 'CANCELLED' ? 'Cancelled' : 'Not Started'}</p>
-            <p>Dependencies: {task.dependencies && task.dependencies.length > 0 
-              ? findDependencies(task.dependencies, tasks).join(', ')
-              : 'no dependencies'}
+            <p>Start: {format(task.start, "yyyy-MM-dd")}</p>
+            <p>End: {format(task.end, "yyyy-MM-dd")}</p>
+            <p>
+              Status:{" "}
+              {task.status === "COMPLETED"
+                ? "Completed"
+                : task.status === "IN_PROGRESS"
+                ? "In Progress"
+                : task.status === "CANCELLED"
+                ? "Cancelled"
+                : "Not Started"}
+            </p>
+            <p>
+              Dependencies:{" "}
+              {task.dependencies && task.dependencies.length > 0
+                ? findDependencies(task.dependencies, tasks).join(", ")
+                : "no dependencies"}
             </p>
           </div>
         </li>
@@ -290,37 +333,66 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
 
   return (
     <div className="execution-plan">
-      <div style={{ backgroundColor: "var(--contrast-color", height: "60px", borderTopRightRadius: "5px", borderTopLeftRadius: "5px" }}>
+      <div
+        style={{
+          backgroundColor: "var(--contrast-color",
+          height: "60px",
+          borderTopRightRadius: "5px",
+          borderTopLeftRadius: "5px",
+        }}
+      >
         {!isMobile && (
           <div>
-            <label htmlFor="viewMode" style={{ color: "white", margin: "15px" }}>View Mode: </label>
-            <select id="viewMode" style={{ borderRadius: "5px" }} value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+            <label
+              htmlFor="viewMode"
+              style={{ color: "white", margin: "15px" }}
+            >
+              View Mode:{" "}
+            </label>
+            <select
+              id="viewMode"
+              style={{ borderRadius: "5px" }}
+              value={viewMode}
+              onChange={(e) => setViewMode(e.target.value)}
+            >
               <option value="Day">Day</option>
               <option value="Week">Week</option>
               <option value="Month">Month</option>
               <option value="Year">Year</option>
             </select>
             <label htmlFor="seeDeleted">See Deleted Tasks: </label>
-            <input id="seeDeleted" type="checkbox" checked={seeDeleted} onChange={(e) => setSeeDeleted(e.target.checked)} />
+            <input
+              id="seeDeleted"
+              type="checkbox"
+              checked={seeDeleted}
+              onChange={(e) => setSeeDeleted(e.target.checked)}
+            />
           </div>
         )}
       </div>
-      {isMobile ? renderMobileView() : (
-        tasks && tasks.length > 0 ? (
-          <Gantt
-            tasks={tasksFormatted}
-            viewMode={viewMode}
-            onDateChange={(task) => onDateChange(task)}
-            onDoubleClick={(task) => handleTaskDoubleClick(task)}
-            onProgressChange={(task) => onProgressChange(task)}
-            onDelete={(task) => handleDeleteTask(task)}
-          />
-        ) : (
-          <div>No tasks available</div>
-        )
+      {isMobile ? (
+        renderMobileView()
+      ) : tasks && tasks.length > 0 ? (
+        <Gantt
+          tasks={tasksFormatted}
+          viewMode={viewMode}
+          onDateChange={(task) => onDateChange(task)}
+          onDoubleClick={(task) => handleTaskDoubleClick(task)}
+          onProgressChange={(task) => onProgressChange(task)}
+          onDelete={(task) => handleDeleteTask(task)}
+        />
+      ) : (
+        <div>No tasks available</div>
       )}
 
-      <button className="btn btn-primary mt-3" style={{ margin: "10px", float: "right", width: "150px" }} onClick={() => { setIsEditMode(false); setShowTaskModal(true); }}>
+      <button
+        className="btn btn-primary mt-3"
+        style={{ margin: "10px", float: "right", width: "150px" }}
+        onClick={() => {
+          setIsEditMode(false);
+          setShowTaskModal(true);
+        }}
+      >
         Add Task
       </button>
 

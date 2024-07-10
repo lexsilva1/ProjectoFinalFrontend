@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Row, Col, Alert } from "react-bootstrap";
-import { createResource } from "../../services/resourcesServices";
+import { createResource } from "../../../services/resourcesServices";
 import Cookies from "js-cookie";
-import "./CreateResourceModal.css"; 
+import "./CreateResourceModal.css";
 
 const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
   const token = Cookies.get("authToken");

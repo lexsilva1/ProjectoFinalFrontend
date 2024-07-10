@@ -1,7 +1,7 @@
 import Header from "../components/Header";
-import LoginModal from "../components/Modals/LoginModal";
+import LoginModal from "../components/Modals/LoginModal/LoginModal";
 import React, { useState, useEffect } from "react";
-import RegisterModal from "../components/Modals/RegisterModal";
+import RegisterModal from "../components/Modals/RegisterModal/RegisterModal";
 import Banner from "../components/Banners/Banner";
 import Banner2 from "../components/Banners/Banner2";
 import Banner3 from "../components/Banners/Banner3";
@@ -9,7 +9,7 @@ import Sidebar from "../components/SideBar";
 import userStore from "../stores/userStore";
 import { getProjects } from "../services/projectServices";
 import ProjectCard from "../components/Cards/ProjectCard";
-import { FaSearch, FaChevronUp, FaChevronDown  } from "react-icons/fa";
+import { FaSearch, FaChevronUp, FaChevronDown } from "react-icons/fa";
 import InfoBox from "../components/InfoBoxs/InfoBox";
 import Footer from "../components/Footer";
 import ResetPasswordModal from "../components/Modals/ResetPasswordModal";
@@ -19,7 +19,7 @@ import InfoBox2 from "../components/InfoBoxs/InfoBox2";
 import InfoBox3 from "../components/InfoBoxs/InfoBox3";
 import InfoBox4 from "../components/InfoBoxs/InfoBox4";
 import { useTranslation } from "react-i18next";
-import './Home.css';
+import "./Home.css";
 
 const Home = () => {
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -36,7 +36,6 @@ const Home = () => {
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
   const currentUser = userStore((state) => state.user);
-  
 
   useEffect(() => {
     const token = location.pathname.split("/")[2];
@@ -59,38 +58,48 @@ const Home = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if(isLoggedIn) {
-    getProjects()
-      .then((projectsData) => {
-        const userProjects = projectsData.filter((project) =>
-          project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
-        );
-        const otherProjects = projectsData.filter((project) =>
-          !project.teamMembers.some((member) => member.userId === currentUser.id && member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
-        );
-        const combinedProjects = [...userProjects, ...otherProjects];
-        setProjects(combinedProjects);
-      })
-      .catch((error) => {
-        console.error("Error fetching projects:", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  
-}else{ 
-  getProjects()
-    .then((projectsData) => {
-      setProjects(projectsData);
-    })
-    .catch((error) => {
-      console.error("Error fetching projects:", error);
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
-}}, [currentUser]);
-
+    if (isLoggedIn) {
+      getProjects()
+        .then((projectsData) => {
+          const userProjects = projectsData.filter((project) =>
+            project.teamMembers.some(
+              (member) =>
+                (member.userId === currentUser.id &&
+                  member.approvalStatus === "MEMBER") ||
+                member.approvalStatus === "CREATOR"
+            )
+          );
+          const otherProjects = projectsData.filter(
+            (project) =>
+              !project.teamMembers.some(
+                (member) =>
+                  (member.userId === currentUser.id &&
+                    member.approvalStatus === "MEMBER") ||
+                  member.approvalStatus === "CREATOR"
+              )
+          );
+          const combinedProjects = [...userProjects, ...otherProjects];
+          setProjects(combinedProjects);
+        })
+        .catch((error) => {
+          console.error("Error fetching projects:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      getProjects()
+        .then((projectsData) => {
+          setProjects(projectsData);
+        })
+        .catch((error) => {
+          console.error("Error fetching projects:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [currentUser]);
 
   const handleOpenResetPasswordModal = () => {
     setShowLoginModal(false);
@@ -181,7 +190,10 @@ const Home = () => {
     });
   };
 
-  const displayedProjects = sortProjects(filterProjects(projects)).slice(0, visibleProjectsCount);
+  const displayedProjects = sortProjects(filterProjects(projects)).slice(
+    0,
+    visibleProjectsCount
+  );
 
   return (
     <>
@@ -214,8 +226,7 @@ const Home = () => {
         {!isLoggedIn && <InfoBox4 />}
         <div className="content" style={{ flexGrow: 1 }}>
           <div className="search-bar-home">
-            <div className="sort-bar-home"
-            >
+            <div className="sort-bar-home">
               <FaSearch />
               <input
                 type="search"
@@ -276,7 +287,12 @@ const Home = () => {
               </div>
               {visibleProjectsCount < projects.length && (
                 <div className="show-more-container">
-                  <button className="show-more-button" onClick={() => setVisibleProjectsCount(visibleProjectsCount + 9)}>
+                  <button
+                    className="show-more-button"
+                    onClick={() =>
+                      setVisibleProjectsCount(visibleProjectsCount + 9)
+                    }
+                  >
                     Show more
                   </button>
                 </div>
@@ -305,4 +321,3 @@ const Home = () => {
 };
 
 export default Home;
-

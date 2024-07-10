@@ -4,6 +4,18 @@
     border-radius: 20px;
 
   }
+
+@media (max-width: 480px) {
+    .message-sidebar {
+      height: 15vh;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .message-sidebar {
+      height: 15vh;
+    }
+  }
   
   .search-users {
     padding: 0.5rem;

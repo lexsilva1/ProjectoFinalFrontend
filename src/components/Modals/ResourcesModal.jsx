@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, FormControl } from 'react-bootstrap';
 import { addResourceToProject } from '../../services/projectServices';
 import { getResources } from '../../services/resourcesServices';
-import CreateResourceModal from './CreateResourceModal';
+import CreateResourceModal from '../Modals/CreateResourceModal/CreateResourceModal';
 import './ResourcesModal.css';
 import Cookies from 'js-cookie';
 
