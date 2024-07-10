@@ -71,16 +71,6 @@ const Header = () => {
 
 
 
-  const handleLogout = () => {
-    logout();
-    Cookies.remove("authToken");
-    Cookies.remove("i18nextLng");
-    userStore.setState({ user: null });
-    sessionStorage.clear();
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate("/");
-  };
     const handleLogout = () => {
       logout();
       Cookies.remove("authToken");
