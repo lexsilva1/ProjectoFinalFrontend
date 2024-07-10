@@ -13,6 +13,8 @@ const useStartWebSocket = (token) => {
   const setUserList = userStore((state) => state.setUserList);
   const notifications = userStore((state) => state.notifications);
   const setNotifications = userStore((state) => state.setNotifications);
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages);
+  const user = userStore((state) => state.user);
   const MessageType = {
     LAST_MESSAGE: 'LAST_MESSAGE',
     INVITE: 'INVITE',
@@ -67,16 +69,21 @@ const useStartWebSocket = (token) => {
       break;
       case MessageType.LAST_MESSAGE:
        
-      console.log(messageObj.isRead);
+      if(user.id !== messageObj.sender.id){
+        messageObj.isRead = true;
+      }
 
       userstore.setState({userList: userList.map((user) => {
         if(user.sender.id === messageObj.sender.id){
 
           user = messageObj;
         }
+        
         return user;
       
       })});
+    const unreadCount = userList.filter(user => user.isRead).length;
+    setUnreadMessages(unreadCount);
     break;
       case MessageType.ACCEPT:
       case MessageType.REJECT:

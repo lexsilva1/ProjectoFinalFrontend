@@ -31,6 +31,8 @@ const Header = () => {
   const [showThemeSubmenu, setShowThemeSubmenu] = useState(false);
   const userId = userStore((state) => state.user?.id);
   const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
+  const unreadMessages = userStore((state) => state.unreadMessages);
+  console.log(unreadMessages);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
@@ -69,16 +71,13 @@ const Header = () => {
 
 
 
-  const handleLogout = () => {
-    logout();
-    Cookies.remove("authToken");
-    Cookies.remove("i18nextLng");
-    userStore.setState({ user: null });
-    sessionStorage.clear();
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate("/");
-  };
+    const handleLogout = () => {
+      logout();
+      Cookies.remove("authToken");
+      Cookies.remove("i18nextLng");
+      userStore.getState().logout(); // Reset the store
+      navigate("/");
+    };
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -167,7 +166,7 @@ const Header = () => {
 >
   <span onClick={() => navigate("/messages")} style={{ position: 'relative' }}>
     <BsEnvelope className="header-icon" />
-    {<span className="notification-badge"></span>}
+    {(unreadMessages > 0 ? <span className="notification-badge"></span>: null)}
   </span>
 </OverlayTrigger>
             </div>
