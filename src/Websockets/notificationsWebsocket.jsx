@@ -67,8 +67,10 @@ const useStartWebSocket = (token) => {
       // Redirecionamento para a página inicial
       window.location.replace('/');
       break;
+
+
       case MessageType.LAST_MESSAGE:
-       
+       console.log('LAST_MESSAGE', messageObj);
       if(user.id !== messageObj.sender.id){
         messageObj.isRead = true;
       }
@@ -82,8 +84,9 @@ const useStartWebSocket = (token) => {
         return user;
       
       })});
-    const unreadCount = userList.filter(user => user.isRead).length;
+    const unreadCount = userList.filter(user =>!user.read).length;
     setUnreadMessages(unreadCount);
+    console.log('unreadCount', userList.filter(user =>!user.read));
     break;
       case MessageType.ACCEPT:
       case MessageType.REJECT:

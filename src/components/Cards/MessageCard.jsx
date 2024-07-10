@@ -15,18 +15,25 @@ const MessageCard = ({ message }) => {
     const setUserList = useStore(state => state.setUserList);
     const navigate = useNavigate();
 
-    const handleClick = () => {
+    const handleClick = (messageid) => {
+        console.log('userlist', userList);
+        console.log('message', message);
         setSelectedUserMessages(message.id);
 
         const newUserList = userList.map(user => {
-            if (user.id === message.id) {
-                return { ...user, isRead: true };
+            console.log('fora do if' + user);
+            if (user.sender.id === message.id) {
+                console.log('dentro do if' + message.id);
+                console.log('dentro do if 2' + user.id);
+                return { ...user, read: true };
             } else {
+                console.log('dentro do if mas else' + message.id);
                 return user;
             }
         });
-        navigate(`/messages/${message.id}`);
+        console.log('newUserList', newUserList);
         setUserList(newUserList);
+        navigate(`/messages/${message.id}`);
     };
 
     const formatDate = (dateString) => {
@@ -35,7 +42,7 @@ const MessageCard = ({ message }) => {
     };
 
     return (
-        <Card className="mail-message-card" onClick={handleClick}>
+        <Card className="mail-message-card" onClick={() => handleClick(message.id)}>
             <Card.Body>
                 <Row className="align-items-center">
                     <Col xs={4} className="d-flex align-items-center">
@@ -47,7 +54,7 @@ const MessageCard = ({ message }) => {
                         <Card.Text className="small text-muted mail-message">{message.message}</Card.Text>
                     </Col>
                     <Col xs={2} className="text-end">
-                        {message.isRead ? null : <span className="badge bg-danger mail-is-read">New</span>}
+                        {(message.isRead || message.read) ? null : <span className="badge bg-danger mail-is-read">New</span>}
                     </Col>
                 </Row>
                 <Card.Subtitle className="small text-muted mb-1 mail-datetime">
