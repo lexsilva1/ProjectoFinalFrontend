@@ -112,15 +112,16 @@
 
 
 
-
-
-
-
-.idioma-button {
-  content: ""; 
+.idiomas {
   display: inline-block; 
-  margin-right: 8px; 
+  font-size: 14px;
 }
+
+.idiomas:hover {
+  background-color: #b3b1b1; 
+}
+
+
 .header-icon {
   color: var(--contrast-color);
   font-size: 1.5rem; 

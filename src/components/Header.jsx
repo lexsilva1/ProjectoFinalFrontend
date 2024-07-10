@@ -33,7 +33,9 @@ const Header = () => {
   const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
   const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
+ 
 
 
   useEffect(() => {
@@ -258,26 +260,21 @@ const Header = () => {
                 </button>
               </li>
               {windowWidth < 810 && (
-              <div className="language-menu">
-                    <Button variant="outline" className="language-button" onClick={toggleLanguageMenu}>
-      {t("Language")}
-    </Button>
-    {showLanguageMenu && (
-      <div className="language-options">
-         <li>
-                <button variant="outline" className="idioma-button" onClick={() => changeLanguage("pt")}>
-                  PT
-                </button>
-                </li>
-                <li>
-                <button variant="outline" className="idioma-button" onClick={() => changeLanguage("en")}>
-                  EN
-                </button>
-                </li>
-                </div>
-             
-            )}
-            </div>
+             <li className="offcanvas-option">
+             <button onClick={() => setShowLanguageSubmenu(!showLanguageSubmenu)}>
+               {t("Language")}
+               {showLanguageSubmenu && (
+                 <ul className="language-submenu">
+                   <li>
+                     <button className='idiomas' onClick={() => changeLanguage("pt")}>{t("PT")}</button>
+                   </li>
+                   <li>
+                     <button className='idiomas' onClick={() => changeLanguage("en")}>{t("EN")}</button>
+                   </li>
+                 </ul>
+               )}
+             </button>
+           </li>
             )}
               <li className="offcanvas-option">
                 <Link to="/help">{t("Help")}</Link>
