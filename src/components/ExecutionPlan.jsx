@@ -8,6 +8,8 @@ import { Gantt, Task } from "gantt-task-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import "./ExecutionPlan.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-toggle/css/bootstrap-toggle.min.css';
 
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const token = Cookies.get("authToken");
@@ -22,6 +24,8 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const [projectProgress, setProjectProgress] = useState(0);
   const [taskToUpdate, setTaskToUpdate] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 680);
+  const [dateViewMode, setDateViewMode] = useState(true);
+  const [dates , setDates] = useState('hide');
 
   useEffect(() => {
     const handleResize = () => {
@@ -180,7 +184,14 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       }
     }
   };
-
+  const handleDateViewMode = () => {
+    setDateViewMode(!dateViewMode);
+    if (dateViewMode) {
+      setDates('show');
+    } else {
+      setDates('hide');
+  };
+  };
   const onProgressChange = async (task) => {
     tasks.forEach(async (t) => {
       if (t.id === task.id) {
@@ -360,13 +371,20 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
               <option value="Month">Month</option>
               <option value="Year">Year</option>
             </select>
-            <label htmlFor="seeDeleted">See Deleted Tasks: </label>
-            <input
-              id="seeDeleted"
-              type="checkbox"
+            <div className="form-check form-switch" style={{ float: "right" }}>
+            <label class="form-check-label" for="flexSwitchCheckDefault" htmlFor="seeDeleted">See Deleted Tasks: </label>
+            <input  className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
               checked={seeDeleted}
               onChange={(e) => setSeeDeleted(e.target.checked)}
             />
+            <button type="button"  data-toggle="button" aria-pressed="false" autocomplete="off"
+              className="btn btn-primary"
+              style={{ float: "right", margin: "10px" }}
+              onClick={handleDateViewMode}
+            >
+            {dates === 'hide' ? 'Hide Dates' : 'Show Dates'}
+            </button>
+            </div>
           </div>
         )}
       </div>
@@ -380,6 +398,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
           onDoubleClick={(task) => handleTaskDoubleClick(task)}
           onProgressChange={(task) => onProgressChange(task)}
           onDelete={(task) => handleDeleteTask(task)}
+          listCellWidth={dateViewMode ? undefined :''}
         />
       ) : (
         <div>No tasks available</div>

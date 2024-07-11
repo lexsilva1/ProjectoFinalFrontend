@@ -27,6 +27,7 @@ import { getInterests, createInterest, deleteInterest, getInterestTypes } from "
 import ReactQuill from 'react-quill';
 import Button from 'react-bootstrap/Button';
 import { Card } from 'react-bootstrap';
+import { set } from "date-fns";
 
 const Project = () => {
   const { projectName } = useParams();
@@ -239,7 +240,9 @@ const Project = () => {
     setShowWarningModal(false);
     const status = "Cancelled";
     try {
-      await updateProjectStatus(token, project.name, status);
+      await updateProjectStatus(token, project.name, status).then(() => {
+        setProject({ ...project, status: status });
+      });
       console.log("Project status updated to Cancelled");
     } catch (error) {
       console.error("Failed to update project status:", error);
@@ -250,7 +253,9 @@ const Project = () => {
     setShowModal(false);
     const status = "Planning";
     try {
-      await updateProjectStatus(token, project.name, status);
+      await updateProjectStatus(token, project.name, status).then(() => {
+        setProject({ ...project, status: status });
+      });
 
       console.log("Project status updated to Ready");
     } catch (error) {

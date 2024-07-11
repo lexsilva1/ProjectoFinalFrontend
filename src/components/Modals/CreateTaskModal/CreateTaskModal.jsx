@@ -134,7 +134,7 @@ const CreateTaskModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Selected Members:", selectedMembers);
     const taskDto = {
       title,
       externalExecutors,
@@ -203,18 +203,18 @@ const CreateTaskModal = ({
       id="status-dropdown"
       title={statusLabels[status] || "Select Status"}
     >
-      <Dropdown.Item onClick={() => setStatus("NOT_STARTED")}>
+    {status != "NOT_STARTED" ? <Dropdown.Item onClick={() => setStatus("NOT_STARTED")}>
         Not Started
-      </Dropdown.Item>
-      <Dropdown.Item onClick={() => setStatus("IN_PROGRESS")}>
+      </Dropdown.Item> : null}
+      {status != 'IN_PROGRESS' ? <Dropdown.Item onClick={() => setStatus("IN_PROGRESS")}>
         In Progress
-      </Dropdown.Item>
-      <Dropdown.Item onClick={() => setStatus("COMPLETED")}>
+      </Dropdown.Item> : null}
+     {status != 'COMPLETED'? <Dropdown.Item onClick={() => setStatus("COMPLETED")}>
         Completed
-      </Dropdown.Item>
-      <Dropdown.Item onClick={() => setStatus("CANCELLED")}>
+      </Dropdown.Item> : null}
+     {status != 'CANCELLED' ?<Dropdown.Item onClick={() => setStatus("CANCELLED")}>
         Cancelled
-      </Dropdown.Item>
+      </Dropdown.Item> : null}
     </DropdownButton>
   );
 
@@ -260,6 +260,7 @@ const CreateTaskModal = ({
                       value={title}
                       style={{ marginLeft: "10px" }}
                       onChange={(e) => setTitle(e.target.value)}
+                      disabled= {status === "COMPLETED" || status === "CANCELLED"}
                     />
                   </label>
                 </div>
@@ -268,6 +269,7 @@ const CreateTaskModal = ({
                   <ReactQuill
                     value={description}
                     onChange={(value) => setDescription(value)}
+                    status={status === "COMPLETED" || status === "CANCELLED"}
                   />
                 </div>
 
@@ -277,6 +279,7 @@ const CreateTaskModal = ({
                     <DatePicker
                       selected={startDate}
                       onChange={(date) => setStartDate(date)}
+                      status={status === "COMPLETED" || status === "CANCELLED"}
                     />
                   </label>
                 </div>
@@ -286,6 +289,7 @@ const CreateTaskModal = ({
                     <DatePicker
                       selected={endDate}
                       onChange={(date) => setEndDate(date)}
+                      status={status === "COMPLETED" || status === "CANCELLED"}
                     />
                   </label>
                 </div>
@@ -300,6 +304,7 @@ const CreateTaskModal = ({
                   type="button"
                   className="action-button"
                   onClick={() => handleMembersClick("responsible")}
+                  status={status === "COMPLETED" || status === "CANCELLED"}
                 >
                   +
                 </button>
@@ -324,6 +329,7 @@ const CreateTaskModal = ({
                         backgroundColor: "transparent",
                       }}
                       onClick={() => setSelectedResponsible(null)}
+                      disabled= {status === "COMPLETED" || status === "CANCELLED"}
                     >
                       X
                     </button>
@@ -336,6 +342,7 @@ const CreateTaskModal = ({
                   type="button"
                   className="action-button circle-button"
                   onClick={() => handleMembersClick("member")}
+                  disabled= {status === "COMPLETED" || status === "CANCELLED"}
                 >
                   +
                 </button>
@@ -363,6 +370,7 @@ const CreateTaskModal = ({
                         backgroundColor: "transparent",
                       }}
                       onClick={() => removeSelectedMember(member.id)}
+                      disabled= {status === "COMPLETED" || status === "CANCELLED"}
                     >
                       X
                     </button>
@@ -382,6 +390,7 @@ const CreateTaskModal = ({
                       border: "1px solid #ccc",
                     }}
                     onChange={(e) => setExternalExecutors(e.target.value)}
+                    disabled= {status === "COMPLETED" || status === "CANCELLED"}
                   />
                 </label>
               </div>
@@ -391,6 +400,7 @@ const CreateTaskModal = ({
                     <Dropdown.Item
                       key={task.id}
                       onClick={() => handleSelectDependency(task.id)}
+                      disabled= {status === "COMPLETED" || status === "CANCELLED"}
                     >
                       {task.title}
                     </Dropdown.Item>
@@ -403,7 +413,7 @@ const CreateTaskModal = ({
             </div>
           </Col>
           <div style={{ textAlign: "right" }}>
-            <button type="submit" className="btn btn-primary mt-3">
+            <button onClick={handleSubmit} type="submit" className="btn btn-primary mt-3">
               {isEditMode ? "Update Task" : "Create Task"}
             </button>
           </div>
