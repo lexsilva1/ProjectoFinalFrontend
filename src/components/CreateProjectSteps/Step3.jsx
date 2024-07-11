@@ -71,20 +71,23 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
     };
 
     console.log("Submitting Project DTO:", projectDto);
-    debugger;
-    try {
-      const response = await createProject(token, projectDto);
-      if (response !== "created") {
-        setError("An error occurred. Please try again.");
-      } else {
-        console.log("Project created successfully.", response);
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("HTTP error!", error);
-      setError(`An error occurred: ${error.message}`);
+    
+  
+      createProject(token, projectDto)
+  .then(response => {
+    if (response !== "created") {
+      setError("An error occurred. Please try again.");
+    } else {
+      console.log("Project created successfully.", response);
+      navigate(`/project/${encodeURIComponent(inputs.name)}`);
     }
-  };
+  })
+  .catch(error => {
+    console.error("HTTP error!", error);
+    setError(`An error occurred: ${error.message}`);
+  });
+};
+  
 
   // Function to create a list of interests and skills
   const interestList = [];
