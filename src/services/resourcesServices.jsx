@@ -53,4 +53,23 @@ export const getResourceStatistics = async (token) => {
 };
 
 
+export const updateResource = async (token, resourceId, resourceDto) => {
+    const updateURL = `${resourcesURL}/${resourceId}`;
+
+    const response = await fetch(updateURL, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token
+        },
+        body: JSON.stringify(resourceDto)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return await response.text();
+    }
+}
+
      

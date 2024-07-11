@@ -1,6 +1,4 @@
-/* Inventory.css */
 
-/* Configuração geral */
 .inventory-container {
   flex: 1;
   width: 100%;
@@ -43,6 +41,7 @@
   background-color: var(--primary-color);
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  position: relative; /* Garante que a tabela seja relativa para posicionamento absoluto */
 }
 
 .inventory-table th, .inventory-table td {
@@ -121,12 +120,44 @@
   .inventory-table td:nth-child(3) {
     display: none;
   }
+  .inventory-header {
+    flex-direction: column;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input {
+    display: flex;
+    width: 100%;
+  }
+
+  .input-group {
+    margin-right: 0;
+    margin-left: 60%;
+  }
+
+
+  .buttonAddResource, .buttonViewStats {
+    font-size: 0.8rem;
+    height: 50px;
+    width: auto!important;
+    margin: 0px!important;
+    border: none;
+    border-radius: 20px !important;
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 768px) {
   .inventory-table th:nth-child(5),
   .inventory-table td:nth-child(5) {
     display: none;
+    width: auto;
+  }
+  .input-group {
+    margin-right: 0;
+    margin-left: 40%;
   }
 }
 
@@ -167,4 +198,19 @@
     margin-bottom: 20px;
     text-align: center;
   }
+}
+
+/* Manter coluna de edição visível */
+.inventory-table th:nth-child(10),
+.inventory-table td:nth-child(10) {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background-color: var(--details-color);
+}
+
+.inventory-table th:nth-child(10) button,
+.inventory-table td:nth-child(10) button {
+  position: relative; /* Garante que o botão de editar mantenha a posição relativa */
+  z-index: 2; /* Ajusta a posição z-index do botão de editar para estar acima da tabela */
 }

@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink
-} from 'reactstrap';
-import { getResources } from '../services/resourcesServices';
+import { Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { getResources, updateResource } from '../services/resourcesServices';
 import Cookies from 'js-cookie';
 import Header from '../components/Header';
-import Sidebar from '../components/SideBar';
-import {
-  FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch
-} from 'react-icons/fa';
+import { FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch, FaEdit } from 'react-icons/fa';
 import './Inventory.css';
 import CreateResourceModal from '../components/Modals/CreateResourceModal/CreateResourceModal';
 import { useNavigate } from 'react-router-dom';
-
 import { useTranslation } from 'react-i18next';
 import userStore from '../stores/userStore';
 
@@ -24,20 +18,17 @@ const Inventory = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
   const token = Cookies.get("authToken");
   const [modalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const userRole = userStore((state) => state.user?.role);
 
-
-
   const isCurrentUserAppManager = userRole < 2;
 
   const fetchResources = async () => {
     const resourcesData = await getResources(token);
-    console.log(resourcesData);
     setResources(resourcesData);
   };
 
@@ -47,7 +38,7 @@ const Inventory = () => {
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const requestSort = (key) => {
@@ -114,6 +105,14 @@ const Inventory = () => {
     navigate("/resources-stats");
   };
 
+  const openEditModal = (resource) => {
+    setModalOpen(true);
+    setInitialResource(resource);
+  };
+
+
+  const [initialResource, setInitialResource] = useState(null);
+
   return (
     <>
       <Header />
@@ -143,14 +142,14 @@ const Inventory = () => {
                 {t("Add Resource/Component")}
               </Button>
               {isCurrentUserAppManager && (
-              <Button
-                className="buttonViewStats"
-                onClick={() => {
-                  goToResourceStats();
-                }}
-              >
-                {t("View Stats")}
-              </Button>
+                <Button
+                  className="buttonViewStats"
+                  onClick={() => {
+                    goToResourceStats();
+                  }}
+                >
+                  {t("View Stats")}
+                </Button>
               )}
             </Col>
           </Row>
@@ -184,6 +183,7 @@ const Inventory = () => {
                 <th>
                   <FaStickyNote /> {t("Observations")}
                 </th>
+                <th>Edit</th> 
               </tr>
             </thead>
             <tbody>
@@ -198,6 +198,11 @@ const Inventory = () => {
                   <td>{resource.supplierContact}</td>
                   <td>{resource.stock}</td>
                   <td>{resource.observations}</td>
+                  <td>
+                    <Button variant="link" onClick={() => openEditModal(resource)}>
+                      <FaEdit />
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -240,9 +245,11 @@ const Inventory = () => {
         isOpen={modalOpen}
         toggle={() => setModalOpen(!modalOpen)}
         fetchResources={fetchResources}
+        initialResource={initialResource} 
       />
     </>
   );
 };
 
 export default Inventory;
+
