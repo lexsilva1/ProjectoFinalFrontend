@@ -12,10 +12,13 @@ const ResourcesModal = ({ show, handleClose, handleSelect, projectName, project,
   const [quantities, setQuantities] = useState({});
   const [showCreateResourceModal, setShowCreateResourceModal] = useState(false);
   const token = Cookies.get('authToken');
+  const [tempSelectedMaterials, setTempSelectedMaterials] = useState([]);
 
   const fetchResources = async () => {
     try {
-      const resources = await getResources(token);
+      let resources = await getResources(token);
+      // Filtra recursos que já foram adicionados
+      resources = resources.filter((resource) => !selectedMaterials.some((material) => material.id === resource.id));
       setResources(resources);
     } catch (error) {
       console.error(error);
@@ -35,30 +38,23 @@ const ResourcesModal = ({ show, handleClose, handleSelect, projectName, project,
     setSelectedMaterials(updatedMaterials);
   };
 
-  const handleAddResource = async (resource) => {
-    const quantity = quantities[resource.name] || 1; 
+  const handleAddResource = (resource) => {
+    const quantity = quantities[resource.name] || 1;
+    const updatedMaterials = [...tempSelectedMaterials, { ...resource, quantity }];
+    console.log('Adicionando recurso:', resource, 'Quantidade:', quantity); // Debug
+    setTempSelectedMaterials(updatedMaterials);
+  };
   
-    if(projectName) {
-      try {
-        // Corrigir: resources.id deve ser resource.id
-        const response = await addResourceToProject(token, projectName, resource.id, quantity);
-        handleSelect(response); 
-      } catch (error) {
-        console.error('Failed to add resource to project:', error);
-      }
-    }
-  
-    const updatedMaterials = [
-      ...selectedMaterials,
-      { ...resource, quantity },
-    ];
-    setSelectedMaterials(updatedMaterials);
-  
-    handleSelect(updatedMaterials); 
-    if(project){
-      setProject({...project, billOfMaterials: project.billOfMaterials.filter(material => material.id !== resource.id).concat(updatedMaterials)})
-    }
-    handleClose(); 
+  const handleAddSelectedResources = async () => {
+    console.log('Adicionando selecionados:', tempSelectedMaterials); // Debug
+    setSelectedMaterials([...selectedMaterials, ...tempSelectedMaterials]);
+    setTempSelectedMaterials([]);
+    handleClose();
+  };
+
+  const handleRemoveSelectedResource = (resourceId) => {
+    const updatedMaterials = tempSelectedMaterials.filter(material => material.id !== resourceId);
+    setTempSelectedMaterials(updatedMaterials);
   };
 
   const handleOpenCreateResourceModal = () => {
@@ -79,25 +75,42 @@ const ResourcesModal = ({ show, handleClose, handleSelect, projectName, project,
           <Button onClick={handleOpenCreateResourceModal}>Add New Component/Resource</Button>
         </Modal.Header>
         <Modal.Body>
-          {resources.map((resource, index) => (
-            <Row key={index} className="align-items-center">
-              <Col>
-                <p>{resource.name}</p>
-              </Col>
-              <Col>
-                <FormControl
-                  type="number"
-                  min="1"
-                  value={quantities[resource.name] || 1}
-                  onChange={(e) => handleQuantityChange(resource, e.target.value)}
-                />
-              </Col>
-              <Col>
-                <Button onClick={() => handleAddResource(resource)}>Add</Button>
-              </Col>
-            </Row>
-          ))}
-        </Modal.Body>
+  <h5>Recursos Adicionados</h5>
+  {tempSelectedMaterials.map((material, index) => (
+    <Row key={index} className="align-items-center">
+      <Col>
+        <p>{material.name} - Quantidade: {material.quantity}</p>
+      </Col>
+      <Col>
+        <Button variant="danger" onClick={() => handleRemoveSelectedResource(material.id)}>Remover</Button>
+      </Col>
+    </Row>
+  ))}
+  <hr />
+  {resources.map((resource, index) => (
+    <Row key={index} className="align-items-center">
+      <Col>
+        <p>{resource.name}</p>
+      </Col>
+      <Col>
+        <FormControl
+          type="number"
+          min="1"
+          value={quantities[resource.name] || 1}
+          onChange={(e) => handleQuantityChange(resource, e.target.value)}
+        />
+      </Col>
+      <Col>
+        <Button onClick={() => handleAddResource(resource)}>Add</Button>
+      </Col>
+    </Row>
+  ))}
+</Modal.Body>
+<Modal.Footer>
+  <Button variant="primary" onClick={handleAddSelectedResources}>
+    Adicionar Selecionados
+  </Button>
+</Modal.Footer>
       </Modal>
       <CreateResourceModal
         isOpen={showCreateResourceModal}
