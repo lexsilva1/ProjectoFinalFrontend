@@ -26,7 +26,7 @@ import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/
 import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
 import ReactQuill from 'react-quill';
 import Button from 'react-bootstrap/Button';
-import { set } from "date-fns";
+import { Card } from 'react-bootstrap';
 
 const Project = () => {
   const { projectName } = useParams();
@@ -433,6 +433,11 @@ const Project = () => {
 
     return (
       <div className="card shadow-lg w-100">
+                        <Card.Header
+        className="d-flex justify-content-between align-items-center"
+        style={{ height: "60px" }}
+      >
+        </Card.Header>
         <img
           src={project.image ? project.image : avatarProject}
           alt={project.name}

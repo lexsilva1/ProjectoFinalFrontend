@@ -12,7 +12,9 @@ import {
 import './Inventory.css';
 import CreateResourceModal from '../components/Modals/CreateResourceModal/CreateResourceModal';
 import { useNavigate } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
+import userStore from '../stores/userStore';
 
 const Inventory = () => {
   const [resources, setResources] = useState([]);
@@ -22,11 +24,16 @@ const Inventory = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Número máximo de itens por página
+  const itemsPerPage = 10; 
   const token = Cookies.get("authToken");
   const [modalOpen, setModalOpen] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const userRole = userStore((state) => state.user?.role);
+
+
+
+  const isCurrentUserAppManager = userRole < 2;
 
   const fetchResources = async () => {
     const resourcesData = await getResources(token);
@@ -40,7 +47,7 @@ const Inventory = () => {
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(1); // Resetar para a primeira página em uma nova pesquisa
+    setCurrentPage(1); 
   };
 
   const requestSort = (key) => {
@@ -135,6 +142,7 @@ const Inventory = () => {
               >
                 {t("Add Resource/Component")}
               </Button>
+              {isCurrentUserAppManager && (
               <Button
                 className="buttonViewStats"
                 onClick={() => {
@@ -143,6 +151,7 @@ const Inventory = () => {
               >
                 {t("View Stats")}
               </Button>
+              )}
             </Col>
           </Row>
           <Table striped bordered hover responsive className="inventory-table">
