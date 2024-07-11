@@ -1,5 +1,5 @@
 import React from 'react';
-import MessageCard from './Cards/MessageCard';
+import MessageCard from '../components/Cards/MessageCard/MessageCard';
 
 const UserList = ({ users }) => {
 console.log(users);

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Card, CardBody, CardHeader, Form } from "reactstrap";
-import Sidebar from "../components/SideBar";
-import Header from "../components/Header";
+import Sidebar from "../components/SideBar/SideBar";
+import Header from "../components/Header/Header";
 import Cookies from "js-cookie";
-import ResourcesModal from "../components/Modals/ResourcesModal";
+import ResourcesModal from "../components/Modals/ResourcesModal/ResourcesModal";
 import Step1 from "../components/CreateProjectSteps/Step1";
 import Step2 from "../components/CreateProjectSteps/Step2";
 import Step3 from "../components/CreateProjectSteps/Step3";
@@ -12,9 +12,9 @@ import { getInterests } from "../services/interestServices";
 import { getSkills } from "../services/skillServices";
 import { projectPhotoUpload } from "../services/projectServices";
 import { findAllUsers } from "../services/userServices";
-import userstore from "../stores/userStore"
+import userstore from "../stores/userStore";
 import { useTranslation } from "react-i18next";
-import './NewProject.css';
+import "./NewProject.css";
 
 /* NewProject Component: Responsible for creating a new project, contains the 3 form steps */
 
@@ -66,7 +66,6 @@ const NewProject = () => {
   const [users, setUsers] = useState([]);
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const [error, setError] = useState("");
-
 
   // Use the useEffect hook to fetch labs, users, skill suggestions, and keyword suggestions.
   useEffect(() => {
@@ -128,7 +127,6 @@ const NewProject = () => {
       [field]: [...inputs[field], ""],
     });
   };
-
 
   // Define a function to remove a field. It takes an index 'index' and a field 'field' and updates the state of the inputs.
   const handleDelete = (index, field) => {
@@ -230,9 +228,11 @@ const NewProject = () => {
       <div style={{ position: "absolute", top: 0, width: "100%" }}>
         <Header />
       </div>
-      <Container style={{marginTop: "100px"}}>
+      <Container style={{ marginTop: "100px" }}>
         <Card className="project-card">
-        <CardHeader className="CardHeader-create-project blue-card-header">{t("Create New Project")}</CardHeader>
+          <CardHeader className="CardHeader-create-project blue-card-header">
+            {t("Create New Project")}
+          </CardHeader>
           <CardBody>
             <Form>{renderStep()}</Form>
           </CardBody>

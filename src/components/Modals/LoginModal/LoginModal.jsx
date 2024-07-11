@@ -4,9 +4,9 @@ import userStore from "../../../stores/userStore";
 import "../RegisterModal/RegisterModal.css";
 import { useTranslation } from "react-i18next";
 import { login } from "../../../services/userServices";
-import ResetPasswordModal from "../ResetPasswordModal";
+import ResetPasswordModal from "../ResetPasswordModal/ResetPasswordModal";
 import { getNotifications } from "../../../services/notificationService";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const setShow = userStore((state) => state.setShowLogin);
   const handleClose = () => {
     setShow(false);
-    setLoginError(false); 
+    setLoginError(false);
   };
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [loginError, setLoginError] = useState(false);
@@ -28,12 +28,13 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
     const loginSuccessful = await login(email, password);
     if (loginSuccessful) {
       handleClose();
-      const userNotifications = await getNotifications(Cookies.get("authToken"));
-      if(userNotifications) {
-        setNotifications(userNotifications)
+      const userNotifications = await getNotifications(
+        Cookies.get("authToken")
+      );
+      if (userNotifications) {
+        setNotifications(userNotifications);
         console.log(userNotifications);
       }
-
 
       setLoginError(false);
     } else {
@@ -83,11 +84,11 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
                 Forgot your password?
               </a>
             </Form.Group>
-    <div className="d-flex justify-content-center">
-            <button type="submit" className="custom-button">
-              {t("Login")}
-            </button>
-    </div>
+            <div className="d-flex justify-content-center">
+              <button type="submit" className="custom-button">
+                {t("Login")}
+              </button>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>

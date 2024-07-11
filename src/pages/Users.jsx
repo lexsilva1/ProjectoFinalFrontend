@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import Header from "../components/Header";
-import Sidebar from "../components/SideBar";
-import BannerUsers from "../components/Banners/BannerUsers";
-import UserCard from "../components/Cards/UserCard";
+import Header from "../components/Header/Header";
+import Sidebar from "../components/SideBar/SideBar";
+import BannerUsers from "../components/Banners/BannerUsers/BannerUsers";
+import UserCard from "../components/Cards/UserCard/UserCard";
 import Cookies from "js-cookie";
 import userStore from "../stores/userStore";
 import { findAllUsers } from "../services/userServices";
-import './Users.css';
+import "./Users.css";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -43,15 +43,16 @@ const Users = () => {
         case "name":
           return (
             (user.firstName &&
-             user.firstName.toLowerCase().includes(lowercasedFilter)) ||
+              user.firstName.toLowerCase().includes(lowercasedFilter)) ||
             (user.lastName &&
-             user.lastName.toLowerCase().includes(lowercasedFilter))
+              user.lastName.toLowerCase().includes(lowercasedFilter))
           );
         case "skill":
           return (
             user.skills &&
             user.skills.some(
-              (skill) => skill && skill.name.toLowerCase().includes(lowercasedFilter)
+              (skill) =>
+                skill && skill.name.toLowerCase().includes(lowercasedFilter)
             )
           );
         case "interest":
@@ -59,7 +60,8 @@ const Users = () => {
             user.interests &&
             user.interests.some(
               (interest) =>
-                interest && interest.name.toLowerCase().includes(lowercasedFilter)
+                interest &&
+                interest.name.toLowerCase().includes(lowercasedFilter)
             )
           );
         default:

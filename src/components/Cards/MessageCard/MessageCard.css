@@ -1,0 +1,58 @@
+.mail-message-card {
+    position: relative;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: white;
+    margin-bottom: 0px !important;
+    border-radius: 0px;
+    margin-left: 0px;
+    height: 90px;
+    margin-top: 5px;
+}
+
+
+.mail-message-card:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.mail-sender {
+    font-size: 0.9rem!important;
+    font-weight: bold;
+    margin-left: 10px; 
+    color: var(--dark-color);
+}
+
+.mail-datetime {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 12px;
+    color: #999;
+    margin-right: 10px; 
+}
+
+.mail-is-read {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: green;
+}
+
+.mail-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    
+
+}
+
+.mail-content {
+    border-left: 1px solid #ccc; /* Add a visual divider */
+    padding-left: 10px; /* Add some space after the divider */
+}

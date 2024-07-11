@@ -8,7 +8,7 @@ import {
   updateTask,
 } from "../../../services/projectServices";
 import Cookies from "js-cookie";
-import MembersModal from "../MembersModal";
+import MembersModal from "../MembersModal/MembersModal";
 import Avatar from "../../../multimedia/Images/Avatar.jpg";
 import { Dropdown, DropdownButton, Col, Row } from "react-bootstrap";
 import "./CreateTaskModal.css";

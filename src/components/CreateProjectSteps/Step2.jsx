@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
-import { getSkills, createSkillForProject, getSkillTypes } from "../../services/skillServices";
-import { getInterests, createKeyword, getInterestTypes } from "../../services/interestServices";
-import TypeModal from "../Modals/TypeModal";
-import UsersModal from "../Modals/UsersModal";
-import ResourcesModal from "../Modals/ResourcesModal";
+import {
+  getSkills,
+  createSkillForProject,
+  getSkillTypes,
+} from "../../services/skillServices";
+import {
+  getInterests,
+  createKeyword,
+  getInterestTypes,
+} from "../../services/interestServices";
+import TypeModal from "../Modals/TypeModal/TypeModal";
+import UsersModal from "../Modals/UsersModal/UsersModal";
+import ResourcesModal from "../Modals/ResourcesModal/ResourcesModal";
 import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
 
@@ -41,7 +49,6 @@ const Step2 = ({
   const [error, setError] = useState("");
   const [showResourcesModal, setShowResourcesModal] = useState(false);
   const { t } = useTranslation();
-
 
   // Fetch skills, interests, skill types, and interest types when the component mounts
   useEffect(() => {
@@ -294,7 +301,7 @@ const Step2 = ({
               onClick={handleOpenResourcesModal}
               color="primary"
               className="modal-button d-block"
-              style={{ marginTop: "0px", marginBottom: "10px"}}
+              style={{ marginTop: "0px", marginBottom: "10px" }}
             >
               {t("Add Materials")}
             </Button>
@@ -349,7 +356,7 @@ const Step2 = ({
               onClick={handleOpenUsersModal}
               color="primary"
               className="modal-button d-block"
-              style={{ marginTop: "0px", marginBottom: "10px"}}
+              style={{ marginTop: "0px", marginBottom: "10px" }}
             >
               {t("Add Team Members")}
             </Button>
@@ -424,4 +431,3 @@ const Step2 = ({
 };
 
 export default Step2;
-

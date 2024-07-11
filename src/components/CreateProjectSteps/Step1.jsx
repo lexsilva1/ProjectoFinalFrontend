@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import ReactQuill from 'react-quill';
 
-import 'react-quill/dist/quill.snow.css';
 
-/* Componente Step1: Responsável pela primeira etapa de um formulário, recebe várias props 
-escolha do nome, localizaçao do lab, imagem, data de início e data de fim*/
+
+
+/* Step1 Component: Responsible for the first step of a form, receives several props 
+such as project name, location, image, start date, and end date */
 
 const Step1 = ({
-  inputs, // Objeto contendo os valores dos inputs
-  labs, // Array contendo os laboratórios disponíveis para seleção
-  handleInputChange, // Função para tratar a mudança nos inputs
-  handleImageUpload, // Função para tratar o upload de imagem
-  nextStep, // Função para avançar para a próxima etapa do formulário
-  avatar, // URL da imagem de avatar do projeto
+  inputs, 
+  labs, 
+  handleInputChange, 
+  handleImageUpload,
+  nextStep, 
+  avatar, 
 }) => {
   const { t } = useTranslation();
   const [selectedFileName, setSelectedFileName] = useState(t("No file selected"));
 
-  // Função para tratar o upload de imagem em inglês
+  // Function to handle custom file upload and set the selected file name
   const handleCustomFileUpload = (event) => {
     handleImageUpload(event);
     const fileName = event.target.files[0] ? event.target.files[0].name : t("No file selected");
     setSelectedFileName(fileName);
   };
 
-    // Função específica para manipular mudanças no ReactQuill
-    const handleQuillChange = (value, name) => {
-      handleInputChange({ target: { name, value } });
-    };
     
   return (
     <>
@@ -67,10 +63,13 @@ const Step1 = ({
             </FormGroup>
             <FormGroup className="my-form-group">
               <Label for="description">{t("Description")}</Label>
-              <ReactQuill
-                theme="snow"
+              <Input
+                type="textarea"
+                name="description"
+                id="description"
+                onChange={handleInputChange}
+                className="short-input"
                 value={inputs.description}
-                onChange={(content) => handleQuillChange(content, 'description')}
                 style={{ height: "250px", resize: "none" }}
               />
             </FormGroup>

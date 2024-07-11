@@ -6,27 +6,44 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
 import avatarProject from "../multimedia/Images/avatarProject.jpg";
 import Avatar from "../multimedia/Images/Avatar.jpg";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import userStore from "../stores/userStore";
-import WarningModal from "../components/Modals/WarningModal";
-import ResourcesModal from "../components/Modals/ResourcesModal";
-import { getProjectByName, projectApplication, updateProjectStatus, removeResourceToProject, updateResourceToProject, updateProject } from "../services/projectServices";
-import ProjectTeamTab from "../components/ProjectTeamTab";
-import ExecutionPlan from "../components/ExecutionPlan";
+import WarningModal from "../components/Modals/WarningModal/WarningModal";
+import ResourcesModal from "../components/Modals/ResourcesModal/ResourcesModal";
+import {
+  getProjectByName,
+  projectApplication,
+  updateProjectStatus,
+  removeResourceToProject,
+  updateResourceToProject,
+  updateProject,
+} from "../services/projectServices";
+import ProjectTeamTab from "../components/ProjectTeamTab/ProjectTeamTab";
+import ExecutionPlan from "../components/ExecutionPlan/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
 import ProjectChat from "../components/ProjectChat";
-import ProjectLogs from "../components/ProjectLogs";
+import ProjectLogs from "../components/ProjectLogs/ProjectLogs";
 import { useTranslation } from "react-i18next";
-import { FaTrash, FaPencilAlt  } from 'react-icons/fa';
-import { Row, Col } from 'react-bootstrap';
-import TypeModal from "../components/Modals/TypeModal";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { Row, Col } from "react-bootstrap";
+import TypeModal from "../components/Modals/TypeModal/TypeModal";
 import { getLabs } from "../services/labServices";
-import { Typeahead } from 'react-bootstrap-typeahead';
-import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/skillServices";
-import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
-import ReactQuill from 'react-quill';
-import Button from 'react-bootstrap/Button';
-import { Card } from 'react-bootstrap';
+import { Typeahead } from "react-bootstrap-typeahead";
+import {
+  getSkills,
+  createSkill,
+  deleteSkill,
+  getSkillTypes,
+} from "../services/skillServices";
+import {
+  getInterests,
+  createInterest,
+  deleteInterest,
+  getInterestTypes,
+} from "../services/interestServices";
+import ReactQuill from "react-quill";
+import Button from "react-bootstrap/Button";
+import { Card } from "react-bootstrap";
 import { set } from "date-fns";
 
 const Project = () => {
@@ -62,7 +79,7 @@ const Project = () => {
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
- const  [billOfMaterials, setBillOfMaterials] = useState([]);
+  const [billOfMaterials, setBillOfMaterials] = useState([]);
   const [selectedLab, setSelectedLab] = useState(project.lab);
 
   const createMarkup = (html) => {
@@ -399,50 +416,47 @@ const Project = () => {
         setDescription(project.description || "");
       }
     };
-  
 
-      // Função para lidar com a mudança na descrição
-  const handleDescriptionChange = (value) => {
-    setDescription(value);
-  };
-
-  // Função para lidar com a mudança no laboratório selecionado
-  const handleLabChange = async (event) => {
-    console.log(event.target.value);
-     setSelectedLab(event.target.value);
-    const projectDto = {
-      lab: event.target.value,
-      description: description,
+    // Função para lidar com a mudança na descrição
+    const handleDescriptionChange = (value) => {
+      setDescription(value);
     };
-   await updateProject(token, project.name,projectDto); 
-  };
 
-  // Função para salvar as alterações
-  const handleSave = async () => {
-    const projectDto = {
-      lab: selectedLab,
-      description: description,
-    };
-    try {
+    // Função para lidar com a mudança no laboratório selecionado
+    const handleLabChange = async (event) => {
+      console.log(event.target.value);
+      setSelectedLab(event.target.value);
+      const projectDto = {
+        lab: event.target.value,
+        description: description,
+      };
       await updateProject(token, project.name, projectDto);
-      setIsEditingDescription(false);
-      setShowSaveButton(false);
-      setDescription(description);
-      alert('Projeto atualizado com sucesso!');
-    } catch (error) {
-      console.error('Erro ao atualizar o projeto:', error);
-      alert('Erro ao atualizar o projeto.');
-    }
-  };
-  
+    };
+
+    // Função para salvar as alterações
+    const handleSave = async () => {
+      const projectDto = {
+        lab: selectedLab,
+        description: description,
+      };
+      try {
+        await updateProject(token, project.name, projectDto);
+        setIsEditingDescription(false);
+        setShowSaveButton(false);
+        setDescription(description);
+        alert("Projeto atualizado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar o projeto:", error);
+        alert("Erro ao atualizar o projeto.");
+      }
+    };
 
     return (
       <div className="card shadow-lg w-100">
-                        <Card.Header
-        className="d-flex justify-content-between align-items-center"
-        style={{ height: "60px" }}
-      >
-        </Card.Header>
+        <Card.Header
+          className="d-flex justify-content-between align-items-center"
+          style={{ height: "60px" }}
+        ></Card.Header>
         <img
           src={project.image ? project.image : avatarProject}
           alt={project.name}
@@ -484,15 +498,16 @@ const Project = () => {
           <Row>
             <Col md={12}>
               <p className="card-text-project">
-                <strong>Laboratory: </strong> {" "}
-                { isCurrentUserProjectManager ? (
+                <strong>Laboratory: </strong>{" "}
+                {isCurrentUserProjectManager ? (
                   <select
-                  style={{border: "solid 1px #c6c2c2", marginLeft: "10px", borderRadius: "5px"}}
-                  value = {selectedLab}
-                  onChange={(e) => 
-                    handleLabChange(e)
-                    
-                  }
+                    style={{
+                      border: "solid 1px #c6c2c2",
+                      marginLeft: "10px",
+                      borderRadius: "5px",
+                    }}
+                    value={selectedLab}
+                    onChange={(e) => handleLabChange(e)}
                   >
                     {labs.map((lab) => (
                       <option key={lab.location} value={lab.location}>
@@ -504,70 +519,80 @@ const Project = () => {
                   project.lab
                 )}
               </p>
-              <div >
-              <p className="card-text-project" style={{ 
-    display: "flex", 
-    justifyContent: "space-between", 
-    alignItems: "center", 
-    border: "solid 1px #c6c2c2", 
-    padding: "5px", 
-    borderTopRightRadius: "5px",
-    borderTopLeftRadius: "5px",
-}}>
-    <strong>Description: </strong>
-    <FaPencilAlt
-      className="edit-description-icon"
-      onClick={toggleEditDescription}
-      style={{ cursor: "pointer" }} 
-    />
-</p>
-  <div style={{
-    marginLeft: isEditingDescription ? "40px" : "40px",
-    marginTop: isEditingDescription ? "-40.5px" : "-40.5px",
-    border: isEditingDescription ? "none" : "solid 1px #c6c2c2",
-    width: isEditingDescription ? "96.6%" : "93.7%",
-    borderBottomRightRadius: isEditingDescription ? "0px" : "5px",
-    borderBottomLeftRadius: isEditingDescription ? "0px" : "5px",
-  }}>
-    {!isEditingDescription ? (
-      <>
-        <span style={{ width: "90%"}} 
-          dangerouslySetInnerHTML={createMarkup(description)}
-        ></span>
-      </>
-    ) : (
-      <>
-        <ReactQuill
-          theme="snow"
-          style={{ width: "97%" }}
-          value={description}
-          onChange={setDescription}
-        />
-        {showSaveButton && (
-          <div>
-            <button onClick={handleSave}>Save</button>
-          </div>
-        )}
-      </>
-    )}
-  </div>
-</div>
-             
-         <div style={{margin: "40px"}}>
+              <div>
+                <p
+                  className="card-text-project"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    border: "solid 1px #c6c2c2",
+                    padding: "5px",
+                    borderTopRightRadius: "5px",
+                    borderTopLeftRadius: "5px",
+                  }}
+                >
+                  <strong>Description: </strong>
+                  <FaPencilAlt
+                    className="edit-description-icon"
+                    onClick={toggleEditDescription}
+                    style={{ cursor: "pointer" }}
+                  />
+                </p>
+                <div
+                  style={{
+                    marginLeft: isEditingDescription ? "40px" : "40px",
+                    marginTop: isEditingDescription ? "-40.5px" : "-40.5px",
+                    border: isEditingDescription ? "none" : "solid 1px #c6c2c2",
+                    width: isEditingDescription ? "96.6%" : "93.7%",
+                    borderBottomRightRadius: isEditingDescription
+                      ? "0px"
+                      : "5px",
+                    borderBottomLeftRadius: isEditingDescription
+                      ? "0px"
+                      : "5px",
+                  }}
+                >
+                  {!isEditingDescription ? (
+                    <>
+                      <span
+                        style={{ width: "90%" }}
+                        dangerouslySetInnerHTML={createMarkup(description)}
+                      ></span>
+                    </>
+                  ) : (
+                    <>
+                      <ReactQuill
+                        theme="snow"
+                        style={{ width: "97%" }}
+                        value={description}
+                        onChange={setDescription}
+                      />
+                      {showSaveButton && (
+                        <div>
+                          <button onClick={handleSave}>Save</button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ margin: "40px" }}>
                 <h4 style={{ fontSize: "1rem" }}>{t("Skills")}:</h4>
                 {isCurrentUserProjectManager ? (
-<Typeahead
-  id="skills-typeahead"
-  labelKey="name"
-  className="custom-typeahead"
-  multiple
-  onChange={handleSkillsChange}
-  options={skills}
-  allowNew
-  newSelectionPrefix="Add a new skill: "
-  placeholder={t("Choose your skills...")}
-  selected={selectedSkills}
-/>
+                  <Typeahead
+                    id="skills-typeahead"
+                    labelKey="name"
+                    className="custom-typeahead"
+                    multiple
+                    onChange={handleSkillsChange}
+                    options={skills}
+                    allowNew
+                    newSelectionPrefix="Add a new skill: "
+                    placeholder={t("Choose your skills...")}
+                    selected={selectedSkills}
+                  />
                 ) : (
                   <div>
                     {selectedSkills.map((skill, index) => (
@@ -644,7 +669,6 @@ const Project = () => {
               )}
             </Col>
             <Col md={12}>
-            
               {isMember && (
                 <div
                   className="table-responsive"
@@ -653,27 +677,34 @@ const Project = () => {
                   <table className="table table-sm">
                     <thead>
                       <tr>
-                      <th
-  colSpan="2"
-  style={{
-    width: "100%",
-    padding: "10px",
-    border: "solid 1px #c6c2c2",
-    borderRadius: "5px",
-    alignItems: "center",
-  }}
->
-  <div style={{
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%", 
-  }}>
-    <span style={{marginTop:"5px"}}>{t("Materials")}:</span> 
-    <Button variant="primary" onClick={handleShowResourcesModal}>
-      {t("Add resource/component")}
-    </Button>
-  </div>
-</th>
+                        <th
+                          colSpan="2"
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            border: "solid 1px #c6c2c2",
+                            borderRadius: "5px",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                            }}
+                          >
+                            <span style={{ marginTop: "5px" }}>
+                              {t("Materials")}:
+                            </span>
+                            <Button
+                              variant="primary"
+                              onClick={handleShowResourcesModal}
+                            >
+                              {t("Add resource/component")}
+                            </Button>
+                          </div>
+                        </th>
                       </tr>
                       <tr>
                         <th
@@ -692,7 +723,6 @@ const Project = () => {
                             fontSize: "0.9rem",
                             alignItems: "right",
                             padding: "10px",
-                            
                           }}
                         >
                           {t("Quantity")}
@@ -702,11 +732,11 @@ const Project = () => {
                     <tbody>
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
-                          <tr key={`${material.id}-${index}`} >
+                          <tr key={`${material.id}-${index}`}>
                             <td style={{ fontSize: "0.9rem" }}>
                               {material.name}
                             </td>
-                            <td >
+                            <td>
                               <button
                                 style={{
                                   backgroundColor: "transparent",
@@ -719,7 +749,15 @@ const Project = () => {
                                     project.name,
                                     material.id,
                                     material.quantity - 1,
-                                    setProject({...project, billOfMaterials: project.billOfMaterials.map((m) => m.id === material.id ? {...m, quantity: m.quantity - 1} : m)})
+                                    setProject({
+                                      ...project,
+                                      billOfMaterials:
+                                        project.billOfMaterials.map((m) =>
+                                          m.id === material.id
+                                            ? { ...m, quantity: m.quantity - 1 }
+                                            : m
+                                        ),
+                                    })
                                   )
                                 }
                               >
@@ -738,9 +776,17 @@ const Project = () => {
                                     project.name,
                                     material.id,
                                     material.quantity + 1,
-                                    setProject({...project, billOfMaterials: project.billOfMaterials.map((m) => m.id === material.id ? {...m, quantity: m.quantity + 1} : m)}
+                                    setProject({
+                                      ...project,
+                                      billOfMaterials:
+                                        project.billOfMaterials.map((m) =>
+                                          m.id === material.id
+                                            ? { ...m, quantity: m.quantity + 1 }
+                                            : m
+                                        ),
+                                    })
                                   )
-                        )}
+                                }
                               >
                                 +
                               </button>
@@ -758,7 +804,13 @@ const Project = () => {
                                     project.name,
                                     material.id,
                                     material.quantity,
-                                    setProject({...project, billOfMaterials: project.billOfMaterials.filter((m) => m.id !== material.id)})
+                                    setProject({
+                                      ...project,
+                                      billOfMaterials:
+                                        project.billOfMaterials.filter(
+                                          (m) => m.id !== material.id
+                                        ),
+                                    })
                                   )
                                 }
                               >
