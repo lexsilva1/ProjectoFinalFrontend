@@ -4,7 +4,7 @@ import { getLastMessages } from "../services/messageServices";
 import { useEffect, useState } from "react";
 import userstore from "../stores/userStore";
 import { set } from "react-hook-form";
-
+import { DateTime } from 'luxon';
 const useStartWebSocket = (token) => {
 
   const [socket, setSocket] = useState(null);
@@ -71,20 +71,29 @@ const useStartWebSocket = (token) => {
 
       case MessageType.LAST_MESSAGE:
        console.log('LAST_MESSAGE', messageObj);
-      if(user.id !== messageObj.sender.id){
-        messageObj.isRead = true;
+       console.log('userList', userList);
+        console.log('messageObj.sender.id', messageObj.sender.id);
+        console.log('user.id', user.id);
+      if(user.id === messageObj.sender.id){
+        console.log('user.id dentro do 1 if', user.id);
+        messageObj.read = true;
       }
 
-      userstore.setState({userList: userList.map((user) => {
-        if(user.sender.id === messageObj.sender.id){
-
-          user = messageObj;
-        }
-        
-        return user;
+      userstore.setState({
+        userList: userList.map((userItem) => {
+          if (userItem.sender.id === messageObj.sender.id) {
+            // Assuming messageObj has the same structure as the user objects in userList
+            // If not, you might need to adjust the properties being updated accordingly
+            return { ...userItem, ...messageObj };
+          }
+          return userItem;
+        }),
+      });
       
-      })});
-    const unreadCount = userList.filter(user =>!user.read).length;
+      
+      
+      console.log('userList', userList,DateTime.now().toString());
+      const unreadCount = userList.filter(user =>!user.read).length;
     setUnreadMessages(unreadCount);
     console.log('unreadCount', userList.filter(user =>!user.read));
     break;

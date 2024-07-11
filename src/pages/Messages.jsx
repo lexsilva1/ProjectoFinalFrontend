@@ -11,6 +11,7 @@ import MessageSidebar from '../components/MessageSidebar';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './Messages.css';
+import { use } from 'i18next';
 
 const Messages = () => {
   const userList = userStore((state) => state.userList);
@@ -18,20 +19,21 @@ const Messages = () => {
   const selectedUserMessages = userStore((state) => state.selectedUserMessages);
   const token = Cookies.get("authToken");
   const navigate = useNavigate();
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages);
 
   const resetSelectedUserMessages = () => {
     navigate("/messages");
     userStore.setState({ selectedUserMessages: null });
   };
-  console.log(selectedUserMessages);
+  console.log('selectedMessages',selectedUserMessages);
+  console.log('userList',userList);
 
+useEffect(() => {
+  const unreadCount = userList.filter(user =>!user.read).length;
+  setUnreadMessages(unreadCount);
+}
+, [selectedUserMessages]);
 
-
-  useEffect(() => {
-    getLastMessages(token).then((messages) => {
-      userStore.setState({ userList: messages });
-    });
-  }, []);
 
 
   return (

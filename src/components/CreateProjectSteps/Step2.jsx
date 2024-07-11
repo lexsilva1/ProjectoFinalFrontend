@@ -302,6 +302,8 @@ const Step2 = ({
               show={showResourcesModal}
               handleClose={handleCloseResourcesModal}
               handleSelect={handleSelect}
+              setInputs={setInputs}
+              inputs={inputs}
             />
             <ul className="list-group">
               {inputs.materials.map((material, index) => (

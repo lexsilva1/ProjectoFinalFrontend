@@ -47,9 +47,14 @@ const useMsgSocket = (authToken,id) => {
        }
         
       };
+      const closeSocket = () => {
+        if(socket){
+          socket.close();
+        }
+    }
       
 
-    return {sendMessage, messages, setMessages};
+    return {sendMessage, messages, setMessages,closeSocket};
 };
 
 export default useMsgSocket;

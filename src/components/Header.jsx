@@ -13,6 +13,7 @@ import logo2 from '../multimedia/Images/logo2.png';
 import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJournalPlus } from "react-icons/bs";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { markAsSeen } from '../services/notificationService';
+import { getLastMessages } from '../services/messageServices';
 import './Header.css';
 
 const Header = () => {
@@ -38,6 +39,8 @@ const Header = () => {
   const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
   const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
   const userRole = userStore((state) => state.user?.role);
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages);
+  const userList = userStore((state) => state.userList);
 
 
 

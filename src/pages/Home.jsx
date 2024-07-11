@@ -18,6 +18,7 @@ import { useLocation } from "react-router-dom";
 import InfoBox2 from "../components/InfoBoxs/InfoBox2";
 import InfoBox3 from "../components/InfoBoxs/InfoBox3";
 import InfoBox4 from "../components/InfoBoxs/InfoBox4";
+import { getLastMessages } from "../services/messageServices";
 import { useTranslation } from "react-i18next";
 import "./Home.css";
 
