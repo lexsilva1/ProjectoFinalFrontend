@@ -19,3 +19,5 @@ describe('Banner2 Component', () => {
     expect(secondParagraph).toBeInTheDocument();
   });
 });
+
+

@@ -4,9 +4,12 @@ import userStore from "../../../stores/userStore";
 import "../RegisterModal/RegisterModal.css";
 import { useTranslation } from "react-i18next";
 import { login } from "../../../services/userServices";
-import ResetPasswordModal from "../ResetPasswordModal/ResetPasswordModal";
+import { getLastMessages } from "../../../services/messageServices";
+import ResetPasswordModal from "../../Modals/ResetPasswordModal/ResetPasswordModal";
 import { getNotifications } from "../../../services/notificationService";
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
+import { set } from "date-fns";
+
 
 const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const { t } = useTranslation();
@@ -20,21 +23,36 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
   const [loginError, setLoginError] = useState(false);
   const notifications = userStore((state) => state.notifications);
   const setNotifications = userStore((state) => state.setNotifications);
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages); 
+  const userList = userStore((state) => state.userList);
+  const setUserList = userStore((state) => state.setUserList);
 
   const handleSubmit = async (e) => {
+    console.log('handleSubmit');
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
     const loginSuccessful = await login(email, password);
     if (loginSuccessful) {
-      handleClose();
-      const userNotifications = await getNotifications(
-        Cookies.get("authToken")
-      );
-      if (userNotifications) {
+
+      console.log('loginSuccessful');
+      
+      const userNotifications = await getNotifications(Cookies.get("authToken"));
+      if(userNotifications) {
         setNotifications(userNotifications);
-        console.log(userNotifications);
       }
+      
+      const messages = await getLastMessages(Cookies.get("authToken"));
+      if(messages) {
+        setUserList(messages);
+        // Calculate unreadCount using the freshly fetched messages
+        const unreadCount = messages.filter(user => !user.read).length;
+        setUnreadMessages(unreadCount);
+        console.log('unreadCount', unreadCount);
+        console.log('userList', messages); // Log the fresh messages
+      }
+      
+      handleClose();
 
       setLoginError(false);
     } else {

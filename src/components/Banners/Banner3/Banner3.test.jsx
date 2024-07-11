@@ -35,3 +35,4 @@ describe('Banner3 Component', () => {
       expect(thirdParagraph).toBeInTheDocument();
     });
   });
+  

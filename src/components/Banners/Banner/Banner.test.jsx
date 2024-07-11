@@ -14,3 +14,4 @@ test('renders Banner text structure correctly', () => {
   const thirdParagraph = screen.getByText('meets success.');
   expect(thirdParagraph).toBeInTheDocument();
 });
+

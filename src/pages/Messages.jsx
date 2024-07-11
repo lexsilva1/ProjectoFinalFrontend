@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import Header from "../components/Header/Header";
@@ -16,24 +17,30 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./Messages.css";
 
+
 const Messages = () => {
   const userList = userStore((state) => state.userList);
   const setSelectedMessages = userStore((state) => state.setSelectedMessages);
   const selectedUserMessages = userStore((state) => state.selectedUserMessages);
   const token = Cookies.get("authToken");
   const navigate = useNavigate();
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages);
 
   const resetSelectedUserMessages = () => {
     navigate("/messages");
     userStore.setState({ selectedUserMessages: null });
   };
-  console.log(selectedUserMessages);
+  console.log('selectedMessages',selectedUserMessages);
+  console.log('userList',userList);
 
-  useEffect(() => {
-    getLastMessages(token).then((messages) => {
-      userStore.setState({ userList: messages });
-    });
-  }, []);
+
+useEffect(() => {
+  const unreadCount = userList.filter(user =>!user.read).length;
+  setUnreadMessages(unreadCount);
+}
+, [selectedUserMessages]);
+
+
 
   return (
     <>

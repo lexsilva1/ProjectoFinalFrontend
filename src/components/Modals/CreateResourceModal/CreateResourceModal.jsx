@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, Row, Col, Alert } from "react-bootstrap";
-import { updateResource } from "../../../services/resourcesServices";
+import { updateResource,createResource } from "../../../services/resourcesServices";
 import Cookies from "js-cookie";
 import "./CreateResourceModal.css";
 
-const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource }) => {
+const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,handleAddResource }) => {
   const token = Cookies.get("authToken");
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +49,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource }
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+    if(initialResource) {
     try {
       await updateResource(token, initialResource.id, formData);
       fetchResources(); 
@@ -57,6 +57,16 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource }
     } catch (error) {
       console.error('An error occurred:', error);
     }
+  } else {
+    try {
+      const newResource = await createResource(token, formData);
+      // If tempSelectedMaterials is an array and you want to add a new item
+      handleAddResource(newResource);
+      handleClose();
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
   };
 
   const handleClose = () => {

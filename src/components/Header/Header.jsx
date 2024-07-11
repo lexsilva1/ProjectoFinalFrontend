@@ -45,6 +45,8 @@ const Header = () => {
   const [showLanguageSubmenu, setShowLanguageSubmenu] = useState(false);
   const toggleLanguageMenu = () => setShowLanguageMenu(!showLanguageMenu);
   const userRole = userStore((state) => state.user?.role);
+  const setUnreadMessages = userStore((state) => state.setUnreadMessages);
+  const userList = userStore((state) => state.userList);
 
   const isCurrentUserAppManager = userRole < 2;
 

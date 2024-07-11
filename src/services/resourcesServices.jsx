@@ -30,11 +30,11 @@ export const createResource = async (token, resourceDto) => {
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     } else {
-        const text = await response.text();
+        const data = await response.json(); // Corrected line: Changed variable name from 'response' to 'data'
         try {
-            return JSON.parse(text);
+            return data; // Corrected line: Changed 'response' to 'data'
         } catch {
-            return text;
+            return response.text(); // This line remains the same as it refers to the original 'response' object
         }
     }
 };
