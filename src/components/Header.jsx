@@ -40,6 +40,10 @@ const Header = () => {
   const userRole = userStore((state) => state.user?.role);
 
 
+
+  const isCurrentUserAppManager = userRole < 2;
+
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -150,6 +154,7 @@ const Header = () => {
                   <BsFileEarmarkText className="header-icon" />
                 </Link>
               </OverlayTrigger>
+              {isCurrentUserAppManager && (
               <OverlayTrigger
                 key="dashboard"
                 placement="bottom"
@@ -159,6 +164,7 @@ const Header = () => {
                   <BsGraphUp className="header-icon" />
                 </Link>
               </OverlayTrigger>
+              )}
               <OverlayTrigger
   key="messages"
   placement="bottom"
