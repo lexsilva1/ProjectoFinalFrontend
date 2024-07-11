@@ -222,3 +222,21 @@ export const setPrivacy = async (token) => {
     }
 }
 
+export const setAdminStatus = async (token, userId) => {
+    const response = await fetch(usersURL + '/adminStatus', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': token,
+            'userId': userId.toString()
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        const data = await response.text();
+        return data;
+    }
+}
+

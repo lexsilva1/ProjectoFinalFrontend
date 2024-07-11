@@ -97,11 +97,30 @@
   cursor: pointer;
   align-items: center;
   transition: transform 0.3s ease;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .promote-button:hover {
   background-color: var(--contrast-color);
   color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.demote-button {
+  background-color: rgb(255, 128, 128);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  align-items: center;
+  transition: transform 0.3s ease;
+  font-size: 14px;
+}
+
+.demote-button:hover {
+  background-color: var(--contrast-color);
+  color: var(--details-color);
   transform: scale(1.1);
 }
