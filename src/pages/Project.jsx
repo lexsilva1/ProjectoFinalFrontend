@@ -26,6 +26,7 @@ import { getSkills, createSkill, deleteSkill, getSkillTypes } from "../services/
 import { getInterests, createInterest, deleteInterest, getInterestTypes } from "../services/interestServices";
 import ReactQuill from 'react-quill';
 import Button from 'react-bootstrap/Button';
+import { set } from "date-fns";
 
 const Project = () => {
   const { projectName } = useParams();
@@ -60,7 +61,7 @@ const Project = () => {
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
- 
+ const  [billOfMaterials, setBillOfMaterials] = useState([]);
   const [selectedLab, setSelectedLab] = useState(project.lab);
 
   const createMarkup = (html) => {
@@ -111,6 +112,7 @@ const Project = () => {
   useEffect(() => {
     setSelectedInterests(project.interests || []);
     setSelectedSkills(project.skills || []);
+    setBillOfMaterials(project.billOfMaterials || []);
   }, [project]);
 
   const onTypeSelect = (type) => {
@@ -706,7 +708,8 @@ const Project = () => {
                                     token,
                                     project.name,
                                     material.id,
-                                    material.quantity - 1
+                                    material.quantity - 1,
+                                    setProject({...project, billOfMaterials: project.billOfMaterials.map((m) => m.id === material.id ? {...m, quantity: m.quantity - 1} : m)})
                                   )
                                 }
                               >
@@ -724,9 +727,10 @@ const Project = () => {
                                     token,
                                     project.name,
                                     material.id,
-                                    material.quantity + 1
+                                    material.quantity + 1,
+                                    setProject({...project, billOfMaterials: project.billOfMaterials.map((m) => m.id === material.id ? {...m, quantity: m.quantity + 1} : m)}
                                   )
-                                }
+                        )}
                               >
                                 +
                               </button>
@@ -743,7 +747,8 @@ const Project = () => {
                                     token,
                                     project.name,
                                     material.id,
-                                    material.quantity
+                                    material.quantity,
+                                    setProject({...project, billOfMaterials: project.billOfMaterials.filter((m) => m.id !== material.id)})
                                   )
                                 }
                               >
@@ -760,6 +765,8 @@ const Project = () => {
                     handleClose={handleCloseResourcesModal}
                     handleSelect={handleResourceSelected}
                     projectName={project.name}
+                    project={project}
+                    setProject={setProject}
                   />
                 </div>
               )}

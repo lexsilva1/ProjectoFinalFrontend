@@ -6,7 +6,7 @@ import CreateResourceModal from '../Modals/CreateResourceModal/CreateResourceMod
 import './ResourcesModal.css';
 import Cookies from 'js-cookie';
 
-const ResourcesModal = ({ show, handleClose, handleSelect, projectName }) => {
+const ResourcesModal = ({ show, handleClose, handleSelect, projectName, project, setProject }) => {
   const [resources, setResources] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -55,6 +55,9 @@ const ResourcesModal = ({ show, handleClose, handleSelect, projectName }) => {
     setSelectedMaterials(updatedMaterials);
   
     handleSelect(updatedMaterials); 
+    if(project){
+      setProject({...project, billOfMaterials: project.billOfMaterials.filter(material => material.id !== resource.id).concat(updatedMaterials)})
+    }
     handleClose(); 
   };
 
