@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, Row, Col, Alert } from "react-bootstrap";
-import { createResource } from "../../../services/resourcesServices";
+import { updateResource } from "../../../services/resourcesServices";
 import Cookies from "js-cookie";
 import "./CreateResourceModal.css";
 
-const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
+const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource }) => {
   const token = Cookies.get("authToken");
-  const initialState = {
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
     type: '',
@@ -15,9 +15,23 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
     brand: '',
     supplierContact: '',
     observations: ''
-  };
-  const [formData, setFormData] = useState(initialState);
+  });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (initialResource) {
+      setFormData({
+        name: initialResource.name || '',
+        description: initialResource.description || '',
+        type: initialResource.type || '',
+        supplier: initialResource.supplier || '',
+        stock: initialResource.stock || '',
+        brand: initialResource.brand || '',
+        supplierContact: initialResource.supplierContact || '',
+        observations: initialResource.observations || ''
+      });
+    }
+  }, [initialResource]);
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +51,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
     if (!validate()) return;
 
     try {
-      await createResource(token, formData);
+      await updateResource(token, initialResource.id, formData);
       fetchResources(); 
       handleClose();
     } catch (error) {
@@ -47,13 +61,22 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
 
   const handleClose = () => {
     toggle(); 
-    setFormData(initialState); 
+    setFormData({
+      name: '',
+      description: '',
+      type: '',
+      supplier: '',
+      stock: '',
+      brand: '',
+      supplierContact: '',
+      observations: ''
+    }); 
   };
 
   return (
     <Modal show={isOpen} onHide={handleClose} centered className="custom-modal-create-resource">
       <Modal.Header closeButton>
-        <Modal.Title>Create Resource</Modal.Title>
+        <Modal.Title>{initialResource ? "Edit Resource" : "Create Resource"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={onSubmit}>
@@ -146,7 +169,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Button type="submit" variant="primary">Submit</Button>
+          <Button type="submit" variant="primary">Save</Button>
         </Form>
       </Modal.Body>
     </Modal>
