@@ -36,6 +36,7 @@ const Home = () => {
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
   const currentUser = userStore((state) => state.user);
+  
 
   useEffect(() => {
     const token = location.pathname.split("/")[2];
@@ -57,27 +58,21 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     if (isLoggedIn) {
       getProjects()
         .then((projectsData) => {
           const userProjects = projectsData.filter((project) =>
-            project.teamMembers.some(
-              (member) =>
-                (member.userId === currentUser.id &&
-                  member.approvalStatus === "MEMBER") ||
-                member.approvalStatus === "CREATOR"
+            project.teamMembers.some((member) =>
+              member.userId === currentUser.id && (member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
             )
           );
-          const otherProjects = projectsData.filter(
-            (project) =>
-              !project.teamMembers.some(
-                (member) =>
-                  (member.userId === currentUser.id &&
-                    member.approvalStatus === "MEMBER") ||
-                  member.approvalStatus === "CREATOR"
-              )
+  
+          const otherProjects = projectsData.filter((project) =>
+            !project.teamMembers.some((member) =>
+              member.userId === currentUser.id && (member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR")
+            )
           );
+  
           const combinedProjects = [...userProjects, ...otherProjects];
           setProjects(combinedProjects);
         })
@@ -99,7 +94,7 @@ const Home = () => {
           setIsLoading(false);
         });
     }
-  }, [currentUser]);
+  }, [currentUser, isLoggedIn]);
 
   const handleOpenResetPasswordModal = () => {
     setShowLoginModal(false);
