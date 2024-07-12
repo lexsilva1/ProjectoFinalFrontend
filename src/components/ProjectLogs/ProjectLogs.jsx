@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Card,
-  Badge,
-  Form,
-  Button,
-  Alert,
-  ListGroup,
-} from "react-bootstrap";
-import {
-  ClockFill,
-  InfoCircleFill,
-  ExclamationTriangleFill,
-  XCircleFill,
-} from "react-bootstrap-icons";
+import { Container, Card, Badge, Form, Button, Alert, ListGroup,} from "react-bootstrap";
+import {ClockFill, InfoCircleFill, ExclamationTriangleFill, XCircleFill,} from "react-bootstrap-icons";
 import PropTypes from "prop-types";
-import {
-  fetchProjectLogs,
-  createProjectLog,
-  getTasks,
-  getProjectByName,
-} from "../../services/projectServices";
+import {fetchProjectLogs, createProjectLog, getTasks, getProjectByName,} from "../../services/projectServices";
 import Cookies from "js-cookie";
 import { findUserById } from "../../services/userServices";
+import { useTranslation } from "react-i18next";
 import "./ProjectLogs.css";
 
 const logLevelIcons = {
@@ -30,6 +13,8 @@ const logLevelIcons = {
   warning: <ExclamationTriangleFill />,
   error: <XCircleFill />,
 };
+
+/* ProjectLogs component. It shows the project logs and also allows the user to add annotations to the project logs.*/
 
 const ProjectLogs = ({ project, logUpdateTrigger }) => {
   const [logs, setLogs] = useState([]);
@@ -41,21 +26,24 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { t } = useTranslation();
   const token = Cookies.get("authToken");
   const projectName = project.name;
 
+  // Define the messages for each log type
   const logTypeMessages = {
-    UPDATE_PROJECT_STATUS: "Update Project Status",
-    PROJECT_CREATED: "Project Created",
-    APPLY_USER: "User Applied to Project",
-    USER_LEFT: "User Left Project",
-    ACCEPT_USER: "User Accepted to Project",
-    INVITE_USER: "User Invited to Project",
-    PROMOTE_USER: "User Promoted to Project Manager",
-    DEMOTE_USER: "User Demoted from Project Manager",
-    REMOVE_USER: "User Removed from Project",
-    CREATE_TASK: "Task Created",
-    UPDATE_TASK: "Task Updated",
+      UPDATE_PROJECT_STATUS: t("Update Project Status"),
+      PROJECT_CREATED: t("Project Created"),
+      APPLY_USER: t("User Applied to Project"),
+      USER_LEFT: t("User Left Project"),
+      ACCEPT_USER: t("User Accepted to Project"),
+      INVITE_USER: t("User Invited to Project"),
+      PROMOTE_USER: t("User Promoted to Project Manager"),
+      DEMOTE_USER: t("User Demoted from Project Manager"),
+      REMOVE_USER: t("User Removed from Project"),
+      CREATE_TASK: t("Task Created"),
+      UPDATE_TASK: t("Task Updated"),
+      UPDATE_PROJECT_DETAILS: t("Update Project Details"),
   };
 
   useEffect(() => {
@@ -176,7 +164,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
     setIsLoading(true);
     setError("");
     try {
-      // Obtém a data e hora atuais
+      // Get the current time in ISO format
       const now = new Date();
       const currentTime = new Date(
         now.getTime() - now.getTimezoneOffset() * 60000
@@ -205,7 +193,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
 
   return (
     <Container className="project-logs d-flex flex-column">
-      <p className="logs-title">Project Logs</p>
+      <p className="logs-title">{t("Project Logs")}</p>
       <div
         className="logs-section flex-grow-1 overflow-auto"
         style={{ border: "solid 1px #ddd" }}
@@ -241,7 +229,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
             </Card>
           ))
         ) : (
-          <p>No logs available.</p>
+          <p>{t("No logs available.")}</p>
         )}
       </div>
       {error && <Alert variant="danger">{error}</Alert>}
@@ -252,7 +240,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
             rows="3"
             value={annotation}
             onChange={handleAnnotationChange}
-            placeholder="Add Annotation"
+            placeholder= {t("Add Annotation")}
           />
         </Form.Group>
         {suggestions.length > 0 && (
@@ -279,7 +267,7 @@ const ProjectLogs = ({ project, logUpdateTrigger }) => {
           onClick={onSave}
           disabled={isLoading}
         >
-          {isLoading ? "Saving..." : "Save Annotation"}
+          {isLoading ? t("Saving...") : t("Save Annotation")}
         </Button>
       </Form>
     </Container>

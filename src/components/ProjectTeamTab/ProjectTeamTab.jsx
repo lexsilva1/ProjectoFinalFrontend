@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
-import {
-  inviteUser,
-  promoteUser,
-  demoteUser,
-  manageInvitesApplications,
-  rejectInvitesApplications,
-  removeProjectUser,
-  leaveProject,
-} from "../../services/projectServices";
+import {inviteUser, promoteUser,demoteUser, manageInvitesApplications, rejectInvitesApplications, removeProjectUser, leaveProject,} from "../../services/projectServices";
 import "./ProjectTeamTab.css";
 import UsersModal from "../Modals/UsersModal/UsersModal";
 import userStore from "../../stores/userStore";
@@ -17,6 +9,8 @@ import { findAllUsers } from "../../services/userServices";
 import { Row, Col, Card, Button, Form, Image } from "react-bootstrap";
 import WarningModal from "../Modals/WarningModal/WarningModal";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { set } from "date-fns";
 
 const ProjectTeamTab = ({ project }) => {
   const [showModal, setShowModal] = useState(false);
@@ -29,8 +23,10 @@ const ProjectTeamTab = ({ project }) => {
   const [users, setUsers] = useState([]);
   const currentUser = userStore((state) => state.user);
   const [localTeamMembers, setLocalTeamMembers] = useState(project.teamMembers);
+  const [memberRole, setMemberRole] = useState(""); // [1]
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
+console.log(localTeamMembers);
   const isCurrentUserProjectManager = localTeamMembers?.find(
     (member) => member.userId === currentUser.id
   )?.isProjectManager;
@@ -59,7 +55,12 @@ const ProjectTeamTab = ({ project }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
+  useEffect(() => {
+const reRender = () => {
+    setLocalTeamMembers(project.teamMembers);
+  };
+  reRender();
+  }, [project.teamMembers [memberRole]]); // [2]
   useEffect(() => {
     const fetchUsers = async () => {
       const users = await findAllUsers(token);
@@ -99,6 +100,7 @@ const ProjectTeamTab = ({ project }) => {
       });
   };
 
+  
   const handleRoleChange = async (event, userId) => {
     const newRole = event.target.value;
     console.log(`Atualizando o papel do usuário ${userId} para ${newRole}`);
@@ -106,15 +108,24 @@ const ProjectTeamTab = ({ project }) => {
     try {
       if (newRole === "Project Manager") {
         await promoteUser(token, project.name, userId);
-        console.log(`Usuário ${userId} promovido a Project Manager.`);
       } else if (newRole === "Collaborator") {
         await demoteUser(token, project.name, userId);
-        console.log(`Usuário ${userId} rebaixado para Collaborator.`);
       }
+      // Atualiza o estado localTeamMembers para refletir a mudança
+      setLocalTeamMembers((prevMembers) =>
+        prevMembers.map((member) =>
+          member.userId === userId
+            ? { ...member, isProjectManager: newRole === true }
+            : member
+        ),
+        
+      );
+      
     } catch (error) {
       console.error("Erro ao atualizar o papel do usuário", error);
     }
   };
+  
 
   const excludedUserIds = [
     ...members.map((member) => member.userId),
@@ -213,7 +224,7 @@ const ProjectTeamTab = ({ project }) => {
       <Card.Body>
         <Row>
           <Col md={6} style={{ borderRight: "1px solid lightgray" }}>
-            <h5>Members</h5>
+            <h5>{t("Members")}</h5>
             <div className="members-list">
               {members.length > 0 ? (
                 members.map((member, index) => (
@@ -264,8 +275,8 @@ const ProjectTeamTab = ({ project }) => {
                         }
                         onChange={(e) => handleRoleChange(e, member.userId)}
                       >
-                        <option value="Collaborator">Collaborator</option>
-                        <option value="Project Manager">Project Manager</option>
+                        <option value= {false} >Collaborator</option>
+                        <option value= {true} >Project Manager</option>
                       </Form.Select>
                     ) : (
                       <p className="role-label" style={{ fontWeight: "bold" }}>

@@ -133,9 +133,26 @@
 "Supplier Contact" : "Contato do Fornecedor",
 "Edit Resource" : "Editar Recurso",
 "Save" : "Salvar",
-"Create Resource" : "Criar Recurso"
-
-
+"Create Resource" : "Criar Recurso",
+"Project Logs": "Logs do Projeto",
+"Add Annotation": "Adicionar Anotação",
+"No logs available.": "Nenhum log disponível.",
+"Saving...": "Salvando...",
+"Save Annotation": "Salvar Anotação",
+"Annotation cannot be empty.": "A anotação não pode estar vazia.",
+"Failed to add annotation:": "Falha ao adicionar anotação:",
+"Update Project Status": "Atualizar Status do Projeto",
+"Project Created": "Projeto Criado",
+"User Applied to Project": "Utilizador Candidatou-se ao Projeto",
+"User Left Project": "Utilizador Deixou o Projeto",
+"User Accepted to Project": "Utilizador Aceite no Projeto",
+"User Invited to Project": "Utilizador Convidado para o Projeto",
+"User Promoted to Project Manager": "Utilizador Promovido a Gerente do Projeto",
+"User Demoted from Project Manager": "Utilizador Despromovido de Gerente do Projeto",
+"User Removed from Project": "Utilizador Removido do Projeto",
+"Task Created": "Tarefa Criada",
+"Task Updated": "Tarefa Atualizada",
+"Update Project Details": "Atualizar Detalhes do Projeto"
 
 
   }

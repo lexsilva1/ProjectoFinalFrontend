@@ -10,14 +10,7 @@ import Header from "../components/Header/Header";
 import userStore from "../stores/userStore";
 import WarningModal from "../components/Modals/WarningModal/WarningModal";
 import ResourcesModal from "../components/Modals/ResourcesModal/ResourcesModal";
-import {
-  getProjectByName,
-  projectApplication,
-  updateProjectStatus,
-  removeResourceToProject,
-  updateResourceToProject,
-  updateProject,
-} from "../services/projectServices";
+import {getProjectByName, projectApplication, updateProjectStatus, removeResourceToProject, updateResourceToProject, updateProject,} from "../services/projectServices";
 import ProjectTeamTab from "../components/ProjectTeamTab/ProjectTeamTab";
 import ExecutionPlan from "../components/ExecutionPlan/ExecutionPlan";
 import ChatIcon from "../components/ChatIcon";
@@ -29,22 +22,20 @@ import { Row, Col } from "react-bootstrap";
 import TypeModal from "../components/Modals/TypeModal/TypeModal";
 import { getLabs } from "../services/labServices";
 import { Typeahead } from "react-bootstrap-typeahead";
-import {
-  getSkills,
-  createSkill,
-  deleteSkill,
-  getSkillTypes,
-} from "../services/skillServices";
-import {
-  getInterests,
-  createInterest,
-  deleteInterest,
-  getInterestTypes,
-} from "../services/interestServices";
-import ReactQuill from "react-quill";
+import {getSkills, createSkill, deleteSkill, getSkillTypes,} from "../services/skillServices";
+import {getInterests, createInterest, deleteInterest, getInterestTypes,} from "../services/interestServices";
 import Button from "react-bootstrap/Button";
 import { Card } from "react-bootstrap";
 import { set } from "date-fns";
+
+/* Project Component: Responsible for displaying the project details 
+It shows the project information, team members, number of slots available if the user is not a member,
+the title, status, description, skills, interests, logs and materials if the user is a member.
+It also allows the user to apply to the project and if the user is an application manager, it allows the user to cancel 
+or restore the project.
+If the user is a project manager, it allows the user to change the status of the project, edit the description, 
+add skills and interests, and add resources/components to the project.
+*/
 
 const Project = () => {
   const { projectName } = useParams();
@@ -74,18 +65,19 @@ const Project = () => {
   const [interestTypes, setInterestTypes] = useState([]);
   const [skillTypes, setSkillTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
-    useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [billOfMaterials, setBillOfMaterials] = useState([]);
   const [selectedLab, setSelectedLab] = useState(project.lab);
 
+
   const createMarkup = (html) => {
     return { __html: DOMPurify.sanitize(html) };
   };
 
+  // Function to get the project data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -127,12 +119,14 @@ const Project = () => {
     fetchData();
   }, [project, token]);
 
+  // Function to get the project data when the project changes or is updated
   useEffect(() => {
     setSelectedInterests(project.interests || []);
     setSelectedSkills(project.skills || []);
     setBillOfMaterials(project.billOfMaterials || []);
   }, [project]);
 
+  // Function to choose the type of skill or interest
   const onTypeSelect = (type) => {
     setSelectedType(type);
     if (resolveOnSkillTypeSelected) {
@@ -140,16 +134,18 @@ const Project = () => {
       setResolveOnSkillTypeSelected(null);
     }
   };
+
+  // Function to open the modal to choose the type of skill or interest
   const handleOpenTypeModal = (type) => {
     setModalType(type);
     setShowTypeModal(true);
   };
 
-  // Função para fechar o modal de adição de skill ou interesse
+  // Function to close the modal to choose the type of skill or interest
   const handleCloseTypeModal = () => {
     setShowTypeModal(false);
   };
-  // Função para adicionar ou remover skills
+  // Function to add or remove skills
   const handleSkillsChange = async (selected) => {
     debugger;
     if (selected.length > selectedSkills.length) {
@@ -199,7 +195,7 @@ const Project = () => {
     setSelectedSkills(selected);
   };
 
-  // Função para adicionar ou remover interesses
+  // Function to add or remove interests
   const handleInterestsChange = async (selected) => {
     if (selected.length > selectedInterests.length) {
       const newInterests = selected.filter(
@@ -245,14 +241,18 @@ const Project = () => {
     console.log("profile selectedInterests", selectedInterests);
     console.log("profile selected", selected);
   };
+
+  // Function to show the warning modal to cancel the project
   const handleCancelProjectClick = () => {
     setShowWarningModal(true);
   };
 
+  // Function to close the warning modal to cancel the project
   const handleCancel = () => {
     setShowWarningModal(false);
   };
 
+  // Function to confirm the cancelation of the project
   const handleConfirmCancel = async () => {
     setShowWarningModal(false);
     const status = "Cancelled";
@@ -266,6 +266,7 @@ const Project = () => {
     }
   };
 
+  // Function to restore the project
   const handleRestoreProject = async () => {
     setShowModal(false);
     const status = "Planning";
@@ -282,9 +283,9 @@ const Project = () => {
 
   const handleShowResourcesModal = () => setShowResourcesModal(true);
   const handleCloseResourcesModal = () => setShowResourcesModal(false);
-
   const handleResourceSelected = (resource) => {};
 
+  // Function to change the status of the project
   const changeStatus = (newStatus) => {
     if (newStatus === "In_Progress") {
       newStatus = "In Progress";
@@ -292,16 +293,18 @@ const Project = () => {
     setStatus(newStatus);
   };
 
+  // To see if the user has already applied to the project
   const hasUserApplied = project.teamMembers?.some(
     (member) =>
       member.userId === currentUser.id && member.approvalStatus === "APPLIED"
   );
 
+  
   const handleNewLogAdded = () => {
-    console.log("Log added, incrementing trigger");
     setLogUpdateTrigger((prev) => prev + 1);
   };
 
+  // Define the statuses of the project and the colors
   const statuses = ["Planning", "Ready", "Approved", "In Progress", "Finished"];
   const getStatusClass = (status) => {
     switch (status) {
@@ -321,6 +324,8 @@ const Project = () => {
         return "project-card-status";
     }
   };
+
+  // Function to update the status of the project
   const updateStatus = async (status) => {
     if (status === "In Progress") {
       status = "In_Progress";
@@ -343,6 +348,7 @@ const Project = () => {
       member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
   );
 
+  // Function to get the project data 
   useEffect(() => {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
@@ -351,13 +357,12 @@ const Project = () => {
       setStatus(projectData.status);
       setSelectedLab(projectData.lab);
       setDescription(projectData.description);
-
-      console.log(projectData);
     };
 
     fetchProject();
   }, [projectName, token]);
 
+  // Shows the data of the project
   const projectTask = {
     id: project.id,
     name: project.name,
@@ -372,6 +377,8 @@ const Project = () => {
     },
     type: "project",
   };
+
+  // Function to verify if the user is a member of the project
   const isMember =
     project.status !== "Cancelled" &&
     project.teamMembers?.some(
@@ -381,6 +388,7 @@ const Project = () => {
           member.approvalStatus === "CREATOR")
     );
 
+  //Information tab content, with the project information verifing if the user is a member or not to render the correct components
   const renderInfoTabContent = () => {
     const approvedMembers = project.teamMembers
       ? project.teamMembers.filter(
@@ -391,7 +399,7 @@ const Project = () => {
       : [];
 
     const slotsAvailable = project.maxTeamMembers - approvedMembers.length;
-
+    // If the user is not a member he can apply to the project, if he already applied he can't apply again and shows a message
     const handleApply = async () => {
       const response = await projectApplication(token, project.name);
       if (response === "applied") {
@@ -401,11 +409,13 @@ const Project = () => {
       }
     };
 
+    //Function to verify if the user is a project manager
     const isCurrentUserProjectManager = project.teamMembers?.some(
       (member) =>
         member.userId === currentUser.id && member.isProjectManager === true
     );
 
+    //Function to verify if the user is an application manager
     const isCurrentUserAppManager = currentUser.role < 2;
     console.log(currentUser.role);
 
@@ -417,12 +427,12 @@ const Project = () => {
       }
     };
 
-    // Função para lidar com a mudança na descrição
+    // Function to handle the change in the description
     const handleDescriptionChange = (value) => {
       setDescription(value);
     };
 
-    // Função para lidar com a mudança no laboratório selecionado
+    // Function to handle the change in the lab
     const handleLabChange = async (event) => {
       console.log(event.target.value);
       setSelectedLab(event.target.value);
@@ -433,7 +443,7 @@ const Project = () => {
       await updateProject(token, project.name, projectDto);
     };
 
-    // Função para salvar as alterações
+    // Function to save the changes in the description and lab
     const handleSave = async () => {
       const projectDto = {
         lab: selectedLab,
@@ -444,10 +454,10 @@ const Project = () => {
         setIsEditingDescription(false);
         setShowSaveButton(false);
         setDescription(description);
-        alert("Projeto atualizado com sucesso!");
+        
       } catch (error) {
         console.error("Erro ao atualizar o projeto:", error);
-        alert("Erro ao atualizar o projeto.");
+        
       }
     };
 
@@ -467,7 +477,7 @@ const Project = () => {
           {status === "Cancelled" ? (
             <div className={getStatusClass(status)}>
               <div className="project-card-status-bar"></div>
-              <strong>Cancelled</strong>
+              <strong>{t("Cancelled")}</strong>
             </div>
           ) : (
             <div className={getStatusClass(status)}>
@@ -498,7 +508,7 @@ const Project = () => {
           <Row>
             <Col md={12}>
               <p className="card-text-project">
-                <strong>Laboratory: </strong>{" "}
+                <strong>{t("Laboratory")}: </strong>{" "}
                 {isCurrentUserProjectManager ? (
                   <select
                     style={{
@@ -520,63 +530,58 @@ const Project = () => {
                 )}
               </p>
               <div>
-                <p
-                  className="card-text-project"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    border: "solid 1px #c6c2c2",
-                    padding: "5px",
-                    borderTopRightRadius: "5px",
-                    borderTopLeftRadius: "5px",
-                  }}
-                >
-                  <strong>Description: </strong>
-                  <FaPencilAlt
-                    className="edit-description-icon"
-                    onClick={toggleEditDescription}
-                    style={{ cursor: "pointer" }}
-                  />
-                </p>
-                <div
-                  style={{
-                    marginLeft: isEditingDescription ? "40px" : "40px",
-                    marginTop: isEditingDescription ? "-40.5px" : "-40.5px",
-                    border: isEditingDescription ? "none" : "solid 1px #c6c2c2",
-                    width: isEditingDescription ? "96.6%" : "93.7%",
-                    borderBottomRightRadius: isEditingDescription
-                      ? "0px"
-                      : "5px",
-                    borderBottomLeftRadius: isEditingDescription
-                      ? "0px"
-                      : "5px",
-                  }}
-                >
-                  {!isEditingDescription ? (
-                    <>
-                      <span
-                        style={{ width: "90%" }}
-                        dangerouslySetInnerHTML={createMarkup(description)}
-                      ></span>
-                    </>
-                  ) : (
-                    <>
-                      <ReactQuill
-                        theme="snow"
-                        style={{ width: "97%" }}
-                        value={description}
-                        onChange={setDescription}
-                      />
-                      {showSaveButton && (
-                        <div>
-                          <button onClick={handleSave}>Save</button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+  <p
+    className="card-text-project"
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+     
+      padding: "5px",
+      borderTopRightRadius: "5px",
+      borderTopLeftRadius: "5px",
+    }}
+  >
+    <strong>{t("Description")}: </strong>
+    <FaPencilAlt
+      className="edit-description-icon"
+      onClick={toggleEditDescription}
+      style={{ cursor: "pointer" }}
+    />
+  </p>
+  <div
+    style={{
+      marginLeft: "40px",
+      marginTop: "-40.5px",
+      border: isEditingDescription ? "none" : "none",
+      width: isEditingDescription ? "96.6%" : "93.7%",
+      borderBottomRightRadius: isEditingDescription ? "0px" : "5px",
+      borderBottomLeftRadius: isEditingDescription ? "0px" : "5px",
+    }}
+  >
+    {!isEditingDescription ? (
+      <>
+        <span
+          style={{ width: "90%" }}
+          dangerouslySetInnerHTML={createMarkup(description)}
+        ></span>
+      </>
+    ) : (
+      <>
+        <textarea
+          style={{ width: "97%", height: "100px" }}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        {showSaveButton && (
+          <div>
+            <button class = "btn btn-primary" onClick={handleSave}>{t("Save")}</button>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+</div>
 
               <div style={{ margin: "40px" }}>
                 <h4 style={{ fontSize: "1rem" }}>{t("Skills")}:</h4>
@@ -733,7 +738,7 @@ const Project = () => {
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
                           <tr key={`${material.id}-${index}`}>
-                            <td style={{ fontSize: "0.9rem" }}>
+                            <td style={{ fontSize: "0.9rem", padding:"10px" }}>
                               {material.name}
                             </td>
                             <td>
