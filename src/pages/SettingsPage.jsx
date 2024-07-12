@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  getSystemVariables,
-  setSystemVariables,
-} from "../services/systemServices";
+import { getSystemVariables,setSystemVariables,} from "../services/systemServices";
 import Cookies from "js-cookie";
 import Header from "../components/Header/Header";
-import { Container, Form, Button, Card } from "react-bootstrap";
+import { Container, Form, Button, Card, Col, Row } from "react-bootstrap";
 import WarningModal from "../components/Modals/WarningModal/WarningModal";
 import { useNavigate } from "react-router-dom";
 import {findAllUsers} from "../services/userServices";
@@ -76,14 +73,16 @@ const SettingsPage = () => {
     const navigate = useNavigate();
   
     const handleCardClick = () => {
-      navigate(`/profile/${manager.id}`);
+      navigate(`/profile/${manager.userId}`);
     };
   
     return (
-      <Card onClick={handleCardClick} style={{ cursor: 'pointer', width: '18rem', margin: '10px' }}>
-        <Card.Img variant="top" src={manager.userPhoto} alt="Manager Photo" />
+      <Card className="managers-card" onClick={handleCardClick} style={{ cursor: 'pointer', width: '6rem', margin: '20px' }}>
+        <Card.Header style={{textAlign: "center", backgroundColor: "transparent"}}>
+        <Card.Img variant="top" src={manager.userPhoto} alt="Manager Photo" className="manager-photo" />
+        </Card.Header>
         <Card.Body>
-          <Card.Title>{`${manager.firstName} ${manager.lastName}`}</Card.Title>
+          <Card.Title className="manager-name">{`${manager.firstName} ${manager.lastName}`}</Card.Title>
         </Card.Body>
       </Card>
     );
@@ -94,6 +93,8 @@ const SettingsPage = () => {
       <Header />
       <div style={{ display: "flex" }}>
         <Container className="settings-container">
+          <Row>
+        <Col xs={12} md={6}>
           <Card className="settings-card">
             <Card.Header>
               <h1>Application Settings</h1>
@@ -122,13 +123,21 @@ const SettingsPage = () => {
               </Form>
             </Card.Body>
           </Card>
-          <Card>
+          </Col>
+          <Col xs={12} md={6}>
+          <Card className="cardManagers">
+          <Card.Header>
+              <h1>Application Managers</h1>
+            </Card.Header>
+
           <div className="managers-container" style={{ display: 'flex', flexWrap: 'wrap' }}>
   {managers.map(manager => (
-    <ManagerCard key={manager.id} manager={manager} />
+    <ManagerCard key={manager.userId} manager={manager} />
   ))}
 </div>
           </Card>
+          </Col>
+          </Row>
           <WarningModal
             isOpen={modalOpen}
             message={modalMessage}

@@ -40,6 +40,7 @@ const Home = () => {
   const currentUser = userStore((state) => state.user);
 
 
+
   // Show the set password modal. Verifies if the location path contains the token and if it is a password reset link
   useEffect(() => {
     const token = location.pathname.split("/")[2];
