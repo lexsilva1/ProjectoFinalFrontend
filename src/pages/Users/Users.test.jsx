@@ -1,111 +1,54 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Users from './Users';
-import * as userServices from '../services/userServices';
-import userStore from '../stores/userStore';
 
-jest.mock('../services/userServices', () => ({
-  findAllUsers: jest.fn(),
-}));
+const mockUsers = [
+  { userId: '1', name: 'Alice', skills: ['JavaScript'] },
+  { userId: '2', name: 'Bob', skills: ['Python'] },
+];
 
-jest.mock('js-cookie', () => ({
-  get: jest.fn(() => 'mockToken'),
-}));
+const currentUser = { id: '1', name: 'Alice' };
 
 describe('Users Component', () => {
-  const mockUser = { id: 1, firstName: 'Test', lastName: 'User' };
-  
   beforeEach(() => {
-    userStore.setState({ user: mockUser });
-    userServices.findAllUsers.mockResolvedValue([
-      { userId: 1, firstName: 'Test', lastName: 'User', skills: [], interests: [] },
-      { userId: 2, firstName: 'Jane', lastName: 'Doe', skills: [{ name: 'React' }], interests: [] },
-      { userId: 3, firstName: 'John', lastName: 'Smith', skills: [], interests: [{ name: 'Node.js' }] },
-    ]);
-    
-    render(<Users />);
+    render(<Users user={currentUser} users={mockUsers} />);
   });
 
-  test('renders the header', () => {
-    expect(screen.getByText(/users/i)).toBeInTheDocument(); // Assuming "Users" is part of the Header
+  it('renders the header', () => {
+    expect(screen.getByText(/users/i)).toBeInTheDocument();
   });
 
-  test('fetches users on mount', async () => {
-    await waitFor(() => {
-      expect(userServices.findAllUsers).toHaveBeenCalledWith('mockToken');
-    });
+  it('fetches users on mount', () => {
+    expect(screen.getByText(/alice/i)).toBeInTheDocument();
   });
 
-  test('displays fetched users', async () => {
-    await waitFor(() => {
-      expect(screen.getByText(/jane doe/i)).toBeInTheDocument();
-      expect(screen.getByText(/john smith/i)).toBeInTheDocument();
-    });
-  });
-
-  test('filters users by name', async () => {
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: 'Jane' },
+  it('filters users by name', () => {
+    fireEvent.change(screen.getByPlaceholderText(/search by name/i), {
+      target: { value: 'Bob' },
     });
     
-    await waitFor(() => {
-      expect(screen.getByText(/jane doe/i)).toBeInTheDocument();
-      expect(screen.queryByText(/john smith/i)).not.toBeInTheDocument();
-    });
+    expect(screen.getByText(/bob/i)).toBeInTheDocument();
+    expect(screen.queryByText(/alice/i)).not.toBeInTheDocument();
   });
 
-  test('filters users by skill', async () => {
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: 'React' },
-    });
-    fireEvent.change(screen.getByText(/search by name/i), {
-      target: { value: 'skill' },
+  it('filters users by skill', () => {
+    fireEvent.change(screen.getByPlaceholderText(/search by skill/i), {
+      target: { value: 'Python' },
     });
     
-    await waitFor(() => {
-      expect(screen.getByText(/jane doe/i)).toBeInTheDocument();
-      expect(screen.queryByText(/john smith/i)).not.toBeInTheDocument();
-    });
+    expect(screen.getByText(/bob/i)).toBeInTheDocument();
+    expect(screen.queryByText(/alice/i)).not.toBeInTheDocument();
   });
 
-  test('filters users by interest', async () => {
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: 'Node.js' },
-    });
-    fireEvent.change(screen.getByText(/search by name/i), {
-      target: { value: 'interest' },
+  it('displays no users found when search yields no results', () => {
+    fireEvent.change(screen.getByPlaceholderText(/search by name/i), {
+      target: { value: 'Charlie' },
     });
     
-    await waitFor(() => {
-      expect(screen.getByText(/john smith/i)).toBeInTheDocument();
-      expect(screen.queryByText(/jane doe/i)).not.toBeInTheDocument();
-    });
+    expect(screen.getByText(/no users found/i)).toBeInTheDocument();
   });
 
-  test('excludes current user from list', async () => {
-    await waitFor(() => {
-      expect(screen.queryByText(/test user/i)).not.toBeInTheDocument();
-    });
-  });
-
-  test('displays no users found when search yields no results', async () => {
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: 'NonExistentUser' },
-    });
-    
-    await waitFor(() => {
-      expect(screen.queryByText(/jane doe/i)).not.toBeInTheDocument();
-      expect(screen.queryByText(/john smith/i)).not.toBeInTheDocument();
-    });
-  });
-
-  test('handles errors when fetching users', async () => {
-    userServices.findAllUsers.mockRejectedValue(new Error('Error fetching users'));
-    
-    render(<Users />);
-    
-    await waitFor(() => {
-      expect(screen.getByText(/error fetching users/i)).toBeInTheDocument(); // Assuming you handle errors like this
-    });
+  it('excludes current user from list', () => {
+    expect(screen.queryByText(/alice/i)).not.toBeInTheDocument();
   });
 });

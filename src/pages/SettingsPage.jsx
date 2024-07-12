@@ -8,6 +8,7 @@ import Header from "../components/Header/Header";
 import { Container, Form, Button, Card } from "react-bootstrap";
 import WarningModal from "../components/Modals/WarningModal/WarningModal";
 import { useNavigate } from "react-router-dom";
+import {findAllUsers} from "../services/userServices";
 import "./SettingsPage.css";
 
 const SettingsPage = () => {
@@ -17,6 +18,7 @@ const SettingsPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
+  const [managers, setManagers] = useState([]);
 
   const handleMaxUsersChange = (e) => setMaxUsersState(e.target.value);
   const handleSessionTimeoutChange = (e) => settimeoutState(e.target.value);
@@ -60,6 +62,33 @@ const SettingsPage = () => {
     navigate("/");
   };
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await findAllUsers(token); 
+      const managers = allUsers.filter(user => user.role === "Manager");
+      setManagers(managers);
+    };
+  
+    fetchUsers();
+  }, []);
+
+  const ManagerCard = ({ manager }) => {
+    const navigate = useNavigate();
+  
+    const handleCardClick = () => {
+      navigate(`/profile/${manager.id}`);
+    };
+  
+    return (
+      <Card onClick={handleCardClick} style={{ cursor: 'pointer', width: '18rem', margin: '10px' }}>
+        <Card.Img variant="top" src={manager.userPhoto} alt="Manager Photo" />
+        <Card.Body>
+          <Card.Title>{`${manager.firstName} ${manager.lastName}`}</Card.Title>
+        </Card.Body>
+      </Card>
+    );
+  };
+
   return (
     <>
       <Header />
@@ -93,13 +122,22 @@ const SettingsPage = () => {
               </Form>
             </Card.Body>
           </Card>
+          <Card>
+          <div className="managers-container" style={{ display: 'flex', flexWrap: 'wrap' }}>
+  {managers.map(manager => (
+    <ManagerCard key={manager.id} manager={manager} />
+  ))}
+</div>
+          </Card>
           <WarningModal
             isOpen={modalOpen}
             message={modalMessage}
             onCancel={onCancel}
             onConfirm={onConfirm}
           />
+          
         </Container>
+        
       </div>
     </>
   );
