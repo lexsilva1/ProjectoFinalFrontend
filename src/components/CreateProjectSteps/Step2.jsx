@@ -277,12 +277,12 @@ const Step2 = ({
               options={skills}
               allowNew
               newSelectionPrefix="Add a new skill: "
-              placeholder="Choose your skills..."
+              placeholder={t("Choose your skills...")}
               selected={inputs.skills}
             />
           </FormGroup>
           <FormGroup className="my-form-group">
-            <Label>{t("Interests")}</Label>
+            <Label>{t("Keywords")}</Label>
             <Typeahead
               id="interests-typeahead"
               labelKey="name"
@@ -291,7 +291,7 @@ const Step2 = ({
               options={interests}
               allowNew
               newSelectionPrefix="Add a new interest: "
-              placeholder="Choose your interests..."
+              placeholder={t("Choose your keywords...")}
               selected={inputs.interests}
             />
           </FormGroup>

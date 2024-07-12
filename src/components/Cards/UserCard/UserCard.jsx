@@ -9,7 +9,13 @@ import { AiOutlineUser } from "react-icons/ai";
 import { setAdminStatus } from "../../../services/userServices";
 import Cookies from "js-cookie";
 import WarningModal from "../../Modals/WarningModal/WarningModal";
-import { use } from "i18next";
+import { useTranslation } from "react-i18next";
+
+/* User  Card component 
+The cards that are display in the users page. Shows the users foto and name, the message button (that
+navigates to the messages page), the profile button (if user profile is public) and a button to promote
+and demote a user to application manager (for that we verify if the user logged in is a application manager
+to be able to promote and if the user logged in is admin to be able to demote) */
 
 const UserCard = ({ user }) => {
   const currentUser = userStore((state) => state.user);
@@ -20,7 +26,9 @@ const UserCard = ({ user }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [actionType, setActionType] = useState(""); // "promote" or "demote"
+  const { t } = useTranslation();
 
+  // Function to navigate to the messages page if the user clicks the message button
   const setSelectedUserMessages = userStore(
     (state) => state.setSelectedUserMessages
   );
@@ -29,32 +37,39 @@ const UserCard = ({ user }) => {
     setSelectedUserMessages(userId);
     navigate(`/messages/${userId}`);
   };
- 
-  
 
+  // Function to verify if the user logged in is a application manager to be able to promote or if he is the admin to be able to demote
   const isCurrentUserAppManager = currentUser.role < 2;
   const canPromote = isCurrentUserAppManager && !isManager;
   const canDemote = currentUser.role === 0 && isManager;
 
-
+  // Function to promote or demote a user to application manager
   const handleAction = async () => {
     try {
       await setAdminStatus(token, userId);
       setIsManager(actionType === "promote");
-      setShowModal(false); // Close the modal after action
+      setShowModal(false); 
     } catch (error) {
-      console.error(`Error ${actionType === "promote" ? "promoting" : "demoting"} user:`, error);
+      console.error(
+        `Error ${actionType === "promote" ? "promoting" : "demoting"} user:`,
+        error
+      );
     }
   };
 
+  // Function to set the message in the modal to promote or demote a user
   const handlePromoteUser = () => {
-    setModalMessage("Are you sure you want to promote this user to Application Manager?");
+    setModalMessage(
+      "Are you sure you want to promote this user to Application Manager?"
+    );
     setShowModal(true);
     setActionType("promote");
   };
 
   const handleDemoteUser = () => {
-    setModalMessage("Are you sure you want to demote this user from Application Manager?");
+    setModalMessage(
+      "Are you sure you want to demote this user from Application Manager?"
+    );
     setShowModal(true);
     setActionType("demote");
   };
@@ -88,15 +103,15 @@ const UserCard = ({ user }) => {
       </div>
       {canPromote && (
         <button className="promote-button" onClick={handlePromoteUser}>
-          Promote to App Manager
+          {t("Promote to App Manager")}
         </button>
       )}
       {canDemote && (
         <button className="demote-button" onClick={handleDemoteUser}>
-          Demote from App Manager
+          {t("Demote from App Manager")}
         </button>
       )}
-            <WarningModal
+      <WarningModal
         isOpen={showModal}
         message={modalMessage}
         onCancel={handleCancel}

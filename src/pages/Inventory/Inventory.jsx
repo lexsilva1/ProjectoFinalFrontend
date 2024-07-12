@@ -1,37 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Container,
-  Row,
-  Col,
-  Input,
-  InputGroup,
-  Button,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-} from "reactstrap";
+import {Table, Container, Row, Col, Input, InputGroup, Button, Pagination, PaginationItem, PaginationLink,} from "reactstrap";
 import { getResources, updateResource } from "../../services/resourcesServices";
 import Cookies from "js-cookie";
 import Header from "../../components/Header/Header";
-import {
-  FaTag,
-  FaBarcode,
-  FaRegFileAlt,
-  FaIndustry,
-  FaTruck,
-  FaPhone,
-  FaWarehouse,
-  FaStickyNote,
-  FaBoxes,
-  FaSearch,
-  FaEdit,
-} from "react-icons/fa";
+import {FaTag, FaBarcode, FaRegFileAlt, FaIndustry, FaTruck, FaPhone, FaWarehouse, FaStickyNote, FaBoxes, FaSearch, FaEdit, } from "react-icons/fa";
 import "./Inventory.css";
 import CreateResourceModal from "../../components/Modals/CreateResourceModal/CreateResourceModal";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import userStore from "../../stores/userStore";
+
+/* Inventory page component 
+It shows the inventory of the application, with the resources and components that are available. 
+It has a search bar to search for a specific resource, a button to add a new resource and a button to view the statistics of the resources. 
+Is also possible to sort the resources by name, identifier, brand and supplier.*/
 
 const Inventory = () => {
   const [resources, setResources] = useState([]);
@@ -50,6 +32,7 @@ const Inventory = () => {
 
   const isCurrentUserAppManager = userRole < 2;
 
+  //Function to fetch the resources from the database
   const fetchResources = async () => {
     const resourcesData = await getResources(token);
     setResources(resourcesData);
@@ -59,11 +42,13 @@ const Inventory = () => {
     fetchResources();
   }, [token]);
 
+  //Function to search for a specific resource
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1);
   };
 
+  //Function to sort the resources by name, identifier, brand and supplier
   const requestSort = (key) => {
     let direction = "ascending";
     if (
@@ -75,7 +60,8 @@ const Inventory = () => {
     }
     setSortConfig({ key, direction });
   };
-
+ 
+  //Function to search for a specific resource
   const sortedResources = React.useMemo(() => {
     let sortableResources = [...resources];
     if (sortConfig !== null) {
@@ -91,6 +77,12 @@ const Inventory = () => {
     }
     return sortableResources;
   }, [resources, sortConfig]);
+
+  /*Uses the hook React.useMemo to memorize the filtered resources. 
+  Filters the resources by name, brand, identifier and supplier.
+  Also use the hook React.useMemo to memorize the resources of the current page
+  Calculates the total of pages dividing the total number of resources, and uses the Math.ceil to round up the number
+  so it garanties that a page is created to any number of left resources */
 
   const filteredResources = React.useMemo(() => {
     return sortedResources.filter((resource) =>
@@ -120,14 +112,17 @@ const Inventory = () => {
     return "";
   };
 
+  //Function to handle the page change
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  //Function to go to the resource stats page that is only available for the application manager
   const goToResourceStats = () => {
     navigate("/resources-stats");
   };
 
+  //Function to open the edit modal to edit a resource
   const openEditModal = (resource) => {
     setModalOpen(true);
     setInitialResource(resource);
@@ -150,7 +145,7 @@ const Inventory = () => {
                   <FaSearch className="search-icon" />
                   <input
                     type="text"
-                    placeholder="Search"
+                    placeholder={t("Search")}
                     value={searchTerm}
                     onChange={handleSearch}
                     autoFocus
@@ -206,7 +201,7 @@ const Inventory = () => {
                 <th>
                   <FaStickyNote /> {t("Observations")}
                 </th>
-                <th>Edit</th>
+                <th>{t("Edit")}</th>
               </tr>
             </thead>
             <tbody>

@@ -99,7 +99,7 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
                 }}
                 className="text-info"
               >
-                Forgot your password?
+                {t("Forgot your password?")}
               </a>
             </Form.Group>
             <div className="d-flex justify-content-center">

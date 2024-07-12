@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import userStore from "../../stores/userStore";
 import { findAllUsers } from "../../services/userServices";
 import "./Users.css";
-import { use } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -16,6 +16,7 @@ const Users = () => {
   const token = Cookies.get("authToken");
   const user = userStore((state) => state.user);
   const userRole = userStore((state) => state.user.role);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -93,7 +94,7 @@ const reRenderUserCards = () => {
               <FaSearch className="search-icon" />
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t("Search users...")}
                 value={searchTerm}
                 onChange={handleSearchChange}
                 autoFocus
@@ -104,9 +105,9 @@ const reRenderUserCards = () => {
               onChange={(e) => setFilterOption(e.target.value)}
               className="filter-select"
             >
-              <option value="name">Search by Name</option>
-              <option value="skill">Search by Skill</option>
-              <option value="interest">Search by Interest</option>
+              <option value="name">{t("Search by Name")}</option>
+              <option value="skill">{t("Search by Skill")}</option>
+              <option value="interest">{t("Search by Interest")}</option>
             </select>
           </form>
           <div className="users-grid">
