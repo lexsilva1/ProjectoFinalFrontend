@@ -34,11 +34,8 @@ const Messages = () => {
   console.log('userList',userList);
 
 
-useEffect(() => {
-  const unreadCount = userList.filter(user =>!user.read).length;
-  setUnreadMessages(unreadCount);
-}
-, [selectedUserMessages]);
+
+
 
 
 
@@ -57,7 +54,7 @@ useEffect(() => {
               </Col>
               <Col md={10}>
                 {selectedUserMessages === null ? (
-                  <UserList users={userList} />
+                  <UserList />
                 ) : (
                   <Conversation />
                 )}

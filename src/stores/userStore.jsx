@@ -12,7 +12,7 @@ const intialState= {
   userList: [],
   selectedMessages: [],
   notifications: [],
-  unreadMessages: 0,
+  unreadMessages: false,
 };
 const userStore = create(persist(
   (set) => ({
@@ -37,8 +37,8 @@ const userStore = create(persist(
     setSelectedMessages: (messages) => set({ selectedMessages: messages }),
     notifications: [],  
     setNotifications: (notifications) => set({ notifications: notifications }),
-    unreadMessages: 0,
-    setUnreadMessages: (unreadMessages) => set({ unreadMessages: unreadMessages }),
+    unreadMessages: false,
+    setUnreadMessages: (unread) => set({ unreadMessages: unread }),
   }),
   {
     name: 'user-storage', 

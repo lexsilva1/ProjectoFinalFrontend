@@ -15,10 +15,10 @@ const Conversation = () => {
   const senderId = userStore((state) => state.user.id);
   const senderName = userStore((state) => state.user.name);
   const receiverId = userStore((state) => state.selectedUserMessages);
-  console.log(receiverId);
+
     
   const {sendMessage, setMessages, messages} = useMsgSocket(token, receiverId);
- console.log(messages);
+
   const handleChange = (event) => {
     setNewMessage(event.target.value);
   };

@@ -5,6 +5,8 @@ import './MessageSidebar.css';
 
 
 const MessageSidebar = ({ onSearch, onInboxClick }) => {
+
+  
   return (
     <div className="message-sidebar">
       <h5>Messages</h5>
