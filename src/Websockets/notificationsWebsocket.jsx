@@ -140,8 +140,7 @@ const useStartWebSocket = (token) => {
       case MessageType.PROJECT_READY:
       case MessageType.PROJECT_DOING:
       case MessageType.PROJECT_REJECTED:
-      case MessageType.PROMOTED_ADMIN:
-      case MessageType.DEMOTED_ADMIN:
+
           const existingNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
           if (existingNotification) {
             const updatedNotifications = notifications.map((notification) => {
@@ -155,7 +154,36 @@ const useStartWebSocket = (token) => {
             setNotifications([messageObj, ...notifications]);
           }
           break;
- 
+          case MessageType.PROMOTED_ADMIN:
+            const existingPromotionNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
+            if (existingPromotionNotification) {
+              const updatedNotifications = notifications.map((notification) => {
+                if (notification.notificationId === messageObj.notificationId) {
+                  return messageObj;
+                }
+                return notification;
+              });
+              setNotifications(updatedNotifications);
+            } else {
+              setNotifications([messageObj, ...notifications]);
+            }
+            userstore.setState({ user,role :user.role = 1 });
+            break;
+            case MessageType.DEMOTED_ADMIN:
+              const existingDemotionNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
+              if (existingDemotionNotification) {
+                const updatedNotifications = notifications.map((notification) => {
+                  if (notification.notificationId === messageObj.notificationId) {
+                    return messageObj;
+                  }
+                  return notification;
+                });
+                setNotifications(updatedNotifications);
+              } else {
+                setNotifications([messageObj, ...notifications]);
+              }
+              userstore.setState({ user,role :user.role = 10 });
+              break;
           
          
 
