@@ -58,7 +58,7 @@ const RegisterModal = () => {
     >
       <Modal.Header closeButton>
         <div className="w-100 d-flex justify-content-center">
-          <Modal.Title>{t("Create an account")}</Modal.Title>
+          <Modal.Title style = {{color: "var(--dark-color"}} >{t("Create an account")}</Modal.Title>
         </div>
       </Modal.Header>
       <Modal.Body>

@@ -70,7 +70,7 @@ const LoginModal = ({ handleOpenResetPasswordModal }) => {
       >
         <Modal.Header closeButton>
           <div className="w-100 d-flex justify-content-center">
-            <Modal.Title className="modal-title">
+            <Modal.Title className="modal-title" style={{color: "var(--dark-color"}}>
               {t("Get started by logging in to your account")}
             </Modal.Title>
           </div>
