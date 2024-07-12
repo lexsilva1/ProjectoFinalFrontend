@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { render } from '@testing-library/react';
 import InfoBox from './InfoBox';
@@ -19,3 +20,4 @@ describe('InfoBox component', () => {
     expect(infoBox).toHaveStyle('position: relative');
   });
 });
+

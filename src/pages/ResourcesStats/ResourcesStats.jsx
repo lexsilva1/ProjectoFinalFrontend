@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Dropdown } from "react-bootstrap";
-import VersatileBarChart from "../components/Charts/VersatileBarChat";
-import { getResourceStatistics } from "../services/resourcesServices";
+import VersatileBarChart from "../../components/Charts/VersatileBarChat";
+import { getResourceStatistics } from "../../services/resourcesServices";
 import Cookies from "js-cookie";
-import Header from "../components/Header/Header";
-import Sidebar from "../components/SideBar/SideBar";
-import CustomPieChart from "../components/Charts/CustomPieChart";
+import Header from "../../components/Header/Header";
+import CustomPieChart from "../../components/Charts/CustomPieChart";
 import "./ResourcesStats.css";
 import { Pie } from "recharts";
 
@@ -128,8 +127,8 @@ const ResourcesStats = () => {
               marginTop: "60px",
             }}
           >
-            <Col xs={12} md={4}>
-              <div>
+            <Col xs={12} md={12}>
+              <div style={{textAlign: "center"}}>
                 <h4>Resource Types</h4>
                 {hash && <CustomPieChart data={hash} />}
               </div>

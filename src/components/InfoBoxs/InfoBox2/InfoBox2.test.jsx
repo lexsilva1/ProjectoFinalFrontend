@@ -9,3 +9,4 @@ describe('InfoBox2 Component', () => {
     expect(getByText(/Our Innovative Mission/i)).toBeInTheDocument();
   });
 });
+

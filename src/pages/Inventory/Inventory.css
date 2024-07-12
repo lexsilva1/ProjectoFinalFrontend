@@ -6,7 +6,7 @@
 
 /* Botões */
 .buttonAddResource, .buttonViewStats {
-  font-size: 0.8rem;
+  font-size: 1rem;
   height: 50px;
   width: auto!important;
   margin: 10px 20px 10px 0!important;

@@ -1,7 +1,8 @@
 import React from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import Cookies from 'js-cookie'; // Ensure you have imported Cookies
+import Cookies from 'js-cookie'; 
+import { useTranslation } from 'react-i18next';
 
 const PDFExportButton = ({ contentRef }) => {
     const currentDate = new Date();
@@ -10,6 +11,7 @@ const PDFExportButton = ({ contentRef }) => {
     const userLang = Cookies.get('i18nextLng') || 'en'; // Default to English if not set
     // Determine the locale based on the user's language preference
     const locale = userLang.startsWith('pt') ? 'pt-PT' : 'en-US';
+    const { t } = useTranslation();
 
     const dateString = currentDate.toLocaleDateString(locale, {
         day: '2-digit',
@@ -17,10 +19,12 @@ const PDFExportButton = ({ contentRef }) => {
         year: 'numeric',
     });
 
-    const introText = `This document represents the statistics of the ForgeXperimental Projects application. Printed on: ${dateString}`;
+    const introText = t(`This document represents the statistics of the ForgeXperimental Projects application. Printed on: ${dateString}`);
 
     const exportToPDF = () => {
         const input = contentRef.current;
+        const originalBackground = input.style.background;
+        input.style.background = 'white';
         html2canvas(input)
         .then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
@@ -41,7 +45,7 @@ const PDFExportButton = ({ contentRef }) => {
             
             const pageWidth = pdf.internal.pageSize.width;
             const rightMargin = 10;
-            const contactTextLine1 = "Contact Us:";
+            const contactTextLine1 = t("Contact Us:");
             const contactTextLine2 = "239 101 001";
             const contactTextLine3 = "forgexperimentalprojects@mail.com";
             const textWidth = pdf.getStringUnitWidth(contactTextLine3) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
@@ -56,7 +60,7 @@ const PDFExportButton = ({ contentRef }) => {
 
     return (
         <div className="button-export-pdf" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "40px"}}>
-            <button onClick={exportToPDF} className="btn btn-primary" style={{borderRadius: "20px", padding: "10px"}}>Export Statistics (PDF)</button>
+            <button onClick={exportToPDF} className="btn btn-primary" style={{borderRadius: "20px", padding: "10px"}}>{t("Export Statistics (PDF)")}</button>
         </div>
     );
 };

@@ -45,3 +45,5 @@ describe('Footer Component', () => {
     expect(emailAddress).toBeInTheDocument();
   });
 });
+
+

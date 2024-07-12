@@ -20,4 +20,3 @@ describe('Banner2 Component', () => {
   });
 });
 
-

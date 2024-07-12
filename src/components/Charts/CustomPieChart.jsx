@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
-import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
+
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28FEF', '#EF82A2', '#82EFA2', '#A2EF82'];
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -16,9 +19,7 @@ const renderActiveShape = (props) => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
-      </text>
+
       <Sector
         cx={cx}
         cy={cy}
@@ -66,7 +67,7 @@ class CustomPieChart extends PureComponent {
 
     return (
       <ResponsiveContainer width="100%" height={400}>
-        <PieChart>
+        <PieChart >
           <Pie
             activeIndex={this.state.activeIndex}
             activeShape={renderActiveShape}
@@ -75,10 +76,13 @@ class CustomPieChart extends PureComponent {
             cy="50%"
             innerRadius={120}
             outerRadius={140}
-            fill="#8884d8"
             dataKey="value"
             onMouseEnter={this.onPieEnter}
-          />
+            >
+            {transformedData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
         </PieChart>
       </ResponsiveContainer>
     );

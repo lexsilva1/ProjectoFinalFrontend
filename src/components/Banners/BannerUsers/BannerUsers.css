@@ -15,6 +15,7 @@
     overflow: hidden;
     position: relative;
     background: rgba(255, 255, 255, 0.3);
+    display: flex;
 }
 
 .banner-users img {

@@ -22,3 +22,5 @@ describe('InfoBox3 Component', () => {
     expect(screen.getByText('Explore innovative initiatives and boost creativity as a team.')).toBeInTheDocument();
   });
 });
+
+

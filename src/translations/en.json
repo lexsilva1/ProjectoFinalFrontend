@@ -67,6 +67,14 @@
     "Cancelled": "Cancelled",
     "Finished": "Finished",
     "Sort by": "Sort by",
-    "Nickname": "Nickname"
+    "Nickname": "Nickname",
+    "This document represents the statistics of the ForgeXperimental Projects application. Printed on:": "This document represents the statistics of the ForgeXperimental Projects application. Printed on:",
+    "Contact Us:": "Contact Us:",
+    "Export Statistics (PDF)": "Export Statistics (PDF)",
+    "ForgeXperimental Projects Dashboard": "ForgeXperimental Projects Dashboard",
+    "Total Projects": "Total Projects",
+    "Average Members per Project": "Average Members per Project",
+    "Average Execution Time (days)": "Average Execution Time (days)",
+    "Status Overview": "Status Overview"
 
   }

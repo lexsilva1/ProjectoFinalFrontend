@@ -8,6 +8,7 @@ import { FiMail } from "react-icons/fi";
 import { AiOutlineUser } from "react-icons/ai";
 import { setAdminStatus } from "../../../services/userServices";
 import Cookies from "js-cookie";
+import WarningModal from "../../Modals/WarningModal/WarningModal";
 
 const UserCard = ({ user }) => {
   const currentUser = userStore((state) => state.user);
@@ -15,6 +16,9 @@ const UserCard = ({ user }) => {
   const { firstName, lastName, userPhoto, privacy, userId, role } = user;
   const token = Cookies.get("authToken");
   const [isManager, setIsManager] = useState(user.role === "Manager");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [actionType, setActionType] = useState(""); // "promote" or "demote"
 
   const setSelectedUserMessages = userStore(
     (state) => state.setSelectedUserMessages
@@ -26,26 +30,33 @@ const UserCard = ({ user }) => {
   };
 
   const isCurrentUserAppManager = currentUser.role < 2;
-  // Atualize as condições para usar isManager
   const canPromote = isCurrentUserAppManager && !isManager;
   const canDemote = currentUser.role === 0 && isManager;
 
-  const handlePromoteUser = async () => {
+  const handleAction = async () => {
     try {
       await setAdminStatus(token, userId);
-      setIsManager(true); // Atualiza o estado para refletir a promoção
+      setIsManager(actionType === "promote");
+      setShowModal(false); // Close the modal after action
     } catch (error) {
-      console.error("Error promoting user:", error);
+      console.error(`Error ${actionType === "promote" ? "promoting" : "demoting"} user:`, error);
     }
   };
 
-  const handleDemoteUser = async () => {
-    try {
-      await setAdminStatus(token, userId);
-      setIsManager(false); // Atualiza o estado para refletir a demissão
-    } catch (error) {
-      console.error("Error demoting user:", error);
-    }
+  const handlePromoteUser = () => {
+    setModalMessage("Are you sure you want to promote this user to Application Manager?");
+    setShowModal(true);
+    setActionType("promote");
+  };
+
+  const handleDemoteUser = () => {
+    setModalMessage("Are you sure you want to demote this user from Application Manager?");
+    setShowModal(true);
+    setActionType("demote");
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
   };
 
   return (
@@ -81,6 +92,12 @@ const UserCard = ({ user }) => {
           Demote from App Manager
         </button>
       )}
+            <WarningModal
+        isOpen={showModal}
+        message={modalMessage}
+        onCancel={handleCancel}
+        onConfirm={handleAction}
+      />
     </div>
   );
 };

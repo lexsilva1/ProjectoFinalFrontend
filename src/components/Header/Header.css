@@ -155,6 +155,11 @@
   padding: 5px!important;
 }
 
+.language-button:hover {
+  background-color: var(--details-color)!important;
+  color: color-mix(in srgb, var(--contrast-color), black 25%)!important;
+}
+
 .button2 {
   border: none !important;
   margin-inline: 1rem !important;
@@ -311,3 +316,4 @@ font-size: 14px!important;
   border: 2px solid white;
   left: 16px;
 }
+

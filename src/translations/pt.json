@@ -67,7 +67,13 @@
     "Cancelled": "Cancelado",
     "Finished": "Concluído",
     "Sort by": "Ordenar por",
-    "Nickname": "Alcunha"
-   
-
+    "Nickname": "Alcunha",
+    "This document represents the statistics of the ForgeXperimental Projects application. Printed on:": "Este documento representa as estatísticas da aplicação ForgeXperimental Projects. Impresso em:",
+    "Contact Us:": "Contate-Nos:",
+    "Export Statistics (PDF)": "Exportar Estatísticas (PDF)",
+    "ForgeXperimental Projects Dashboard": "Painel de Controle ForgeXperimental Projects",
+    "Total Projects": "Total de Projetos",
+    "Average Members per Project": "Média de Membros por Projeto",
+    "Average Execution Time (days)": "Tempo Médio de Execução (dias)",
+    "Status Overview": "Visão Geral dos Estados dos Projetos"
   }

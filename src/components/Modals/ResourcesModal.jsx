@@ -11,7 +11,7 @@ const ResourcesModal = ({ show, handleClose, projectName, project, setProject, i
   const [showCreateResourceModal, setShowCreateResourceModal] = useState(false);
   const token = Cookies.get('authToken');
   const [tempSelectedMaterials, setTempSelectedMaterials] = useState([]);
-  const [tempSelectedMaterials, setTempSelectedMaterials] = useState([]);
+ 
 
   const fetchResources = async () => {
     try {

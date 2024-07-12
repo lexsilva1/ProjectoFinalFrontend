@@ -12,3 +12,4 @@ describe('InfoBox4 Component', () => {
     expect(screen.getByText('Check out our latest projects')).toBeInTheDocument();
   });
 });
+

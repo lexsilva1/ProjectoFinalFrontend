@@ -397,7 +397,7 @@ const Step2 = ({
         </Col>
       </Row>
 
-      <div className="d-flex justify-content-between">
+      <div style={{marginTop: "20px"}}>
         <Button
           className="previous-button-step2"
           color="secondary"

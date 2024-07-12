@@ -192,7 +192,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
             {t("Previous")}
           </Button>
         </Col>
-        <Col md={6}>
+        <Col md={6}  style={{marginTop: "20px"}}>
           <Button
             onClick={handleSubmit}
             color="success"

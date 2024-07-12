@@ -1,25 +1,27 @@
-import Header from "../components/Header/Header";
-import LoginModal from "../components/Modals/LoginModal/LoginModal";
+import Header from "../../components/Header/Header";
+import LoginModal from "../../components/Modals/LoginModal/LoginModal";
 import React, { useState, useEffect } from "react";
-import RegisterModal from "../components/Modals/RegisterModal/RegisterModal";
-import Banner from "../components/Banners/Banner/Banner";
-import Banner2 from "../components/Banners/Banner2/Banner2";
-import Banner3 from "../components/Banners/Banner3/Banner3";
-import Sidebar from "../components/SideBar/SideBar";
-import userStore from "../stores/userStore";
-import { getProjects } from "../services/projectServices";
-import ProjectCard from "../components/Cards/ProjectCard/ProjectCard";
+import RegisterModal from "../../components/Modals/RegisterModal/RegisterModal";
+import Banner from "../../components/Banners/Banner/Banner";
+import Banner2 from "../../components/Banners/Banner2/Banner2";
+import Banner3 from "../../components/Banners/Banner3/Banner3";
+import Sidebar from "../../components/SideBar/SideBar";
+import userStore from "../../stores/userStore";
+import { getProjects } from "../../services/projectServices";
+import ProjectCard from "../../components/Cards/ProjectCard/ProjectCard";
 import { FaSearch, FaChevronUp, FaChevronDown } from "react-icons/fa";
-import InfoBox from "../components/InfoBoxs/InfoBox/InfoBox";
-import Footer from "../components/Footer/Footer";
-import ResetPasswordModal from "../components/Modals/ResetPasswordModal/ResetPasswordModal";
-import SetPasswordModal from "../components/Modals/SetPasswordModal/SetPasswordModal";
+import InfoBox from "../../components/InfoBoxs/InfoBox/InfoBox";
+import Footer from "../../components/Footer/Footer";
+import ResetPasswordModal from "../../components/Modals/ResetPasswordModal/ResetPasswordModal";
+import SetPasswordModal from "../../components/Modals/SetPasswordModal/SetPasswordModal";
 import { useLocation } from "react-router-dom";
-import InfoBox2 from "../components/InfoBoxs/InfoBox2/InfoBox2";
-import InfoBox3 from "../components/InfoBoxs/InfoBox3/InfoBox3";
-import InfoBox4 from "../components/InfoBoxs/InfoBox4/InfoBox4";
+import InfoBox2 from "../../components/InfoBoxs/InfoBox2/InfoBox2";
+import InfoBox3 from "../../components/InfoBoxs/InfoBox3/InfoBox3";
+import InfoBox4 from "../../components/InfoBoxs/InfoBox4/InfoBox4";
 import { useTranslation } from "react-i18next";
 import "./Home.css";
+
+/* Home page component */
 
 const Home = () => {
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -37,6 +39,8 @@ const Home = () => {
   const [sortDirection, setSortDirection] = useState("");
   const currentUser = userStore((state) => state.user);
 
+
+  // Show the set password modal. Verifies if the location path contains the token and if it is a password reset link
   useEffect(() => {
     const token = location.pathname.split("/")[2];
     if (location.pathname.startsWith("/PasswordReset/") && token) {
@@ -48,6 +52,7 @@ const Home = () => {
     setShowSetPasswordModal(false);
   };
 
+  //UseEffect to change the banner every 10 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setBanner((prevBanner) => (prevBanner === 3 ? 1 : prevBanner + 1));
@@ -56,6 +61,7 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Fetch projects and if the user is logged in, filter the projects to show first the ones the user is a member of
   useEffect(() => {
     if (isLoggedIn) {
       getProjects()
@@ -102,23 +108,29 @@ const Home = () => {
     }
   }, [currentUser, isLoggedIn]);
 
+// Function to handle the opening of the reset password modal
   const handleOpenResetPasswordModal = () => {
     setShowLoginModal(false);
     setShowResetPasswordModal(true);
   };
 
+  // Function to handle the closing of the reset password modal
   const handleCloseResetPasswordModal = () => {
     setShowResetPasswordModal(false);
   };
 
+
+  // Function to handle the opening of the login modal
   const handleOpenLoginModal = () => {
     setShowLoginModal(true);
   };
 
+  // Function to handle the closing of the login modal
   const handleCloseLoginModal = () => {
     setShowLoginModal(false);
   };
 
+  // Function to handle the change of the sorting option desc and asc
   const handleSortChange = (event) => {
     const selectedOption = event.target.value;
     setSortOption(selectedOption);
@@ -130,6 +142,7 @@ const Home = () => {
     }
   };
 
+  
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import Header from "../components/Header/Header";
-import Sidebar from "../components/SideBar/SideBar";
-import BannerUsers from "../components/Banners/BannerUsers/BannerUsers";
-import UserCard from "../components/Cards/UserCard/UserCard";
+import Header from "../../components/Header/Header";
+import Sidebar from "../../components/SideBar/SideBar";
+import BannerUsers from "../../components/Banners/BannerUsers/BannerUsers";
+import UserCard from "../../components/Cards/UserCard/UserCard";
 import Cookies from "js-cookie";
-import userStore from "../stores/userStore";
-import { findAllUsers } from "../services/userServices";
+import userStore from "../../stores/userStore";
+import { findAllUsers } from "../../services/userServices";
 import "./Users.css";
 
 const Users = () => {
