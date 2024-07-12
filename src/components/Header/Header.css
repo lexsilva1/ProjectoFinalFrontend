@@ -186,6 +186,7 @@
 .language-button {
   border-right: none;
   display: flex;
+  color: var(--dark-color);
 }
 
 .language-button:last-child {
@@ -236,6 +237,7 @@
 
 .custom-offcanvas .offcanvas {
   width: 100px !important; 
+  background-color: var(--primary-color);
 }
 .offcanvas-menu {
   list-style: none;
@@ -315,5 +317,13 @@ font-size: 14px!important;
   border-radius: 50%;
   border: 2px solid white;
   left: 16px;
+}
+
+.logout-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px; /* Ajuste para espaçamento interno */
+  background-color: #f8f9fa; /* Cor de fundo do contêiner, ajuste conforme necessário */
 }
 

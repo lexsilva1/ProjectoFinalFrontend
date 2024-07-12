@@ -5,19 +5,12 @@ import userStore from "../../stores/userStore";
 import Cookies from "js-cookie";
 import { logout } from "../../services/userServices";
 import Avatar from "../../multimedia/Images/Avatar.jpg";
-import { FaBell, FaUser } from "react-icons/fa";
+import { FaBell, FaUser, FaCog, FaPaintBrush, FaGlobeAmericas, FaSignOutAlt } from "react-icons/fa";
 import { Button, Offcanvas } from "react-bootstrap";
 import useStartWebSocket from "../../Websockets/notificationsWebsocket";
 import NotificationsCanva from "../NotificationsCanva/NotificationsCanva";
 import logo2 from "../../multimedia/Images/logo2.png";
-import {
-  BsGraphUp,
-  BsFileEarmarkText,
-  BsPeople,
-  BsEnvelope,
-  BsJournals,
-  BsJournalPlus,
-} from "react-icons/bs";
+import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJournalPlus,} from "react-icons/bs";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { markAsSeen } from "../../services/notificationService";
 import "./Header.css";
@@ -292,12 +285,12 @@ const Header = () => {
             <ul className="offcanvas-menu">
               <li className="offcanvas-option">
                 <Link to={`/profile/${userId}`}>
-                  {t("Profile & Visibility")}
+                <FaUser className="offcanvas-icon" /> {t("Profile & Visibility")}
                 </Link>
               </li>
               <li className="offcanvas-option">
                 <button onClick={toggleThemeSubmenu}>
-                  {t("Theme")}
+                <FaPaintBrush className="offcanvas-icon" /> {t("Theme")}
                   {showThemeSubmenu && (
                     <ul className="theme-submenu">
                       <li>
@@ -325,7 +318,7 @@ const Header = () => {
                   <button
                     onClick={() => setShowLanguageSubmenu(!showLanguageSubmenu)}
                   >
-                    {t("Language")}
+                   <FaGlobeAmericas className="offcanvas-icon" /> {t("Language")}
                     {showLanguageSubmenu && (
                       <ul className="language-submenu">
                         <li>
@@ -351,12 +344,14 @@ const Header = () => {
               )}
               {userRole === 0 && (
                 <li className="offcanvas-option">
-                  <Link to="/settings">{t("Application Settings")}</Link>
+                  <Link to="/settings"><FaCog className="offcanvas-icon" />{t(" Application Settings")}</Link>
                 </li>
               )}
+              <div className= "logout-container">
               <li className="offcanvas-option">
-                <button onClick={handleLogout}>{t("Logout")}</button>
+                <button onClick={handleLogout}><FaSignOutAlt className="offcanvas-icon" />{t("Logout")}</button>
               </li>
+              </div>
             </ul>
           </Offcanvas.Body>
         </Offcanvas>
