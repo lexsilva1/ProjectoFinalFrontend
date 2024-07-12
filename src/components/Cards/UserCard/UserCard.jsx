@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import "./UserCard.css";
 import Avatar from "../../../multimedia/Images/Avatar.jpg";
@@ -9,6 +9,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import { setAdminStatus } from "../../../services/userServices";
 import Cookies from "js-cookie";
 import WarningModal from "../../Modals/WarningModal/WarningModal";
+import { use } from "i18next";
 
 const UserCard = ({ user }) => {
   const currentUser = userStore((state) => state.user);
@@ -28,10 +29,13 @@ const UserCard = ({ user }) => {
     setSelectedUserMessages(userId);
     navigate(`/messages/${userId}`);
   };
+ 
+  
 
   const isCurrentUserAppManager = currentUser.role < 2;
   const canPromote = isCurrentUserAppManager && !isManager;
   const canDemote = currentUser.role === 0 && isManager;
+
 
   const handleAction = async () => {
     try {

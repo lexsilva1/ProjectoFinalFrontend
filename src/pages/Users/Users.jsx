@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import userStore from "../../stores/userStore";
 import { findAllUsers } from "../../services/userServices";
 import "./Users.css";
+import { use } from "i18next";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -14,6 +15,7 @@ const Users = () => {
   const [filterOption, setFilterOption] = useState("name");
   const token = Cookies.get("authToken");
   const user = userStore((state) => state.user);
+  const userRole = userStore((state) => state.user.role);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -30,7 +32,12 @@ const Users = () => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
+  useEffect(() => {
+const reRenderUserCards = () => {
+    setUsers(users);
+  };
+  reRenderUserCards();
+  }, [userRole]);
   const filterUsers = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const currentUserId = user.id;
