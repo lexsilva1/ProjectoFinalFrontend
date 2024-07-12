@@ -27,31 +27,36 @@ const NotificationCard = ({ notification }) => {
   const [projectImage, setProjectImage] = useState("");
 
   useEffect(() => {
-    if(notification.type !== "PROMOTED_ADMIN" && notification.type !== "DEMOTED_ADMIN") {
+    //if(notification.type !== "PROMOTED_ADMIN" && notification.type !== "DEMOTED_ADMIN") {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
       const projectData = await getProjectByName(token, encodedProjectName);
       setProjectImage(projectData.image);
     };
     fetchProject();
-  }
+ // }
   }, [projectName, token]);
 
   const handleClick = async () => {
+    console.log(notification);
     markAsRead(token, notification.notificationId).then(() => {
+      console.log("Notification marked as read");
       notification.isRead = true;
-      if(notification.type !== "PROMOTED_ADMIN" || notification.type !== "DEMOTED_ADMIN") {
+      
       if (projectName.includes(" ")) {
+        console.log("Project name with space");
         const formattedProjectName = projectName.replace(" ", "%20");
         navigate(`/project/${formattedProjectName}`);
+      }else if(projectName == 'System') {
+        console.log("System notification");
+        navigate(`/users`);
       } else {
+        console.log("Project name without space");
         navigate(`/project/${projectName}`);
       }
-    }else{
-      setUser({...user,role:notification.type === "PROMOTED_ADMIN" ? 1 : 10})
-      navigate(`/users`);
-    }
+      console.log("Notification marked as read v2");
     });
+    console.log("Notification marked as read v3");
   };
   const handleAccept = async (event) => {
     event.stopPropagation();
@@ -92,7 +97,7 @@ const NotificationCard = ({ notification }) => {
   };
 
   return (
-    <Card className={isRead ? "Read" : "Unread"} onClick={handleClick}>
+    <Card className={isRead ? "Read" : "Unread"} onClick={handleClick} >
       <Card.Text style={{ fontSize: "12px" }}>{type}</Card.Text>
       {type === "INVITE" && (
         <p style={{ margin: "2px", fontWeight: "normal", fontSize: "small" }}>
