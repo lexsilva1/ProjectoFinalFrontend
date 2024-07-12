@@ -11,6 +11,16 @@ import "./ExecutionPlan.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-toggle/css/bootstrap-toggle.min.css";
 
+/*ExecutionPlan component is a functional component that displays the tasks of a project in a Gantt chart.
+ It uses the Gantt component from the gantt-task-react library to display the tasks in a Gantt chart. 
+ The component fetches the tasks of a project using the getTasks function from the projectServices module. 
+ It also provides functionality to add, edit, and delete tasks using the CreateTaskModal component. 
+ The component uses the useState hook to manage the state of the tasks, seeDeleted, viewMode, showCreateTaskModal, 
+ updatedPing, showTaskModal, isEditMode, selectedTask, projectProgress, taskToUpdate, isMobile, dateViewMode, and dates. 
+ The component uses the useEffect hook to fetch the tasks of a project when the component is mounted.
+  The component also provides functionality to handle task double click, save task, parse date, add task, on date change,
+  on progress change, handle delete task, find dependencies, and render mobile view.*/
+
 const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const token = Cookies.get("authToken");
   const [tasks, setTasks] = useState([]);
@@ -27,6 +37,8 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
   const [dateViewMode, setDateViewMode] = useState(true);
   const [dates, setDates] = useState("hide");
 
+
+  // Check if the window is resized to determine if the user is on a mobile device
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 680);
@@ -38,6 +50,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     };
   }, []);
 
+  // Fetch tasks when the component is mounted
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -64,6 +77,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     fetchTasks();
   }, [name, token, updatedPing]);
 
+  // Handle task double click
   const handleTaskDoubleClick = (task) => {
     tasks.forEach((t) => {
       if (t.id === task.id) {
@@ -74,6 +88,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     });
   };
 
+  // Function to save the updated task
   const handleSaveTask = (updatedTask) => {
     setTasks((prevTasks) => {
       return prevTasks.map((task) => {
@@ -85,11 +100,13 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     });
   };
 
+  // Function to parse the date string
   const parseDate = (dateString) => {
     const date = new Date(dateString);
     return isNaN(date) ? new Date() : date;
   };
 
+  // Format the project task
   const formatedProjectTask = {
     id: projectTask.id,
     name: projectTask.name,
@@ -164,6 +181,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     }
   });
 
+  // Function to update the task date
   const onDateChange = async (task) => {
     for (const t of tasks) {
       if (t.id === task.id) {
@@ -184,6 +202,8 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       }
     }
   };
+
+  // Function to handle the date view mode
   const handleDateViewMode = () => {
     setDateViewMode(!dateViewMode);
     if (dateViewMode) {
@@ -192,6 +212,8 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       setDates("hide");
     }
   };
+
+  // Function to handle the progress change
   const onProgressChange = async (task) => {
     tasks.forEach(async (t) => {
       if (t.id === task.id) {
@@ -251,6 +273,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     });
   };
 
+  // Function to handle the delete task
   const handleDeleteTask = async (task) => {
     let updatedTasks = [...tasks];
     let taskFound = false;
@@ -283,6 +306,8 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
         console.error("Failed to update task:", error);
       });
   };
+
+  // Function to find the dependencies of a task
   const findDependencies = (dependencies, tasks) => {
     if (!dependencies) {
       return [];
@@ -295,11 +320,13 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
       .filter((title) => title !== undefined);
   };
 
+  // Function to add a task
   const addTask = (task) => {
     setTasks([...tasks, task]);
     setUpdatedPing(!updatedPing);
   };
 
+  // Function to render the mobile view. This function returns a list of tasks in an accordion format.
   const renderMobileView = () => (
     <ul className="accordion">
       {tasks.map((task) => (

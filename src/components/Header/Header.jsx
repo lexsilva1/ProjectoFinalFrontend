@@ -85,8 +85,10 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    Cookies.remove("authToken");
-    Cookies.remove("i18nextLng");
+    Cookies.remove("authToken"); // Remove token cookie
+    Cookies.remove("i18nextLng"); // Remove language cookie
+    sessionStorage.clear(); // Clear session storage
+    localStorage.clear(); // Clear local storage
     userStore.getState().logout(); // Reset the store
     navigate("/");
   };
@@ -270,6 +272,7 @@ const Header = () => {
             borderTopLeftRadius: "20px",
             top: "70px",
             height: "80%",
+           
           }}
         >
           <Offcanvas.Header closeButton>

@@ -21,7 +21,10 @@ import InfoBox4 from "../../components/InfoBoxs/InfoBox4/InfoBox4";
 import { useTranslation } from "react-i18next";
 import "./Home.css";
 
-/* Home page component */
+/* Home page component, which is the main page of the application. It displays the header, banner, projects, and footer. 
+It also contains, if there is no user loggedin the login, register, reset password, and set password modals. 
+It also contains the search bar and the sort bar for the projects.
+When a user is loggedin it  will sort the projects, showing the ones he is member first */
 
 const Home = () => {
   const isLoggedIn = userStore((state) => state.isLoggedIn);
@@ -38,6 +41,7 @@ const Home = () => {
   const location = useLocation();
   const [sortDirection, setSortDirection] = useState("");
   const currentUser = userStore((state) => state.user);
+  const { t } = useTranslation();
 
 
 
@@ -245,7 +249,7 @@ const Home = () => {
               <FaSearch />
               <input
                 type="search"
-                placeholder="Search projects..."
+                placeholder= {t("Search projects...")}
                 value={searchTerm}
                 onChange={handleSearchTermChange}
                 style={{
@@ -270,10 +274,10 @@ const Home = () => {
                   backgroundColor: "white",
                 }}
               >
-                <option value="">Sort by...</option>
-                <option value="createdDate">Date Created</option>
-                <option value="openSlots">Open Slots</option>
-                <option value="status">Project Status</option>
+                <option value="">{t("Sort by...")}</option>
+                <option value="createdDate">{t("Date Created")}</option>
+                <option value="openSlots">{t("Open Slots")}</option>
+                <option value="status">{t("Project Status")}</option>
               </select>
               {sortOption && (
                 <>
@@ -308,7 +312,7 @@ const Home = () => {
                       setVisibleProjectsCount(visibleProjectsCount + 9)
                     }
                   >
-                    Show more
+                    {t("Show more")}
                   </button>
                 </div>
               )}

@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { useTranslation } from "react-i18next";
 
-
-
-
 /* Step1 Component: Responsible for the first step of a form, receives several props 
 such as project name, location, image, start date, and end date */
 

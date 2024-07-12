@@ -2,8 +2,11 @@ import React from 'react';
 import { AiOutlineMail, AiOutlinePhone } from 'react-icons/ai'; 
 import './Footer.css';
 import logo3 from '../../multimedia/Images/logo3.png';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+
+    const { t } = useTranslation();
     return (
         <footer className="footer">
             <div className="footer-container">
@@ -16,7 +19,7 @@ const Footer = () => {
                     
                 </div>
                 <div className="footer-section">
-                    <h5>Laboratories:</h5>
+                    <h5>{t("Laboratories")}:</h5>
                     <ul>
                         <li>Lisboa</li>
                         <li>Coimbra</li>
@@ -27,17 +30,17 @@ const Footer = () => {
                     </ul>
                 </div>
                 <div className="footer-section">
-                    <h5>Legal Information:</h5>
+                    <h5>{t("Legal Information")}:</h5>
                     <ul>
-                        <li>Cookie Policy</li>
-                        <li>Copyright Notice</li>
-                        <li>Privacy Policy</li>
+                        <li>{t("Cookie Policy")}</li>
+                        <li>{t("Copyright Notice")}</li>
+                        <li>{t("Privacy Policy")}</li>
                       
                     </ul>
                 </div>  
                 
                 <div className="footer-section">
-                    <h5>Contact Us:</h5>
+                    <h5>{t("Contact Us")}:</h5>
                     <p><AiOutlinePhone /> 239 101 001</p> 
                     <p><AiOutlineMail /> forgexperimentalprojects@mail.com</p> 
                 </div>

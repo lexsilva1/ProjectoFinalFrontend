@@ -3,9 +3,15 @@ import { Button, Modal, Form, Row, Col, Alert } from "react-bootstrap";
 import { updateResource,createResource } from "../../../services/resourcesServices";
 import Cookies from "js-cookie";
 import "./CreateResourceModal.css";
+import { useTranslation } from "react-i18next";
+
+/* Modal to create a new resource or edit an existing one
+It verifies if we receives an initialResource. If it does, fill the placeholders 
+with de resource data to edit*/
 
 const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,handleAddResource }) => {
   const token = Cookies.get("authToken");
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -18,6 +24,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
   });
   const [errors, setErrors] = useState({});
 
+  // If we receive an initialResource, fill the placeholders with the resource data
   useEffect(() => {
     if (initialResource) {
       setFormData({
@@ -33,10 +40,12 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
     }
   }, [initialResource]);
 
+  // Update the formData state with the input values
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Validate the form fields before submitting and show the errors if there are any
   const validate = () => {
     let newErrors = {};
     if (!formData.name) newErrors.name = "This field is required";
@@ -46,6 +55,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
     return Object.keys(newErrors).length === 0;
   };
 
+  // Submit the form and create or update the resource
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -60,7 +70,6 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
   } else {
     try {
       const newResource = await createResource(token, formData);
-      // If tempSelectedMaterials is an array and you want to add a new item
       handleAddResource(newResource);
       handleClose();
     } catch (error) {
@@ -69,6 +78,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
   };
   };
 
+  // Close the modal and reset the form data
   const handleClose = () => {
     toggle(); 
     setFormData({
@@ -86,14 +96,14 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
   return (
     <Modal show={isOpen} onHide={handleClose} centered className="custom-modal-create-resource">
       <Modal.Header closeButton>
-        <Modal.Title>{initialResource ? "Edit Resource" : "Create Resource"}</Modal.Title>
+        <Modal.Title>{initialResource ? t("Edit Resource") : t("Create Resource")}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={onSubmit}>
           <Row>
             <Col md={6}>
               <Form.Group controlId="name">
-                <Form.Label>Name</Form.Label>
+                <Form.Label>{t("Name")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -104,7 +114,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                 <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="description">
-                <Form.Label>Description</Form.Label>
+                <Form.Label>{t("Description")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="description"
@@ -113,7 +123,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                 />
               </Form.Group>
               <Form.Group controlId="type">
-                <Form.Label>Type</Form.Label>
+                <Form.Label>{t("Type")}</Form.Label>
                 <Form.Control
                   as="select"
                   name="type"
@@ -121,14 +131,14 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                   onChange={onChange}
                   isInvalid={!!errors.type}
                 >
-                  <option value="">Select...</option>
-                  <option value="COMPONENT">Component</option>
-                  <option value="RESOURCE">Resource</option>
+                  <option value="">{t("Select...")}</option>
+                  <option value="COMPONENT">{t("Component")}</option>
+                  <option value="RESOURCE">{t("Resource")}</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">{errors.type}</Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="supplier">
-                <Form.Label>Supplier</Form.Label>
+                <Form.Label>{t("Supplier")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="supplier"
@@ -137,7 +147,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                 />
               </Form.Group>
               <Form.Group controlId="stock">
-                <Form.Label>Quantity</Form.Label>
+                <Form.Label>{t("Quantity")}</Form.Label>
                 <Form.Control
                   type="number"
                   name="stock"
@@ -151,7 +161,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
             </Col>
             <Col md={6}>
               <Form.Group controlId="brand">
-                <Form.Label>Brand</Form.Label>
+                <Form.Label>{t("Brand")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="brand"
@@ -160,7 +170,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                 />
               </Form.Group>
               <Form.Group controlId="supplierContact">
-                <Form.Label>Supplier Contact</Form.Label>
+                <Form.Label>{t("Supplier Contact")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="supplierContact"
@@ -169,7 +179,7 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
                 />
               </Form.Group>
               <Form.Group controlId="observations">
-                <Form.Label>Observations</Form.Label>
+                <Form.Label>{t("Observations")}</Form.Label>
                 <Form.Control
                   type="text"
                   name="observations"
@@ -179,7 +189,9 @@ const CreateResourceModal = ({ isOpen, toggle, fetchResources, initialResource,h
               </Form.Group>
             </Col>
           </Row>
-          <Button type="submit" variant="primary">Save</Button>
+          <div className="d-flex justify-content-end">
+          <Button type="submit" variant="primary">{t("Save")}</Button>
+          </div>
         </Form>
       </Modal.Body>
     </Modal>

@@ -30,3 +30,11 @@
     flex-grow: 1;
   }
 
+  .users-modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: var(--bs-modal-padding);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
