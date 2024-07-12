@@ -14,6 +14,8 @@ import { BsGraphUp, BsFileEarmarkText, BsPeople, BsEnvelope, BsJournals, BsJourn
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { markAsSeen } from "../../services/notificationService";
 import "./Header.css";
+import { use } from "i18next";
+import { set } from "date-fns";
 
 const Header = () => {
   const { t, i18n } = useTranslation();
@@ -40,7 +42,7 @@ const Header = () => {
   const userRole = userStore((state) => state.user?.role);
   const setUnreadMessages = userStore((state) => state.setUnreadMessages);
   const userList = userStore((state) => state.userList);
-
+  const [unseenNotifications, setUnseenNotifications] = useState(false);
   const isCurrentUserAppManager = userRole < 2;
 
   useEffect(() => {
@@ -77,6 +79,8 @@ const Header = () => {
   const markNotificationsAsSeen = async () => {
     toggleNotifications();
     markAsSeen(authToken);
+    notifications.forEach((notification) => (notification.isSeen = true));
+    setUnseenNotifications(false);
   };
 
   const handleLogout = () => {
@@ -97,10 +101,12 @@ const Header = () => {
     Cookies.set("theme", newTheme);
   };
 
-  // Função para verificar notificações não vistas
+  useEffect(() => {
   const hasUnseenNotifications = () => {
-    return notifications.some((notification) => !notification.seen);
+    return notifications.some((notification) => !notification.isSeen);
   };
+  hasUnseenNotifications() ? setUnseenNotifications(true) : setUnseenNotifications(false);
+}, [notifications]);
 
   return (
     <div className="header">
@@ -212,7 +218,7 @@ const Header = () => {
                   onClick={markNotificationsAsSeen}
                 >
                   <FaBell className="header-icon-notification" />
-                  {hasUnseenNotifications() && (
+                  {unseenNotifications && (
                     <span className="notification-badge"></span>
                   )}
                 </div>

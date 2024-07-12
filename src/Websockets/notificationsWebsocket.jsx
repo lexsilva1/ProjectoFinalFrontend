@@ -28,6 +28,12 @@ const useStartWebSocket = (token) => {
     TASK_ASSIGN: 'TASK_ASSIGN',
     TASK_DOING: 'TASK_DOING',
     TASK_COMPLETE: 'TASK_COMPLETE',
+    TASK_EXECUTOR: 'TASK_EXECUTOR',
+    ACCEPT_APPLICATION: 'ACCEPT_APPLICATION',
+    REJECT_APPLICATION: 'REJECT_APPLICATION',
+    USER_LEFT: 'USER_LEFT',
+    PROJECT_USERS_EXCEEDED: 'PROJECT_USERS_EXCEEDED',
+    PROJECT_FULL: 'PROJECT_FULL',
     PROJECT_COMPLETE: 'PROJECT_COMPLETE',
     PROJECT_CANCEL: 'PROJECT_CANCEL',
     PROJECT_APPROVED: 'PROJECT_APPROVED',
@@ -36,7 +42,7 @@ const useStartWebSocket = (token) => {
     CHAT: 'CHAT',
     FORCED_LOGOUT: 'FORCED_LOGOUT',
     PROMOTED_ADMIN: 'PROMOTED_ADMIN',
-  DEMOTED_ADMIN: 'DEMOTED_ADMIN',
+    DEMOTED_ADMIN: 'DEMOTED_ADMIN',
   };
   useEffect(() => {
     const ws = new WebSocket(websocketURL+`${token}`);
@@ -142,16 +148,21 @@ const useStartWebSocket = (token) => {
       case MessageType.PROJECT_REJECTED:
 
           const existingNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
+          console.log('existingNotification', existingNotification);
           if (existingNotification) {
             const updatedNotifications = notifications.map((notification) => {
               if (notification.notificationId === messageObj.notificationId) {
+                console.log('messageObj 1', messageObj);
                 return messageObj;
+                ;
               }
               return notification;
             });
+            console.log('updatedNotifications', updatedNotifications);
             setNotifications(updatedNotifications);
           } else {
             setNotifications([messageObj, ...notifications]);
+            console.log('messageObj 3', messageObj);
           }
           break;
           case MessageType.PROMOTED_ADMIN:
