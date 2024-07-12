@@ -10,6 +10,7 @@ import { Row, Col, Card, Button, Form, Image } from "react-bootstrap";
 import WarningModal from "../Modals/WarningModal/WarningModal";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { fetchProjectUsers } from "../../services/projectServices"; 
 import { set } from "date-fns";
 
 const ProjectTeamTab = ({ project }) => {
@@ -26,7 +27,7 @@ const ProjectTeamTab = ({ project }) => {
   const [memberRole, setMemberRole] = useState(""); // [1]
   const navigate = useNavigate();
   const { t } = useTranslation();
-console.log(localTeamMembers);
+
   const isCurrentUserProjectManager = localTeamMembers?.find(
     (member) => member.userId === currentUser.id
   )?.isProjectManager;
@@ -107,20 +108,20 @@ const reRender = () => {
 
     try {
       if (newRole === "Project Manager") {
+        console.log('promote user 1',userId);
         await promoteUser(token, project.name, userId);
+        console.log('promote user 2',userId);
       } else if (newRole === "Collaborator") {
+        console.log('demote user 1',userId);
         await demoteUser(token, project.name, userId);
+        console.log('demote user 2',userId);
       }
       // Atualiza o estado localTeamMembers para refletir a mudança
-      setLocalTeamMembers((prevMembers) =>
-        prevMembers.map((member) =>
-          member.userId === userId
-            ? { ...member, isProjectManager: newRole === true }
-            : member
-        ),
+      const updatedMembers = await fetchProjectUsers(token,project.name);
+      console.log('after update user role',updatedMembers);
+      setLocalTeamMembers(updatedMembers);
         
-      );
-      
+      console.log(`Papel do usuário ${userId} atualizado para ${newRole}`);
     } catch (error) {
       console.error("Erro ao atualizar o papel do usuário", error);
     }
@@ -275,8 +276,8 @@ const reRender = () => {
                         }
                         onChange={(e) => handleRoleChange(e, member.userId)}
                       >
-                        <option value= {false} >Collaborator</option>
-                        <option value= {true} >Project Manager</option>
+                        <option value= "Collaborator" >Collaborator</option>
+                        <option value= "Project Manager" >Project Manager</option>
                       </Form.Select>
                     ) : (
                       <p className="role-label" style={{ fontWeight: "bold" }}>

@@ -257,7 +257,7 @@ export const promoteUser = async (token, projectName, userId) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json(); 
+    return response.text(); 
 };
 
 export const demoteUser = async (token, projectName, userId) => {
@@ -273,7 +273,7 @@ export const demoteUser = async (token, projectName, userId) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return response.json();
+    return response.text();
 };
 export const fetchProjectUsers = async (token, projectName) => {
     const response = await fetch(`${projectsURL}/${encodeURIComponent(projectName)}/projectUsers`, {
