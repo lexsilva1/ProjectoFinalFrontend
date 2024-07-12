@@ -1,14 +1,15 @@
 import React from 'react';
 import MessageCard from './Cards/MessageCard/MessageCard';
+import userStore from '../stores/userStore';
 
-const UserList = ({ users }) => {
-console.log(users);
+const UserList = () => {
+const userList = userStore((state) => state.userList);
 
 
 
     return (
         <div className="user-list">
-            {users.map((message, index) => (
+            {userList.map((message, index) => (
                 console.log(message),
                 <MessageCard
                     key={index}

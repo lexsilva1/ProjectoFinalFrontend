@@ -60,7 +60,14 @@ const Header = () => {
     // Limpeza do event listener
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  useEffect(() => {
+    const unreadCount = userList.filter(user =>!user.read).length;
+    if (unreadCount > 0) {
+      setUnreadMessages(true);
+    } else {
+      setUnreadMessages(false);
+    }
+  }, [userList]);
   useEffect(() => {
     if (isLoggedIn || authToken !== undefined) {
       startWebSocket(authToken);

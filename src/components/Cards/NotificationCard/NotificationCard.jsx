@@ -21,29 +21,36 @@ const NotificationCard = ({ notification }) => {
   const navigate = useNavigate();
   const token = Cookies.get("authToken");
   const user = userStore((state) => state.user);
+  const setUser = userStore((state) => state.setUser);
   const notifications = userStore((state) => state.notifications);
   const setNotifications = userStore((state) => state.setNotifications);
   const [projectImage, setProjectImage] = useState("");
 
   useEffect(() => {
+    if(notification.type !== "PROMOTED_ADMIN" && notification.type !== "DEMOTED_ADMIN") {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
       const projectData = await getProjectByName(token, encodedProjectName);
       setProjectImage(projectData.image);
     };
     fetchProject();
+  }
   }, [projectName, token]);
 
   const handleClick = async () => {
     markAsRead(token, notification.notificationId).then(() => {
       notification.isRead = true;
-
+      if(notification.type !== "PROMOTED_ADMIN" || notification.type !== "DEMOTED_ADMIN") {
       if (projectName.includes(" ")) {
         const formattedProjectName = projectName.replace(" ", "%20");
         navigate(`/project/${formattedProjectName}`);
       } else {
         navigate(`/project/${projectName}`);
       }
+    }else{
+      setUser({...user,role:notification.type === "PROMOTED_ADMIN" ? 1 : 10})
+      navigate(`/users`);
+    }
     });
   };
   const handleAccept = async (event) => {
