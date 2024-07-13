@@ -52,7 +52,10 @@ const reRenderUserCards = () => {
             (user.firstName &&
               user.firstName.toLowerCase().includes(lowercasedFilter)) ||
             (user.lastName &&
-              user.lastName.toLowerCase().includes(lowercasedFilter))
+              user.lastName.toLowerCase().includes(lowercasedFilter)) ||
+              (user.nickname &&
+              user.nickname.toLowerCase().includes(lowercasedFilter)
+              )
           );
         case "skill":
           return (
@@ -71,6 +74,7 @@ const reRenderUserCards = () => {
                 interest.name.toLowerCase().includes(lowercasedFilter)
             )
           );
+        
         default:
           return false;
       }
