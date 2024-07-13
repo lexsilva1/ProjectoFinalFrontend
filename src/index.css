@@ -34,15 +34,17 @@ body.light {
   --dark-color: #242423;
   --details-color: #b9cdd0;
   --cards-color: #ffffff;
+  --buttons-color: #b9cdd0;
 }
 
 body.dark {
   --primary-color: #2e3138;
   --secondary-color: #6c6f7d;
-  --contrast-color: #b9cdd0;
+  --contrast-color: #6da4ad;
   --dark-color: #ccc9e7;
   --details-color: #b9cdd0;
   --cards-color: #363c4a;
+  --buttons-color: #323232;
 }
 
 

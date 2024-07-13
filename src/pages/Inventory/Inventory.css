@@ -17,7 +17,7 @@
 
 .buttonAddResource {
   background-color: var(--contrast-color)!important;
-  color: var(--details-color)!important;
+  color: var(--buttons-color)!important;
 }
 
 .buttonAddResource:hover {
@@ -27,7 +27,7 @@
 
 .buttonViewStats {
   background-color: var(--contrast-color)!important;
-  color: var(--details-color)!important;
+  color: var(--buttons-color)!important;
   margin-left: auto!important; 
 }
 
@@ -52,7 +52,7 @@
 
 .inventory-table th {
   background-color: var(--details-color);
-  color: var(--dark-color);
+  color: black;
 }
 
 .inventory-table tbody tr:nth-of-type(odd) {
@@ -89,6 +89,7 @@
 .inventory-title {
   font-size: 2rem;
   margin-bottom: 20px;
+  color: var(--contrast-color);
 }
 
 /* Paginação */

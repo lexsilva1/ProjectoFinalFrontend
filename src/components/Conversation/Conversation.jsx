@@ -6,6 +6,7 @@ import { getMessages } from '../../services/messageServices';
 import './Conversation.css';
 import Cookies from 'js-cookie';
 import useMsgSocket from '../../Websockets/messagesWebsocket';
+import { useTranslation } from 'react-i18next';
 
 /* Conversation component is responsible for rendering the messages between two users. 
 It uses the useMsgSocket hook to establish a connection with the server and send and receive messages. 
@@ -18,6 +19,7 @@ const Conversation = () => {
   const senderId = userStore((state) => state.user.id);
   const senderName = userStore((state) => state.user.name);
   const receiverId = userStore((state) => state.selectedUserMessages);
+  const { t } = useTranslation();
 
     
   const {sendMessage, setMessages, messages} = useMsgSocket(token, receiverId);
@@ -58,14 +60,14 @@ const Conversation = () => {
         <Form.Control
           as="textarea"
           rows={4}
-          placeholder="Message"
+          placeholder={t("Message")}
           value={newMessage}
           onChange={handleChange}
         />
       </Form.Group>
     </Form>   
-    <Button variant="info" type="submit" className="float-end send-button" onClick={handleSubmit}>
-      Send
+    <Button variant="success" type="submit" className="float-end send-button" onClick={handleSubmit}>
+      {t("Send")}
     </Button>
   </div>
 </Container>

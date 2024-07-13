@@ -33,14 +33,14 @@
 .footer ul li {
     font-size: 0.8em; 
     margin-bottom: 5px;
-    color: var(--details-color);
+    color: white;
     font-family: 'Outfit', sans-serif;
 }
 
 .footer p {
     font-size: 0.8em; 
     margin-bottom: 5px;
-    color: var(--details-color);
+    color: white;
    
 }
 

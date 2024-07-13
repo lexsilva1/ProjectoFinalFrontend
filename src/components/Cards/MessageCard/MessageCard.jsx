@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie'; 
+import { useTranslation } from 'react-i18next';
 
 
 const MessageCard = ({ message }) => {
@@ -17,6 +18,7 @@ const MessageCard = ({ message }) => {
     const navigate = useNavigate();
     const currentUser = Cookies.get('userId'); 
     const isCurrentUser = message.senderId === currentUser;
+    const { t } = useTranslation();
 
     const handleClick = (messageid) => {
         console.log('userlist', userList);
@@ -50,7 +52,7 @@ const MessageCard = ({ message }) => {
                 <Row className="align-items-center">
                     <Col xs={4} className="d-flex align-items-center">
                         <FontAwesomeIcon icon={faEnvelope} style={{ marginRight: '10px' }} />
-                        <p style={{ marginTop: "4%" }}>From:</p>
+                        <p style={{ marginBottom: "0px" }}>{t("From")}:</p>
                         <Card.Title className="fw-bold mb-0 mail-sender">{message.sender}</Card.Title>
                     </Col>
                     <Col xs={6} className="mail-content">

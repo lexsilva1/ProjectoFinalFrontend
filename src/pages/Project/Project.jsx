@@ -4,29 +4,46 @@ import DOMPurify from "dompurify";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Project.css";
-import avatarProject from "../multimedia/Images/avatarProject.jpg";
-import Avatar from "../multimedia/Images/Avatar.jpg";
-import Header from "../components/Header/Header";
-import userStore from "../stores/userStore";
-import WarningModal from "../components/Modals/WarningModal/WarningModal";
-import ResourcesModal from "../components/Modals/ResourcesModal/ResourcesModal";
-import {getProjectByName, projectApplication, updateProjectStatus, removeResourceToProject, updateResourceToProject, updateProject,} from "../services/projectServices";
-import ProjectTeamTab from "../components/ProjectTeamTab/ProjectTeamTab";
-import ExecutionPlan from "../components/ExecutionPlan/ExecutionPlan";
-import ChatIcon from "../components/ChatIcon";
-import ProjectChat from "../components/ProjectChat";
-import ProjectLogs from "../components/ProjectLogs/ProjectLogs";
+import avatarProject from "../../multimedia/Images/avatarProject.jpg";
+import Avatar from "../../multimedia/Images/Avatar.jpg";
+import Header from "../../components/Header/Header";
+import userStore from "../../stores/userStore";
+import WarningModal from "../../components/Modals/WarningModal/WarningModal";
+import ResourcesModal from "../../components/Modals/ResourcesModal/ResourcesModal";
+import {
+  getProjectByName,
+  projectApplication,
+  updateProjectStatus,
+  removeResourceToProject,
+  updateResourceToProject,
+  updateProject,
+} from "../../services/projectServices";
+import ProjectTeamTab from "../../components/ProjectTeamTab/ProjectTeamTab";
+import ExecutionPlan from "../../components/ExecutionPlan/ExecutionPlan";
+import ChatIcon from "../../components/ChatIcon";
+import ProjectChat from "../../components/ProjectChat";
+import ProjectLogs from "../../components/ProjectLogs/ProjectLogs";
 import { useTranslation } from "react-i18next";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { Row, Col } from "react-bootstrap";
-import TypeModal from "../components/Modals/TypeModal/TypeModal";
-import { getLabs } from "../services/labServices";
+import TypeModal from "../../components/Modals/TypeModal/TypeModal";
+import { getLabs } from "../../services/labServices";
 import { Typeahead } from "react-bootstrap-typeahead";
-import {getSkills, createSkill, deleteSkill, getSkillTypes,} from "../services/skillServices";
-import {getInterests, createInterest, deleteInterest, getInterestTypes,} from "../services/interestServices";
+import {
+  getSkills,
+  createSkill,
+  deleteSkill,
+  getSkillTypes,
+} from "../../services/skillServices";
+import {
+  getInterests,
+  createInterest,
+  deleteInterest,
+  getInterestTypes,
+} from "../../services/interestServices";
 import Button from "react-bootstrap/Button";
 import { Card } from "react-bootstrap";
-import ConfirmationModal from "../components/Modals/ConfirmationModal";
+import ConfirmationModal from "../../components/Modals/ConfirmationModal";
 import { set } from "date-fns";
 
 /* Project Component: Responsible for displaying the project details 
@@ -66,14 +83,14 @@ const Project = () => {
   const [interestTypes, setInterestTypes] = useState([]);
   const [skillTypes, setSkillTypes] = useState([]);
   const [selectedType, setSelectedType] = useState("");
-  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] = useState(null);
+  const [resolveOnSkillTypeSelected, setResolveOnSkillTypeSelected] =
+    useState(null);
   const [modalType, setModalType] = useState("");
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [billOfMaterials, setBillOfMaterials] = useState([]);
   const [selectedLab, setSelectedLab] = useState(project.lab);
-  const [showConfirmationModal,setShowConfirmationModal] = useState(false);
-
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const createMarkup = (html) => {
     return { __html: DOMPurify.sanitize(html) };
@@ -301,7 +318,6 @@ const Project = () => {
       member.userId === currentUser.id && member.approvalStatus === "APPLIED"
   );
 
-  
   const handleNewLogAdded = () => {
     setLogUpdateTrigger((prev) => prev + 1);
   };
@@ -339,12 +355,9 @@ const Project = () => {
     } else {
       console.log("Project has team members");
       setShowConfirmationModal(true);
-
-      
     }
   };
 
-  
   const isUserMember = project.teamMembers?.some(
     (member) =>
       member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
@@ -355,7 +368,7 @@ const Project = () => {
       member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
   );
 
-  // Function to get the project data 
+  // Function to get the project data
   useEffect(() => {
     const fetchProject = async () => {
       const encodedProjectName = encodeURIComponent(projectName);
@@ -461,10 +474,8 @@ const Project = () => {
         setIsEditingDescription(false);
         setShowSaveButton(false);
         setDescription(description);
-        
       } catch (error) {
         console.error("Erro ao atualizar o projeto:", error);
-        
       }
     };
 
@@ -537,58 +548,64 @@ const Project = () => {
                 )}
               </p>
               <div>
-  <p
-    className="card-text-project"
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-     
-      padding: "5px",
-      borderTopRightRadius: "5px",
-      borderTopLeftRadius: "5px",
-    }}
-  >
-    <strong>{t("Description")}: </strong>
-    <FaPencilAlt
-      className="edit-description-icon"
-      onClick={toggleEditDescription}
-      style={{ cursor: "pointer" }}
-    />
-  </p>
-  <div
-    style={{
-      marginLeft: "40px",
-      marginTop: "-40.5px",
-      border: isEditingDescription ? "none" : "none",
-      width: isEditingDescription ? "96.6%" : "93.7%",
-      borderBottomRightRadius: isEditingDescription ? "0px" : "5px",
-      borderBottomLeftRadius: isEditingDescription ? "0px" : "5px",
-    }}
-  >
-    {!isEditingDescription ? (
-      <>
-        <span
-          style={{ width: "90%" }}
-          dangerouslySetInnerHTML={createMarkup(description)}
-        ></span>
-      </>
-    ) : (
-      <>
-        <textarea
-          style={{ width: "97%", height: "100px" }}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        {showSaveButton && (
-          <div>
-            <button class = "btn btn-primary" onClick={handleSave}>{t("Save")}</button>
-          </div>
-        )}
-      </>
-    )}
-  </div>
-</div>
+                <p
+                  className="card-text-project"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+
+                    padding: "5px",
+                    borderTopRightRadius: "5px",
+                    borderTopLeftRadius: "5px",
+                  }}
+                >
+                  <strong>{t("Description")}: </strong>
+                  <FaPencilAlt
+                    className="edit-description-icon"
+                    onClick={toggleEditDescription}
+                    style={{ cursor: "pointer" }}
+                  />
+                </p>
+                <div
+                  style={{
+                    marginLeft: "40px",
+                    marginTop: "-40.5px",
+                    border: isEditingDescription ? "none" : "none",
+                    width: isEditingDescription ? "96.6%" : "93.7%",
+                    borderBottomRightRadius: isEditingDescription
+                      ? "0px"
+                      : "5px",
+                    borderBottomLeftRadius: isEditingDescription
+                      ? "0px"
+                      : "5px",
+                  }}
+                >
+                  {!isEditingDescription ? (
+                    <>
+                      <span
+                        style={{ width: "90%" }}
+                        dangerouslySetInnerHTML={createMarkup(description)}
+                      ></span>
+                    </>
+                  ) : (
+                    <>
+                      <textarea
+                        style={{ width: "97%", height: "100px" }}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                      {showSaveButton && (
+                        <div>
+                          <button class="btn btn-primary" onClick={handleSave}>
+                            {t("Save")}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
 
               <div style={{ margin: "40px" }}>
                 <h4 style={{ fontSize: "1rem" }}>{t("Skills")}:</h4>
@@ -745,7 +762,7 @@ const Project = () => {
                       {project.billOfMaterials &&
                         project.billOfMaterials.map((material, index) => (
                           <tr key={`${material.id}-${index}`}>
-                            <td style={{ fontSize: "0.9rem", padding:"10px" }}>
+                            <td style={{ fontSize: "0.9rem", padding: "10px" }}>
                               {material.name}
                             </td>
                             <td>

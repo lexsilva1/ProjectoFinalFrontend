@@ -5,7 +5,7 @@ import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
 const ChatIcon = ({ onChatIconClick }) => (
   <div style={{ position: 'relative', height: '10vh', width: '100vw' }}>
     <div
-      style={{ position: 'absolute', top: '90px', right: '40px', cursor: 'pointer' }}
+      style={{ position: 'absolute', top: '90px', right: '40px', cursor: 'pointer', color: 'var(--contrast-color' }}
       onClick={onChatIconClick}
       role="button"
       tabIndex={0}
