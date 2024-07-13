@@ -53,7 +53,7 @@ const Conversation = () => {
     ))}
   </div>)}
   <div className="conversation-message"> 
-    <Form onSubmit={handleSubmit} className="message-form">
+    <Form  className="message-form">
       <Form.Group controlId="textAreaExample">
         <Form.Control
           as="textarea"
@@ -64,7 +64,7 @@ const Conversation = () => {
         />
       </Form.Group>
     </Form>   
-    <Button variant="info" type="submit" className="float-end send-button">
+    <Button variant="info" type="submit" className="float-end send-button" onClick={handleSubmit}>
       Send
     </Button>
   </div>
