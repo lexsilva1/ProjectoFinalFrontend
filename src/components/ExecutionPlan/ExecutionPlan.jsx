@@ -114,7 +114,7 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
     end: parseDate(new Date(projectTask.end).toISOString().slice(0, 10)),
     progress: projectProgress,
     dependencies: projectTask.dependencies,
-    isDisabled: false,
+    isDisabled: true,
     styles: {
       progressColor: "#18c2de",
       progressSelectedColor: "#2e6b75",
@@ -436,7 +436,11 @@ const ExecutionPlan = ({ name, startDate, endDate, projectTask }) => {
           tasks={tasksFormatted}
           viewMode={viewMode}
           onDateChange={(task) => onDateChange(task)}
-          onDoubleClick={(task) => handleTaskDoubleClick(task)}
+          onDoubleClick={(task) => {
+            if (task.type !== "project") {
+              handleTaskDoubleClick(task);
+            }
+          }}
           onProgressChange={(task) => onProgressChange(task)}
           onDelete={(task) => handleDeleteTask(task)}
           listCellWidth={dateViewMode ? undefined : ""}

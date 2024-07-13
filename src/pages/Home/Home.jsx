@@ -199,10 +199,10 @@ const Home = () => {
         project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.interests.some((interest) =>
-          interest.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          interest.name.toLowerCase().includes(searchTerm.toLowerCase())
         ) ||
         project.skills.some((skill) =>
-          skill.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          skill.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
       return matchesSearchTerm;

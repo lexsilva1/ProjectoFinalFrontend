@@ -238,7 +238,7 @@ export const updateProjectStatus = async (token, projectName, status) => {
 
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+       return response.text();
     }
 
     return response.text();
