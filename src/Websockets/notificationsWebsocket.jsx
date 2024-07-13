@@ -20,8 +20,9 @@ const useStartWebSocket = (token) => {
     LAST_MESSAGE: 'LAST_MESSAGE',
     INVITE: 'INVITE',
     APPLY: 'APPLY',
-    ACCEPT: 'ACCEPT',
+    ACCEPTED: 'ACCEPT',
     REJECT: 'REJECT',
+    REJECTED: 'REJECTED',
     EXCLUDE: 'EXCLUDE',
     PROMOTED: 'PROMOTED',
     DEMOTED: 'DEMOTED',
@@ -43,6 +44,7 @@ const useStartWebSocket = (token) => {
     FORCED_LOGOUT: 'FORCED_LOGOUT',
     PROMOTED_ADMIN: 'PROMOTED_ADMIN',
     DEMOTED_ADMIN: 'DEMOTED_ADMIN',
+    PROJECT_INFO: 'PROJECT_INFO',
   };
   useEffect(() => {
     const ws = new WebSocket(websocketURL+`${token}`);
@@ -121,7 +123,7 @@ const useStartWebSocket = (token) => {
       
         break;
       
-      case MessageType.ACCEPT:
+      case MessageType.ACCEPTED:
       case MessageType.REJECT:
         const newNotifications = notifications.filter((notification) => messageObj.notificationId !== notification.notificationId);
         setNotifications([...newNotifications, messageObj]);
@@ -146,8 +148,9 @@ const useStartWebSocket = (token) => {
       case MessageType.PROJECT_READY:
       case MessageType.PROJECT_DOING:
       case MessageType.PROJECT_REJECTED:
-
-          const existingNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
+      case MessageType.PROJECT_INFO:
+      
+      const existingNotification = notifications.find((notification) => notification.notificationId === messageObj.notificationId);
           console.log('existingNotification', existingNotification);
           if (existingNotification) {
             const updatedNotifications = notifications.map((notification) => {
@@ -195,8 +198,11 @@ const useStartWebSocket = (token) => {
               }
               userstore.setState({ user,role :user.role = 10 });
               break;
-          
-         
+    case MessageType.CHAT:
+      const newChatNotifications = notifications.filter((notification) => messageObj.notificationId !== notification.notificationId);
+      setNotifications([...newChatNotifications, messageObj]);
+      break   
+    
 
 
 
