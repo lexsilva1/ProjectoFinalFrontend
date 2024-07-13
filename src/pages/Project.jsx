@@ -26,6 +26,7 @@ import {getSkills, createSkill, deleteSkill, getSkillTypes,} from "../services/s
 import {getInterests, createInterest, deleteInterest, getInterestTypes,} from "../services/interestServices";
 import Button from "react-bootstrap/Button";
 import { Card } from "react-bootstrap";
+import ConfirmationModal from "../components/Modals/ConfirmationModal";
 import { set } from "date-fns";
 
 /* Project Component: Responsible for displaying the project details 
@@ -71,6 +72,7 @@ const Project = () => {
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [billOfMaterials, setBillOfMaterials] = useState([]);
   const [selectedLab, setSelectedLab] = useState(project.lab);
+  const [showConfirmationModal,setShowConfirmationModal] = useState(false);
 
 
   const createMarkup = (html) => {
@@ -335,9 +337,14 @@ const Project = () => {
     if (response === "status updated") {
       changeStatus(status);
     } else {
-      alert("You can't update the status to this value");
+      console.log("Project has team members");
+      setShowConfirmationModal(true);
+
+      
     }
   };
+
+  
   const isUserMember = project.teamMembers?.some(
     (member) =>
       member.approvalStatus === "MEMBER" || member.approvalStatus === "CREATOR"
@@ -962,6 +969,11 @@ const Project = () => {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        show={showConfirmationModal}
+        message="You can't change the project to this status"
+        handleClose={() => setShowConfirmationModal(false)}
+      />
     </>
   );
 };
