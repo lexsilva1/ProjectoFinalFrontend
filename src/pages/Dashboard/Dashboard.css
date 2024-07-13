@@ -10,14 +10,14 @@
 
 
 .dashboard h1 {
-    color: var(--dark-color);
+    color: var(--contrast-color);
     margin: 7%;
     margin-bottom: 5%!important;
     text-align: center;
 }
 
 .dashboard h2 {
-    color: var(--dark-color);
+    color: black;
     font-weight: bold;
     text-align: center;
 }
@@ -39,7 +39,7 @@
 
 
 .card-title-dashboard {
-    color: var(--dark-color)!important;
+    color: black!important;
     font-weight: bold;
     margin: 1rem;
     margin-bottom: 0.5rem; 

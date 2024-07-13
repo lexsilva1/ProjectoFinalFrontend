@@ -2,10 +2,9 @@ import React from 'react';
 import MessageCard from './Cards/MessageCard/MessageCard';
 import userStore from '../stores/userStore';
 
+/* UserList component is responsible for rendering the list of users in the messages page.*/
 const UserList = () => {
 const userList = userStore((state) => state.userList);
-
-
 
     return (
         <div className="user-list">

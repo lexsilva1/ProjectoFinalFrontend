@@ -3,6 +3,8 @@ import useChatSocket from '../Websockets/groupChatWebsocket';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 
+/* ProjectChat Component: Responsible for displaying the chat of a project */
+
 const ProjectChat = ({ isOpen, onClose }) => {
   const chatStyle = {
     right: isOpen ? '0' : '-100%',
@@ -36,11 +38,9 @@ const ProjectChat = ({ isOpen, onClose }) => {
         <div className="col" style={{ maxWidth: '400px', height: '100%' }}>
           <div className="card" style={{ height: '100%' }}>
             <div className="card-header d-flex justify-content-between align-items-center p-3"
-              style={{ borderTop: '4px solid #ffa900' }}>
+              >
               <h5 className="mb-0">Group messages</h5>
               <div className="d-flex flex-row align-items-center">
-                <i className="fas fa-minus me-3 text-muted fa-xs"></i>
-                <i className="fas fa-comments me-3 text-muted fa-xs"></i>
                 <i className="fas fa-times text-muted fa-xs" onClick={onClose}></i>
               </div>
             </div>
@@ -68,7 +68,7 @@ const ProjectChat = ({ isOpen, onClose }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <button className="btn btn-warning" type="button" id="button-addon2" onClick={handleSendMessage}>
+                <button className="btn btn-success" type="button" id="button-addon2"  onClick={handleSendMessage}>
                   Send
                 </button>
               </div>
