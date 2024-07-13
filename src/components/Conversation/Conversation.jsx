@@ -66,7 +66,7 @@ const Conversation = () => {
         />
       </Form.Group>
     </Form>   
-    <Button variant="info" type="submit" className="float-end send-button" onClick={handleSubmit}>
+    <Button variant="success" type="submit" className="float-end send-button" onClick={handleSubmit}>
       {t("Send")}
     </Button>
   </div>
