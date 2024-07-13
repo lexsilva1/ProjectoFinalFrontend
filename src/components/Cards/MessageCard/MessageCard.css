@@ -8,6 +8,7 @@
     margin-left: 0px;
     height: 90px;
     margin-top: 5px;
+    width: 100%!important;
 }
 
 
@@ -55,4 +56,16 @@
 .mail-content {
     border-left: 1px solid #ccc; /* Add a visual divider */
     padding-left: 10px; /* Add some space after the divider */
+}
+
+.current-user .mail-content {
+    border-right: 1px solid #ccc; /* Muda o divisor para o lado direito */
+    padding-right: 10px; /* Adiciona espaço à direita */
+    padding-left: 0; /* Remove o espaço à esquerda */
+    border-left: none; /* Remove o divisor esquerdo */
+}
+
+.current-user .mail-datetime {
+    left: 0;
+    right: auto;
 }

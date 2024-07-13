@@ -8,14 +8,14 @@ import './ConversationCard.css';
 const ConversationCard = ({ conversation, isCurrentUser }) => {
     const name = conversation.sender.firstName + ' ' + conversation.sender.lastName;
     const timeAgo = formatDistanceToNow(new Date(conversation.time), { addSuffix: true });
-
-    // Classe condicional baseada em quem é o remetente
     const alignmentClass = isCurrentUser ? 'align-right' : 'align-left';
+   
+    const headerClass = isCurrentUser ? 'custom-flex-row-reverse' : '';
 
     return (
         <ListGroup.Item className={`custom-d-flex ${alignmentClass}`} style={{border: "none", backgroundColor: "transparent", padding: "0px"}}>
             <Card className="conversation-card">
-                <Card.Header className="d-flex justify-content-between align-items-center p-3" style={{backgroundColor: "var(--details-color)"}}>
+                <Card.Header className={`d-flex justify-content-between align-items-center p-3 ${headerClass}`} style={{backgroundColor: "transparent"}}>
                     <div className="d-flex align-items-center">
                         <img src={conversation.sender.image || Avatar} alt="avatar"
                             className="custom-rounded-circle shadow-1-strong me-3" style={{ width: "30px", height: "30px", objectFit: "cover" }} />

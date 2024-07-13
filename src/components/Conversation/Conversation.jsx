@@ -7,6 +7,9 @@ import './Conversation.css';
 import Cookies from 'js-cookie';
 import useMsgSocket from '../../Websockets/messagesWebsocket';
 
+/* Conversation component is responsible for rendering the messages between two users. 
+It uses the useMsgSocket hook to establish a connection with the server and send and receive messages. 
+It also uses the getMessages function to fetch the messages between the two users. */
 
 const Conversation = () => {
 
@@ -44,26 +47,28 @@ const Conversation = () => {
 
   return (
     <Container fluid className="conversation">
-      {(Array.isArray(messages) && <div className="conversation-cards">
-        {messages.map((conversation, index) => (
-          <ConversationCard key={index} conversation={conversation} />
-        ))}
-      </div>)}
-      <Form onSubmit={handleSubmit} className="message-form">
-        <Form.Group controlId="textAreaExample">
-          <Form.Control
-            as="textarea"
-            rows={4}
-            placeholder="Message"
-            value={newMessage}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Button variant="info" type="submit" className="float-end">
-          Send
-        </Button>
-      </Form>
-    </Container>
+  {(Array.isArray(messages) && <div className="conversation-cards">
+    {messages.map((conversation, index) => (
+      <ConversationCard key={index} conversation={conversation} />
+    ))}
+  </div>)}
+  <div className="conversation-message"> 
+    <Form onSubmit={handleSubmit} className="message-form">
+      <Form.Group controlId="textAreaExample">
+        <Form.Control
+          as="textarea"
+          rows={4}
+          placeholder="Message"
+          value={newMessage}
+          onChange={handleChange}
+        />
+      </Form.Group>
+    </Form>   
+    <Button variant="info" type="submit" className="float-end send-button">
+      Send
+    </Button>
+  </div>
+</Container>
   );
 };
 

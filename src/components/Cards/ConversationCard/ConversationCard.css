@@ -1,14 +1,16 @@
 .conversation-card {
-  max-width: 60%; /* Limita a largura do card */
+  max-width: 100%; 
+  box-shadow: none;
+  border: none;
 
 }
 
 .align-right {
-  justify-content: flex-end; /* Alinha o card à direita */
+  justify-content: flex-end;
 }
 
 .align-left {
-  justify-content: flex-start; /* Alinha o card à esquerda */
+  justify-content: flex-start; 
 }
 
 .custom-rounded-circle {
@@ -27,10 +29,6 @@
   float: left;
 }
 
-.custom-flex-row-reverse {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-}
 
 .w-100 {
   margin: 0px;

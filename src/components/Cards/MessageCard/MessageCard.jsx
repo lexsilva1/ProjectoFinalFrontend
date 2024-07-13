@@ -15,6 +15,8 @@ const MessageCard = ({ message }) => {
     const userList = useStore(state => state.userList);
     const setUserList = useStore(state => state.setUserList);
     const navigate = useNavigate();
+    const currentUser = Cookies.get('userId'); 
+    const isCurrentUser = message.senderId === currentUser;
 
     const handleClick = (messageid) => {
         console.log('userlist', userList);

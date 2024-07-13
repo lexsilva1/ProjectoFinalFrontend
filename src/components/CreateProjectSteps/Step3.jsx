@@ -3,6 +3,7 @@ import { Row, Col, FormGroup, Label, Button } from "reactstrap";
 import { createProject } from "../../services/projectServices";
 import Cookies from "js-cookie";
 import userstore from "../../stores/userStore";
+import Avatar from "../../multimedia/Images/Avatar.jpg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -166,7 +167,7 @@ const Step3 = ({ inputs, prevStep, setInputs, setStep, setError }) => {
                       className="list-group-item d-flex justify-content-between align-items-center"
                     >
                       <img
-                        src={member.userPhoto}
+                        src={member.userPhoto ? member.userPhoto : Avatar}
                         alt={`${member.firstName} ${member.lastName}`}
                         className="rounded-circle"
                         style={{
