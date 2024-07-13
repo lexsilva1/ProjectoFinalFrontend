@@ -14,7 +14,7 @@ export const setSystemVariables= async (token, systemVariablesDto) => {
 
     if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        
     } else {
         return response.text();
     }
@@ -31,8 +31,8 @@ export const getSystemVariables = async (token) => {
 
     if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        
     } else {
-        return await response.json();
+        return await response.text();
     }
 };

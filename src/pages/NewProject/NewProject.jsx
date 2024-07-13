@@ -59,7 +59,7 @@ const NewProject = () => {
     setInputs(inputs3);
   };
 
-  // Inicializa dos estados para armazenar sugestões, inicialmente vazias.
+  // Inicializes the state of the skillSuggestions, keywordSuggestions, labs, and users.
   const [skillSuggestions, setSkillSuggestions] = useState([]);
   const [keywordSuggestions, setKeywordSuggestions] = useState([]);
   const [labs, setLabs] = useState([]);

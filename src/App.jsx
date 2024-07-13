@@ -12,7 +12,8 @@ import userStore from "./stores/userStore";
 import Messages from "./pages/Messages";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import ResourcesStats from "./pages/ResourcesStats/ResourcesStats";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
+import WarningPage from "./pages/WarningPage/WarningPage";
 
 function App() {
   const theme = Cookies.get("theme") || "light";
@@ -37,6 +38,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/resources-stats" element={<ResourcesStats />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/warning" element={<WarningPage />} />
       </Routes>
     </>
   );
